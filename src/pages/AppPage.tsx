@@ -1186,7 +1186,7 @@ const handleDownload = (
           </div>
           {/* Right: Download buttons — gold gradient */}
           <div className="flex items-center gap-2">
-            <PdfButtonGroup displayName={displayName} activeInstrumentName={activeInstrumentName} />
+            <PdfButtonGroup displayName={displayName} activeInstrumentName={activeInstrumentName} selectedKey={appliedKey} bpm={bpm} />
 
             {/* MIDI */}
             {outputs.some(o => o.format === "midi") ? (
