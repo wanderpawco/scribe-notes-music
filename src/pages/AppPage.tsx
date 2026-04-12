@@ -874,7 +874,6 @@ interface ProcessingViewProps {
 const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   const [elapsed, setElapsed] = useState(0);
   const [stepProgress, setStepProgress] = useState(0);
-  const stepStartRef = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -884,21 +883,16 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   }, []);
 
   useEffect(() => {
-    stepStartRef.current = 0;
+    setElapsed(0);
     setStepProgress(0);
   }, [procStep]);
 
   useEffect(() => {
     const currentStep = processingSteps[procStep];
-    if (!currentStep || currentStep.duration === 0) return;
-
-    stepStartRef.current = (stepStartRef.current || 0) + 1;
-    const pct = Math.min(
-      95,
-      Math.round((stepStartRef.current / currentStep.duration) * 95)
-    );
+    if (!currentStep || currentStep.duration <= 0) return;
+    const pct = Math.min(95, Math.round((elapsed / currentStep.duration) * 95));
     setStepProgress(pct);
-  }, [elapsed, procStep]);
+  }, [elapsed]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
