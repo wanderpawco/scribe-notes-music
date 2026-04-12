@@ -94,6 +94,7 @@ function estimateProcessingTime(
 }
 
 const AppPage = () => {
+  const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
