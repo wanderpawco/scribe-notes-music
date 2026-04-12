@@ -461,7 +461,7 @@ const AppPage = () => {
     <div className="min-h-screen bg-paper flex flex-col">
       <Navbar />
 
-      <main className="flex-1 pt-24 pb-16 px-6">
+      <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#0f0f14]" : ""}`}>
         <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator */}
           <div className="flex items-center justify-center gap-0 mb-10">
@@ -472,6 +472,8 @@ const AppPage = () => {
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
                       i <= activeStep
                         ? "bg-gold text-white"
+                        : stage === 0
+                        ? "bg-white/10 border border-white/20 text-white/40"
                         : "bg-surface border border-border text-ink-muted"
                     }`}
                   >
@@ -479,7 +481,11 @@ const AppPage = () => {
                   </div>
                   <span
                     className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
-                      i <= activeStep ? "text-gold" : "text-ink-muted"
+                      i <= activeStep 
+                        ? "text-gold" 
+                        : stage === 0
+                        ? "text-white/30"
+                        : "text-ink-muted"
                     }`}
                   >
                     {step}
@@ -491,7 +497,11 @@ const AppPage = () => {
                 {i < stepLabels.length - 1 && (
                   <div
                     className={`w-16 md:w-24 h-px mx-2 mb-5 transition-colors duration-300 ${
-                      i < activeStep ? "bg-gold" : "bg-border"
+                      i < activeStep 
+                        ? "bg-gold" 
+                        : stage === 0
+                        ? "bg-white/10"
+                        : "bg-border"
                     }`}
                   />
                 )}
@@ -507,59 +517,91 @@ const AppPage = () => {
                 : "opacity-0 translate-y-4 hidden"
             }`}
           >
-            <div
-              className={`min-h-[300px] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-8 transition-all duration-200 cursor-pointer ${
-                dragOver
-                  ? "border-gold bg-gold-light"
-                  : "border-border hover:border-ink-muted"
-              }`}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={onDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept=".mp3,.wav,.flac,.m4a"
-                className="hidden"
-                onChange={onFileInput}
-              />
-              <Music size={40} className="text-gold mb-4" />
-              <h2 className="font-heading text-xl font-semibold text-ink mb-2">
-                Drop your audio file here
-              </h2>
-              <p className="text-sm text-ink-muted mb-5">
-                MP3, WAV, FLAC, M4A — up to 500MB
-              </p>
-              <button
-                className="px-5 py-2.5 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
-                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept=".mp3,.wav,.flac,.m4a"
+              className="hidden"
+              onChange={onFileInput}
+            />
+
+            {/* Dark hero upload zone */}
+            <div className="relative rounded-2xl overflow-hidden bg-[#0f0f14] border border-white/10 animate-fade-up">
+
+              {/* Animated waveform background */}
+              <div className="absolute inset-0 flex items-center justify-center gap-[3px] opacity-20 pointer-events-none">
+                {[...Array(80)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-[3px] rounded-full bg-gold"
+                    style={{
+                      animation: `wave${(i % 5) + 1} ${1.5 + (i % 7) * 0.3}s ease-in-out infinite`,
+                      animationDelay: `${i * 0.05}s`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Upload content */}
+              <div
+                className={`relative z-10 flex flex-col items-center justify-center min-h-[340px] p-10 cursor-pointer transition-all duration-300 ${
+                  dragOver ? "bg-gold/10" : ""
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={onDrop}
+                onClick={() => fileInputRef.current?.click()}
               >
-                Browse Files
-              </button>
+
+                {/* Glowing upload icon */}
+                <div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mb-6 animate-glow-pulse">
+                  <Upload size={32} className="text-gold" />
+                </div>
+
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-2 animate-fade-up-delay-1">
+                  Drop your audio file here
+                </h2>
+
+                <p className="text-white/40 text-sm mb-6 animate-fade-up-delay-2">
+                  MP3, WAV, FLAC, M4A — up to 500MB
+                </p>
+
+                <button
+                  className="px-6 py-3 rounded-xl bg-gold text-white text-sm font-semibold hover:bg-gold-dark transition-all duration-200 shadow-lg shadow-gold/20 animate-fade-up-delay-3"
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    fileInputRef.current?.click(); 
+                  }}
+                >
+                  Browse Files
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-sm text-ink-muted">or</span>
-              <div className="flex-1 h-px bg-border" />
+            {/* Divider */}
+            <div className="flex items-center gap-4 my-6 animate-fade-up-delay-2">
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-sm text-white/30">or</span>
+              <div className="flex-1 h-px bg-white/10" />
             </div>
 
+            {/* Record button */}
             {!recording ? (
               <button
                 onClick={startRecording}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border border-white/10 text-white/70 text-sm font-medium hover:bg-white/5 hover:border-white/20 transition-all duration-200 animate-fade-up-delay-3"
               >
                 <Mic size={16} />
                 Record live audio
               </button>
             ) : (
-              <div className="w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 border-red-400 bg-red-50 text-sm">
+              <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 border-red-500/50 bg-red-500/10 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="font-medium text-red-700">Recording...</span>
-                  <span className="text-red-500 font-mono text-xs">
+                  <span className="font-medium text-red-400">
+                    Recording
+                  </span>
+                  <span className="text-red-400/70 font-mono text-xs">
                     {Math.floor(recordingTime / 60).toString().padStart(2, "0")}:
                     {(recordingTime % 60).toString().padStart(2, "0")}
                   </span>
@@ -573,18 +615,19 @@ const AppPage = () => {
               </div>
             )}
 
+            {/* Format pills */}
             <div className="flex items-center justify-center gap-2 mt-6">
               {["MP3", "WAV", "FLAC", "M4A"].map((fmt) => (
                 <span
                   key={fmt}
-                  className="px-3 py-1 rounded-full text-xs text-ink-soft bg-surface border border-border"
+                  className="px-3 py-1 rounded-full text-xs text-white/30 bg-white/5 border border-white/10"
                 >
                   {fmt}
                 </span>
               ))}
             </div>
 
-            <p className="text-center text-xs text-ink-muted mt-6">
+            <p className="text-center text-xs text-white/25 mt-6">
               Free account required — sign up takes 30 seconds
             </p>
           </div>
