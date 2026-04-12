@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SheetMusicSVG from "@/components/SheetMusicSVG";
+import SheetMusicRenderer from "@/components/SheetMusicRenderer";
 import { supabase } from "@/integrations/supabase/client";
 
 const stepLabels = ["Upload", "Select Instruments", "Get Results"];
@@ -591,6 +591,12 @@ const ResultsView = ({
   const displayName = fileName.replace(/\.[^/.]+$/, "");
   const [activeInstrument, setActiveInstrument] = useState(0);
 
+  const activeInstrumentName = selected[activeInstrument];
+  const activeXmlOutput = outputs.find(
+    (o) => o.instrument === activeInstrumentName && o.format === "musicxml"
+  );
+  const activeMusicXml = activeXmlOutput?.file_path ?? null;
+
   const handleDownload = (output: { instrument: string; format: string; file_path: string }) => {
     const base64Data = output.file_path;
     let mimeType: string;
@@ -629,8 +635,8 @@ const ResultsView = ({
       {/* Hidden printable sheet */}
       <div id="print-sheet" className="hidden">
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "24px", marginBottom: "4px" }}>{displayName}</h1>
-        <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>{selected[activeInstrument]}</p>
-        <SheetMusicSVG />
+        <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>{activeInstrumentName}</p>
+        <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
       </div>
 
       {/* Success banner */}
@@ -674,7 +680,7 @@ const ResultsView = ({
             </div>
           )}
 
-          <SheetMusicSVG />
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
 
 
           {/* ── ORIGINAL RECORDING ── */}
