@@ -645,6 +645,17 @@ const ResultsView = ({
         <span className="text-sm font-medium">Your sheet music is ready</span>
       </div>
 
+      {(outputs.length === 0 || !activeMusicXml) && (
+        <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mb-4 font-mono text-xs space-y-1">
+          <p>Outputs count: {outputs.length}</p>
+          {outputs.map((o, i) => (
+            <p key={i}>{o.instrument} | {o.format} | file_path length: {o.file_path.length} chars</p>
+          ))}
+          <p>Active instrument: {activeInstrumentName}</p>
+          <p>Active MusicXML found: {activeMusicXml ? "YES" : "NO"}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left: Sheet music preview */}
         <div className="bg-white border border-border rounded-xl p-6">
