@@ -787,11 +787,11 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
 
                 <button
                   onClick={handleTranscribe}
-                  disabled={selected.length === 0 || uploading}
+                  disabled={selected.length === 0 || songTitle.trim() === '' || uploading}
                   className={`w-full mt-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
                     uploading
                       ? "bg-gold-dark text-white cursor-wait"
-                      : selected.length > 0
+                      : selected.length > 0 && songTitle.trim() !== ''
                       ? "bg-gold text-white hover:bg-gold-dark"
                       : "bg-border text-ink-muted cursor-not-allowed"
                   }`}
