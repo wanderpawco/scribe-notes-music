@@ -250,6 +250,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
+    </div>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </>
