@@ -96,3 +96,21 @@
   }
   .animate-scan-bar { animation: scanBar 1.4s ease-in-out forwards; }
 }
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #print-sheet,
+  #print-sheet * {
+    visibility: visible !important;
+  }
+  #print-sheet {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+  }
+}
