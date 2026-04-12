@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard,
-  FileText, FileCode, Lock, ChevronDown, RefreshCw, ArrowUpDown, Minus, Plus,
+  FileText, FileCode, Lock, ChevronDown, RefreshCw,
   Loader2, Clock,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
