@@ -8,6 +8,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SheetMusicRenderer from "@/components/SheetMusicRenderer";
+import PdfButtonGroup from "@/components/PdfButtonGroup";
 import { supabase } from "@/integrations/supabase/client";
 
 const stepLabels = ["Upload", "Select Instrument", "Get Results"];
