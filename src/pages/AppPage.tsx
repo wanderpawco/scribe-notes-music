@@ -1197,7 +1197,15 @@ const handleDownload = (
           <div className="flex items-center gap-2">
             {/* PDF — always available */}
             <button
-              onClick={() => window.print()}
+              onClick={() => {
+                const container = document.getElementById("osmd-render-container");
+                if (!container) return;
+                const printWindow = window.open("", "_blank");
+                if (!printWindow) { alert("Please allow pop-ups for printing."); return; }
+                printWindow.document.write(`<html><head><title>${displayName} - ${activeInstrumentName}</title><style>body{margin:0;padding:20px;background:#fff;display:flex;flex-direction:column;align-items:center;}svg{width:100%;height:auto;display:block;}</style></head><body>${container.innerHTML}</body></html>`);
+                printWindow.document.close();
+                printWindow.onload = () => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); };
+              }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
             >
               <FileText size={13} />
@@ -1279,7 +1287,9 @@ const handleDownload = (
           <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
         </div>
 
-        <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+        <div id="osmd-render-container">
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+        </div>
 
       </div>
     </div>
