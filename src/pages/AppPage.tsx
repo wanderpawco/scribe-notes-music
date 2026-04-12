@@ -133,6 +133,7 @@ const AppPage = () => {
     setProcessing(true);
     setProcStep(0);
     setSelectedKey("C Major");
+    setBpm(120);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
