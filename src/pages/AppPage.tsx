@@ -99,6 +99,14 @@ const AppPage = () => {
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Recording state
+  const [recording, setRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const maxRecordingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Stage 1
   const [scanning, setScanning] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
@@ -368,6 +376,60 @@ const AppPage = () => {
     }
   };
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/ogg",
+      });
+
+      recordingChunksRef.current = [];
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordingChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(track => track.stop());
+        const mimeType = mediaRecorder.mimeType || "audio/webm";
+        const blob = new Blob(recordingChunksRef.current, { type: mimeType });
+        const extension = mimeType.includes("ogg") ? "ogg" : "webm";
+        const fileName = `recording_${Date.now()}.${extension}`;
+        const file = new File([blob], fileName, { type: mimeType });
+
+        setRecording(false);
+        setRecordingTime(0);
+        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+        if (maxRecordingTimerRef.current) clearTimeout(maxRecordingTimerRef.current);
+
+        handleFile(file);
+      };
+
+      mediaRecorder.start(100);
+      setRecording(true);
+      setRecordingTime(0);
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(t => t + 1);
+      }, 1000);
+
+      // Auto-stop after 10 minutes
+      maxRecordingTimerRef.current = setTimeout(() => {
+        if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
+      }, 10 * 60 * 1000);
+    } catch (err) {
+      console.error("Microphone access denied:", err);
+      alert("Microphone access is required to record audio. Please allow microphone access in your browser and try again.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && recording) mediaRecorderRef.current.stop();
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+    if (maxRecordingTimerRef.current) clearTimeout(maxRecordingTimerRef.current);
+  };
+
   const resetAll = () => {
     setStage(0);
     setFileName("");
@@ -385,6 +447,11 @@ const AppPage = () => {
     setTranscriptionId(null);
     setTranscriptionError(null);
     setTranscriptionOutputs([]);
+    setRecording(false);
+    setRecordingTime(0);
+    if (mediaRecorderRef.current && recording) mediaRecorderRef.current.stop();
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+    if (maxRecordingTimerRef.current) clearTimeout(maxRecordingTimerRef.current);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -479,10 +546,32 @@ const AppPage = () => {
               <div className="flex-1 h-px bg-border" />
             </div>
 
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200">
-              <Mic size={16} />
-              Record live audio
-            </button>
+            {!recording ? (
+              <button
+                onClick={startRecording}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200"
+              >
+                <Mic size={16} />
+                Record live audio
+              </button>
+            ) : (
+              <div className="w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 border-red-400 bg-red-50 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="font-medium text-red-700">Recording...</span>
+                  <span className="text-red-500 font-mono text-xs">
+                    {Math.floor(recordingTime / 60).toString().padStart(2, "0")}:
+                    {(recordingTime % 60).toString().padStart(2, "0")}
+                  </span>
+                </div>
+                <button
+                  onClick={stopRecording}
+                  className="px-4 py-1.5 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-all"
+                >
+                  Stop & Transcribe
+                </button>
+              </div>
+            )}
 
             <div className="flex items-center justify-center gap-2 mt-6">
               {["MP3", "WAV", "FLAC", "M4A"].map((fmt) => (
