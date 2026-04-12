@@ -249,9 +249,11 @@ const Navbar = () => {
             )}
           </div>
         </div>
-      </nav>
-    </div>
+      )}
 
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 pt-16 bg-paper md:hidden">
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+    </>
+  );
+};
+
+export default Navbar;
