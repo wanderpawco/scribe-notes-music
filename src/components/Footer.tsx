@@ -27,9 +27,9 @@ const Footer = () => {
           <div>
             <h4 className="font-heading text-sm font-semibold text-ink mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-ink-soft hover:text-ink transition-colors">Terms</a></li>
-              <li><a href="#" className="text-sm text-ink-soft hover:text-ink transition-colors">Privacy</a></li>
-              <li><a href="#" className="text-sm text-ink-soft hover:text-ink transition-colors">Contact</a></li>
+              <li><Link to="/terms" className="text-sm text-ink-soft hover:text-ink transition-colors">Terms</Link></li>
+              <li><Link to="/privacy" className="text-sm text-ink-soft hover:text-ink transition-colors">Privacy</Link></li>
+              <li><a href="mailto:devops@scribenoter.com" className="text-sm text-ink-soft hover:text-ink transition-colors">Contact</a></li>
             </ul>
           </div>
         </div>
