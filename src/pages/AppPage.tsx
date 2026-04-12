@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard,
   FileText, FileCode, Lock, ChevronDown, RefreshCw, ArrowUpDown, Minus, Plus,
@@ -93,6 +94,7 @@ function estimateProcessingTime(
 }
 
 const AppPage = () => {
+  const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -1265,11 +1267,11 @@ const handleDownload = (
 
           {/* New transcription */}
           <button
-            onClick={resetAll}
+            onClick={() => navigate("/app")}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-white text-ink text-xs font-medium hover:bg-surface transition-all ml-1"
           >
             <RefreshCw size={12} />
-            New
+            New Transcription
           </button>
         </div>
       </div>
