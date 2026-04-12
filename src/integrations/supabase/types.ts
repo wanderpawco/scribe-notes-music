@@ -14,7 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      transcription_outputs: {
+        Row: {
+          created_at: string
+          file_path: string
+          format: string
+          id: string
+          instrument: string
+          transcription_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          format: string
+          id?: string
+          instrument: string
+          transcription_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          format?: string
+          id?: string
+          instrument?: string
+          transcription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transcription_outputs_transcription_id_fkey"
+            columns: ["transcription_id"]
+            isOneToOne: false
+            referencedRelation: "transcriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transcriptions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          detected_bpm: number | null
+          detected_key: string | null
+          error_message: string | null
+          file_name: string
+          file_path: string
+          id: string
+          music_ai_job_id: string | null
+          selected_instruments: string[]
+          status: string
+          stem_urls: Json | null
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          detected_bpm?: number | null
+          detected_key?: string | null
+          error_message?: string | null
+          file_name: string
+          file_path: string
+          id?: string
+          music_ai_job_id?: string | null
+          selected_instruments?: string[]
+          status?: string
+          stem_urls?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          detected_bpm?: number | null
+          detected_key?: string | null
+          error_message?: string | null
+          file_name?: string
+          file_path?: string
+          id?: string
+          music_ai_job_id?: string | null
+          selected_instruments?: string[]
+          status?: string
+          stem_urls?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
