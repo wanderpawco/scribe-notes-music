@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import SheetMusicRenderer from "@/components/SheetMusicRenderer";
 import PdfButtonGroup from "@/components/PdfButtonGroup";
 import { supabase } from "@/integrations/supabase/client";
+import { getTransposeSemitones } from "@/lib/musicKeys";
 
 const stepLabels = ["Upload", "Select Instrument", "Get Results"];
 
@@ -124,6 +125,7 @@ const AppPage = () => {
   const [processing, setProcessing] = useState(true);
   const [procStep, setProcStep] = useState(0);
   const [selectedKey, setSelectedKey] = useState("C Major");
+  const [appliedKey, setAppliedKey] = useState("C Major");
   const [keyDropdownOpen, setKeyDropdownOpen] = useState(false);
   const [bpm, setBpm] = useState(120);
   const [uploading, setUploading] = useState(false);
