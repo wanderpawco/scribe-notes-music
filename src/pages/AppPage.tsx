@@ -327,7 +327,6 @@ const AppPage = () => {
       const audioUrl = urlData.publicUrl;
 
       // B) Insert transcription row
-      const { data: { user } } = await supabase.auth.getUser();
       const { data: insertData, error: insertError } = await supabase
         .from("transcriptions")
         .insert({
