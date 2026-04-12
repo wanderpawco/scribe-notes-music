@@ -682,16 +682,6 @@ const ResultsView = ({
 
           <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
 
-      {(outputs.length === 0 || !activeMusicXml) && (
-        <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mb-4 font-mono text-xs space-y-1">
-          <p>Outputs count: {outputs.length}</p>
-          {outputs.map((o, i) => (
-            <p key={i}>{o.instrument} | {o.format} | file_path length: {o.file_path.length} chars</p>
-          ))}
-          <p>Active instrument: {activeInstrumentName}</p>
-          <p>Active MusicXML found: {activeMusicXml ? "YES" : "NO"}</p>
-        </div>
-      )}
 
           {/* ── ORIGINAL RECORDING ── */}
           <div className="border-t border-border mt-4 pt-4">
