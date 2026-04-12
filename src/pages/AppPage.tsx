@@ -480,11 +480,11 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                     {i < activeStep ? <Check size={14} /> : i + 1}
                   </div>
                   <span
-className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
+                    className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
                       i <= activeStep 
                         ? "text-gold" 
                         : stage === 0
-                        ? "text-white/50"
+                        ? "text-white/70"
                         : "text-ink-muted"
                     }`}
                   >
@@ -537,7 +537,7 @@ className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
             >
               
               {/* Animated waveform — bright and visible */}
-              <div className="absolute inset-0 flex items-center justify-center gap-[4px] opacity-40 pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center gap-[4px] opacity-[0.15] pointer-events-none">
                 {[...Array(60)].map((_, i) => (
                   <div
                     key={i}
@@ -566,7 +566,7 @@ className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
                 </h2>
 
                 {/* Subtitle */}
-                <p className="text-lg text-white/40 mb-10 text-center animate-fade-up-delay-2">
+                <p className="text-lg text-white/80 mb-10 text-center animate-fade-up-delay-2">
                   MP3, WAV, FLAC, M4A — up to 500MB
                 </p>
 
@@ -607,7 +607,7 @@ className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
             {/* ── DIVIDER ── */}
             <div className="flex items-center gap-4 my-8 animate-fade-up-delay-2">
               <div className="flex-1 h-px bg-white/15" />
-              <span className="text-base text-white/30 font-medium">or</span>
+              <span className="text-base text-white/60 font-medium">or</span>
               <div className="flex-1 h-px bg-white/15" />
             </div>
 
@@ -659,7 +659,7 @@ className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
 
             {/* ── FORMAT BADGES ── */}
             <div className="flex flex-col items-center mt-8 animate-fade-up-delay-3">
-              <p className="text-sm text-white/30 font-medium mb-3 tracking-wide uppercase">
+              <p className="text-sm text-white/70 font-medium mb-3 tracking-wide uppercase">
                 Supported formats:
               </p>
               <div className="flex items-center justify-center gap-3">
@@ -675,7 +675,7 @@ className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
             </div>
 
             {/* ── FOOTER NOTE ── */}
-            <p className="text-center text-base text-white/25 mt-8 font-medium">
+            <p className="text-center text-base text-white/65 mt-8 font-medium">
               Free account required — sign up takes 30 seconds
             </p>
           </div>
