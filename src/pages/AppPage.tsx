@@ -765,7 +765,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                       <button
                         key={inst.name}
                         onClick={() => toggleInstrument(inst.name)}
-                        className={`relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl min-h-[80px] transition-all duration-200 ${
+                        className={`relative flex flex-col items-center justify-center gap-3 p-5 rounded-xl min-h-[100px] transition-all duration-200 ${
                           isSelected
                             ? "bg-gold-light border-2 border-gold"
                             : "bg-surface border border-border hover:border-ink-muted"
@@ -778,8 +778,8 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                             </div>
                           </div>
                         )}
-                        <Icon size={24} className="text-gold" />
-                        <span className="text-sm font-medium text-ink">{inst.name}</span>
+                        <Icon size={32} className="text-gold" />
+                        <span className="text-base font-semibold text-ink">{inst.name}</span>
                       </button>
                     );
                   })}
