@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard,
+  Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard, Piano, Wind,
   FileText, FileCode, Lock, ChevronDown, RefreshCw,
   Loader2, Clock,
 } from "lucide-react";
@@ -13,21 +13,26 @@ import { supabase } from "@/integrations/supabase/client";
 const stepLabels = ["Upload", "Select Instrument", "Get Results"];
 
 const allInstruments = [
-  { icon: Mic2, name: "Vocals" },
   { icon: Mic2, name: "Lead Vocals" },
-  { icon: Mic2, name: "Backing Vocals" },
-  { icon: Music2, name: "Drums" },
+  { icon: Mic, name: "Backing Vocals" },
   { icon: Music, name: "Bass" },
-  { icon: Guitar, name: "Electric Guitar" },
-  { icon: Guitar, name: "Acoustic Guitar" },
-  { icon: Music, name: "Piano" },
+  { icon: Piano, name: "Piano" },
   { icon: Keyboard, name: "Organ" },
-  { icon: Music, name: "Strings" },
-  { icon: Music2, name: "Brass" },
-  { icon: Music, name: "Woodwinds" },
+  { icon: Music2, name: "Strings" },
+  { icon: Music2, name: "Trumpet" },
+  { icon: Music2, name: "French Horn" },
+  { icon: Music2, name: "Trombone" },
+  { icon: Music2, name: "Tuba" },
+  { icon: Music2, name: "Flugelhorn" },
+  { icon: Music2, name: "Baritone/Euphonium" },
+  { icon: Wind, name: "Flute" },
+  { icon: Wind, name: "Oboe" },
+  { icon: Wind, name: "Clarinet" },
+  { icon: Wind, name: "Alto Saxophone" },
+  { icon: Wind, name: "Tenor Saxophone" },
+  { icon: Wind, name: "Soprano Saxophone" },
+  { icon: Wind, name: "Bassoon" },
 ];
-
-const defaultDetected = ["Electric Guitar", "Bass", "Drums"];
 
 const allKeys = [
   "C Major", "C# Major", "D Major", "Eb Major", "E Major", "F Major",
@@ -43,7 +48,6 @@ const exportOptions = [
 
 /* ── Processing steps config ── */
 const processingSteps = [
-  { label: "Uploading file", duration: 0 },
   { label: "Separating stems", duration: 120 },
   { label: "Analyzing pitch and rhythm", duration: 90 },
   { label: "Generating notation", duration: 30 },
@@ -159,7 +163,6 @@ const AppPage = () => {
     if (stage !== 1 || !scanning) return;
     const t = setTimeout(() => {
       setScanning(false);
-      setSelected([...defaultDetected]);
     }, 1500);
     return () => clearTimeout(t);
   }, [stage, scanning]);
@@ -197,7 +200,7 @@ const AppPage = () => {
           setProcStep(0);
           break;
         case "separating":
-          setProcStep(1);
+          setProcStep(0);
           if (data.music_ai_job_id) {
             supabase.functions.invoke("poll-music-ai", {
               body: { transcription_id: transcriptionId },
@@ -205,7 +208,7 @@ const AppPage = () => {
           }
           break;
         case "transcribing":
-          setProcStep(3);
+          setProcStep(1);
           if (data.basic_pitch_job_ids) {
             supabase.functions.invoke("poll-basic-pitch", {
               body: { transcription_id: transcriptionId },
@@ -213,7 +216,7 @@ const AppPage = () => {
           }
           break;
         case "completed":
-          setProcStep(4);
+          setProcStep(3);
           setTimeout(() => setProcessing(false), 600);
           return;
         case "failed":
@@ -715,7 +718,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                   What do you want to transcribe?
                 </h2>
                 <p className="text-sm text-ink-soft text-center mb-8">
-                  Our AI detected these instruments in your audio. Select an instrument.
+                  Select an instrument to transcribe.
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -776,7 +779,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                     className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-ink text-sm placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
                     maxLength={100}
                   />
-                  <p className="text-xs text-ink-muted mt-1">
+                  <p className="text-sm font-medium text-ink mt-1">
                     This will appear as the title on your sheet music
                   </p>
                 </div>
@@ -799,23 +802,9 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                   }`}
                 >
                   {uploading ? (
-                    <div className="flex flex-col items-center w-full gap-1">
-                      <div className="flex items-center gap-2">
-                        <Loader2 size={16} className="animate-spin" />
-                        <span>
-                          {uploadProgress < 100
-                            ? `Uploading... ${uploadProgress}%`
-                            : "Processing..."}
-                        </span>
-                      </div>
-                      {uploadProgress > 0 && uploadProgress < 100 && (
-                        <div className="w-full h-2 bg-ink/20 rounded-full overflow-hidden mt-1">
-                          <div
-                            className="h-full bg-teal rounded-full transition-all duration-300"
-                            style={{ width: `${uploadProgress}%` }}
-                          />
-                        </div>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Processing...</span>
                     </div>
                   ) : (
                     "Transcribe Selected Instrument →"
@@ -918,11 +907,10 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   };
 
   const stepMessages: Record<number, string> = {
-    0: "Preparing your file...",
-    1: "Separating stems — this takes 1–3 minutes for longer songs",
-    2: "Stem separation complete — starting transcription",
-    3: "Transcribing notation — analyzing pitch and rhythm",
-    4: "Finalizing your sheet music...",
+    0: "Separating stems — this takes 1–3 minutes for longer songs",
+    1: "Transcribing notation — analyzing pitch and rhythm",
+    2: "Generating your sheet music...",
+    3: "Finalizing your sheet music...",
   };
 
   return (
@@ -935,7 +923,7 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
         <p className="text-sm text-ink-muted">
           {stepMessages[procStep] || "Processing..."}
         </p>
-        {estimatedTime && procStep < 4 && (
+        {estimatedTime && procStep < 3 && (
           <div className="inline-flex items-center gap-1.5 
           mt-2 px-3 py-1.5 bg-teal/10 border border-teal/30 
           rounded-full">
