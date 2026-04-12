@@ -461,7 +461,7 @@ const AppPage = () => {
     <div className="min-h-screen bg-paper flex flex-col">
       <Navbar />
 
-      <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#0f0f14]" : ""}`}>
+      <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
         <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator */}
           <div className="flex items-center justify-center gap-0 mb-10">
@@ -469,22 +469,22 @@ const AppPage = () => {
               <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
+className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
                       i <= activeStep
                         ? "bg-gold text-white"
                         : stage === 0
-                        ? "bg-white/10 border border-white/20 text-white/40"
+                        ? "border border-white/30 text-white/70"
                         : "bg-surface border border-border text-ink-muted"
                     }`}
                   >
                     {i < activeStep ? <Check size={14} /> : i + 1}
                   </div>
                   <span
-                    className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
+className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
                       i <= activeStep 
                         ? "text-gold" 
                         : stage === 0
-                        ? "text-white/30"
+                        ? "text-white/50"
                         : "text-ink-muted"
                     }`}
                   >
@@ -495,12 +495,12 @@ const AppPage = () => {
                   )}
                 </div>
                 {i < stepLabels.length - 1 && (
-                  <div
+<div
                     className={`w-16 md:w-24 h-px mx-2 mb-5 transition-colors duration-300 ${
                       i < activeStep 
                         ? "bg-gold" 
                         : stage === 0
-                        ? "bg-white/10"
+                        ? "bg-white/15"
                         : "bg-border"
                     }`}
                   />
