@@ -94,8 +94,7 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-3">
             {user ? (
-              <>
-                <div ref={avatarRef} className="relative">
+              <div ref={avatarRef} className="relative">
                   <button
                     onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
                     className="w-9 h-9 rounded-full bg-gold/15 border-2 border-gold text-gold font-bold text-sm flex items-center justify-center hover:bg-gold/25 transition-colors"
@@ -122,13 +121,6 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-                <Link
-                  to="/app"
-                  className="px-4 py-2 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
-                >
-                  Try Free
-                </Link>
-              </>
             ) : (
               <>
                 <button

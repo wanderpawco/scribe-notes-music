@@ -13,6 +13,10 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
   useEffect(() => {
     if (!containerRef.current || !musicXmlBase64) return;
 
+    // Clear previous OSMD instance completely when data changes
+    osmdRef.current = null;
+    containerRef.current.innerHTML = "";
+
     const renderScore = async () => {
       try {
         const xmlString = atob(musicXmlBase64);
@@ -65,7 +69,7 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
   }
 
   return (
-    <div ref={containerRef} className="w-full min-h-[300px] bg-white rounded-2xl border border-border p-6 shadow-sm" style={{ overflow: "hidden", width: "100%" }} />
+    <div ref={containerRef} className="w-full min-h-[300px] bg-white rounded-2xl border border-border px-10 py-6 shadow-sm" style={{ overflow: "hidden", width: "100%" }} />
   );
 };
 
