@@ -249,7 +249,7 @@ const TranscriptionResult = () => {
                         <ChevronDown size={14} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} style={{ color: '#c8a96e' }} />
                       </button>
                       {keyDropdownOpen && (
-                        <div className="fixed z-50 w-44 rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto" style={{ background: '#1a1a2e', border: '1px solid rgba(200,169,110,0.3)' }}>
+                        <div className="absolute z-50 mt-1 left-0 w-44 rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto" style={{ background: '#1a1a2e', border: '1px solid rgba(200,169,110,0.3)' }}>
                           {allKeys.map((k) => (
                             <button
                               key={k}
