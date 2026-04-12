@@ -9,6 +9,8 @@ import PricingPage from "./pages/PricingPage";
 import Dashboard from "./pages/Dashboard";
 import TranscriptionResult from "./pages/TranscriptionResult";
 import NotFound from "./pages/NotFound";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 const queryClient = new QueryClient();
 
