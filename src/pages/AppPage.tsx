@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import SheetMusicRenderer from "@/components/SheetMusicRenderer";
 import PdfButtonGroup from "@/components/PdfButtonGroup";
 import { supabase } from "@/integrations/supabase/client";
+import { getTransposeSemitones } from "@/lib/musicKeys";
 
 const stepLabels = ["Upload", "Select Instrument", "Get Results"];
 
@@ -1030,6 +1031,7 @@ const ResultsView = ({
   const navigate = useNavigate();
   const displayName = songTitle || fileName.replace(/\.[^/.]+$/, "");
   const [activeInstrument, setActiveInstrument] = useState(0);
+  const [appliedKey, setAppliedKey] = useState(selectedKey);
 
   const activeInstrumentName = selected[activeInstrument];
   const activeXmlOutput = outputs.find(
@@ -1172,8 +1174,16 @@ const handleDownload = (
                 </div>
               )}
             </div>
+            {selectedKey !== appliedKey && (
+              <button
+                onClick={() => setAppliedKey(selectedKey)}
+                className="inline-flex items-center px-4 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-125"
+                style={{ border: '1px solid #c8a96e', color: '#c8a96e', background: 'transparent', height: '40px' }}
+              >
+                Apply
+              </button>
+            )}
           </div>
-
           {/* Right: Download buttons — gold gradient */}
           <div className="flex items-center gap-2">
             <PdfButtonGroup displayName={displayName} activeInstrumentName={activeInstrumentName} />
@@ -1235,11 +1245,11 @@ const handleDownload = (
           <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
             {activeInstrumentName}
           </p>
-          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
         </div>
 
         <div id="osmd-render-container">
-          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
         </div>
 
       </div>

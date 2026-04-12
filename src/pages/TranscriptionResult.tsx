@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import SheetMusicRenderer from "@/components/SheetMusicRenderer";
 import PdfButtonGroup from "@/components/PdfButtonGroup";
 import { supabase } from "@/integrations/supabase/client";
+import { getTransposeSemitones } from "@/lib/musicKeys";
 
 interface Output {
   instrument: string;
@@ -33,6 +34,7 @@ const TranscriptionResult = () => {
   const [outputs, setOutputs] = useState<Output[]>([]);
   const [activeInstrument, setActiveInstrument] = useState(0);
   const [selectedKey, setSelectedKey] = useState("C Major");
+  const [appliedKey, setAppliedKey] = useState("C Major");
   const [keyDropdownOpen, setKeyDropdownOpen] = useState(false);
   const [bpm, setBpm] = useState(120);
 
@@ -71,7 +73,7 @@ const TranscriptionResult = () => {
 
       setFileName(txn.song_title || txn.file_name || "");
       setSelected(txn.selected_instruments || []);
-      if (txn.detected_key) setSelectedKey(txn.detected_key);
+      if (txn.detected_key) { setSelectedKey(txn.detected_key); setAppliedKey(txn.detected_key); }
       if (txn.detected_bpm) setBpm(txn.detected_bpm);
 
       const { data: outs, error: outsErr } = await supabase
@@ -269,7 +271,16 @@ const TranscriptionResult = () => {
                         </div>
                       )}
                     </div>
-                  </div>
+                    </div>
+                    {selectedKey !== appliedKey && (
+                      <button
+                        onClick={() => setAppliedKey(selectedKey)}
+                        className="inline-flex items-center px-4 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-125"
+                        style={{ border: '1px solid #c8a96e', color: '#c8a96e', background: 'transparent', height: '40px' }}
+                      >
+                        Apply
+                      </button>
+                    )}
 
                   {/* Right: Download buttons — gold gradient */}
                   <div className="flex items-center gap-2">
@@ -325,7 +336,7 @@ const TranscriptionResult = () => {
               {/* Sheet music */}
               <div id="osmd-render-container" className="bg-paper rounded-2xl overflow-hidden">
                 {activeMusicXml ? (
-                  <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+                  <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
                 ) : (
                   <div className="flex items-center justify-center py-20 text-ink-muted">
                     <Music size={48} className="opacity-50" />
