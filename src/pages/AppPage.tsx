@@ -375,7 +375,7 @@ const AppPage = () => {
                 Drop your audio file here
               </h2>
               <p className="text-sm text-ink-muted mb-5">
-                MP3, WAV, FLAC, M4A — up to 250MB
+                MP3, WAV, FLAC, M4A — up to 500MB
               </p>
               <button
                 className="px-5 py-2.5 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
