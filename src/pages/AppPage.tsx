@@ -278,7 +278,12 @@ const AppPage = () => {
       const storagePath = `${user.id}/${crypto.randomUUID()}/${audioFile.name}`;
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+      // Get the user's session token for authenticated upload
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("No active session — please sign in again.");
+      }
 
       const tus = await import("tus-js-client");
 
@@ -287,7 +292,7 @@ const AppPage = () => {
           endpoint: `${supabaseUrl}/storage/v1/upload/resumable`,
           retryDelays: [0, 3000, 5000, 10000, 20000],
           headers: {
-            authorization: `Bearer ${supabaseAnonKey}`,
+            authorization: `Bearer ${session.access_token}`,
             "x-upsert": "true",
           },
           uploadDataDuringCreation: true,
@@ -319,12 +324,16 @@ const AppPage = () => {
         });
       });
 
-      // Get public URL
-      const { data: urlData } = supabase.storage
+      // Get signed URL (bucket is private)
+      const { data: signedData, error: signedError } = await supabase.storage
         .from("audio-uploads")
-        .getPublicUrl(storagePath);
+        .createSignedUrl(storagePath, 3600);
 
-      const audioUrl = urlData.publicUrl;
+      if (signedError || !signedData) {
+        throw new Error("Failed to create signed URL for audio file");
+      }
+
+      const audioUrl = signedData.signedUrl;
 
       // B) Insert transcription row
       const { data: insertData, error: insertError } = await supabase
