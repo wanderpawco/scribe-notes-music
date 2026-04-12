@@ -12,6 +12,38 @@ import PdfButtonGroup from "@/components/PdfButtonGroup";
 import { supabase } from "@/integrations/supabase/client";
 import { getTransposeSemitones } from "@/lib/musicKeys";
 
+// Beta banner component
+const BetaBanner = () => {
+  const [dismissed, setDismissed] = useState(() => {
+    return sessionStorage.getItem("betaBannerDismissed") === "true";
+  });
+
+  const handleDismiss = () => {
+    sessionStorage.setItem("betaBannerDismissed", "true");
+    setDismissed(true);
+  };
+
+  if (dismissed) return null;
+
+  return (
+    <div className="bg-[#0f0f1a] text-gold text-sm py-2 px-4 flex items-center justify-center relative">
+      <span className="text-center">
+        🎵 ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
+        <a href="mailto:devops@scribenoter.com" className="underline hover:text-gold-light transition-colors">
+          feedback
+        </a>.
+      </span>
+      <button
+        onClick={handleDismiss}
+        className="absolute right-4 p-1 hover:bg-white/10 rounded transition-colors"
+        aria-label="Dismiss beta banner"
+      >
+        <X size={16} />
+      </button>
+    </div>
+  );
+};
+
 const stepLabels = ["Upload", "Select Instrument", "Get Results"];
 
 const allInstruments = [
