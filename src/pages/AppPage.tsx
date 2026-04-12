@@ -181,6 +181,8 @@ const AppPage = () => {
 
       if (error || !data) return;
 
+      console.log("DB Status:", data?.status, "| music_ai_job_id:", data?.music_ai_job_id, "| basic_pitch_job_ids:", JSON.stringify(data?.basic_pitch_job_ids));
+
       switch (data.status) {
         case "pending":
           setProcStep(0);
@@ -188,16 +190,24 @@ const AppPage = () => {
         case "separating":
           setProcStep(1);
           if (data.music_ai_job_id) {
+            console.log("Invoked poll-music-ai for:", transcriptionId);
             supabase.functions.invoke("poll-music-ai", {
               body: { transcription_id: transcriptionId },
+            }).then(({ data, error }) => {
+              if (error) console.error("poll-music-ai error:", error);
+              else console.log("poll-music-ai response:", JSON.stringify(data));
             }).catch(console.error);
           }
           break;
-      case "transcribing":
+        case "transcribing":
           setProcStep(3);
           if (data.basic_pitch_job_ids) {
+            console.log("Invoked poll-basic-pitch for:", transcriptionId);
             supabase.functions.invoke("poll-basic-pitch", {
               body: { transcription_id: transcriptionId },
+            }).then(({ data, error }) => {
+              if (error) console.error("poll-basic-pitch error:", error);
+              else console.log("poll-basic-pitch response:", JSON.stringify(data));
             }).catch(console.error);
           }
           break;
