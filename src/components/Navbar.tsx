@@ -66,7 +66,7 @@ const Navbar = () => {
       >
         <div className="container flex items-center justify-between max-w-6xl mx-auto px-6">
           <Link to="/" className="flex items-center gap-1.5 text-ink">
-            <span className="text-4xl leading-none">𝄞</span>
+            <span className="text-5xl leading-none">𝄞</span>
             <span className="font-heading text-3xl font-bold">ScribeNoter</span>
           </Link>
 
