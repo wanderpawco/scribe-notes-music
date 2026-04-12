@@ -587,17 +587,15 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                     borderRadius: "14px",
                     border: "none",
                     cursor: "pointer",
-                    boxShadow: "0 4px 30px rgba(200,169,110,0.5)",
+                    boxShadow: "none",
                     letterSpacing: "0.03em",
                     transition: "all 0.2s ease",
                   }}
                   onMouseEnter={e => {
                     (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
-                    (e.target as HTMLButtonElement).style.boxShadow = "0 6px 40px rgba(200,169,110,0.7)";
                   }}
                   onMouseLeave={e => {
                     (e.target as HTMLButtonElement).style.transform = "scale(1)";
-                    (e.target as HTMLButtonElement).style.boxShadow = "0 4px 30px rgba(200,169,110,0.5)";
                   }}
                   className="animate-fade-up-delay-3"
                 >
@@ -621,15 +619,13 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                 style={{ 
                   background: "#c8a96e",
                   color: "#080810",
-                  boxShadow: "0 4px 30px rgba(200,169,110,0.4)",
+                  boxShadow: "none",
                 }}
                 onMouseEnter={e => {
                   (e.target as HTMLButtonElement).style.background = "#e8c98e";
-                  (e.target as HTMLButtonElement).style.boxShadow = "0 6px 40px rgba(200,169,110,0.6)";
                 }}
                 onMouseLeave={e => {
                   (e.target as HTMLButtonElement).style.background = "#c8a96e";
-                  (e.target as HTMLButtonElement).style.boxShadow = "0 4px 30px rgba(200,169,110,0.4)";
                 }}
               >
                 <div className="w-10 h-10 rounded-full border-2 border-[#080810]/20 flex items-center justify-center bg-[#080810]/10">
