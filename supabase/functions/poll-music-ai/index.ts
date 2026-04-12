@@ -80,10 +80,13 @@ Deno.serve(async (req) => {
 
     if (statusData.status === "SUCCEEDED") {
       const result = statusData.result || {};
-      
+
+      console.log("Music.AI result keys:", JSON.stringify(Object.keys(result)));
+      console.log("Music.AI full result:", JSON.stringify(result));
+
       // Build Basic Pitch job IDs map
       const basicPitchJobIds: Record<string, string> = {};
-      
+
       // Submit Basic Pitch job for each selected instrument
       await Promise.all(txn.selected_instruments.map(async (instrument: string) => {
         const stemKeys = getPrimaryStemKeys(instrument);
@@ -91,6 +94,9 @@ Deno.serve(async (req) => {
         for (const key of stemKeys) {
           if (result[key]) { stemUrl = result[key]; break; }
         }
+
+        console.log(`Instrument: ${instrument}, stemKeys: ${JSON.stringify(stemKeys)}, stemUrl found: ${stemUrl ? "YES" : "NO"}`);
+
         if (!stemUrl) {
           console.warn(`No stem URL for ${instrument}`);
           return;
