@@ -32,10 +32,10 @@ const allKeys = [
 ];
 
 const exportOptions = [
-  { icon: FileText, name: "PDF Sheet Music", desc: "Print-ready notation", free: true },
-  { icon: Music, name: "MIDI File", desc: "For any DAW or notation software", free: false },
-  { icon: FileCode, name: "MusicXML", desc: "For Sibelius, Finale, MuseScore", free: false },
-  { icon: Guitar, name: "Guitar Pro", desc: "Tabs and notation for guitarists", free: false },
+  { icon: FileText, name: "PDF Sheet Music", desc: "Print-ready notation", tier: "free" as const },
+  { icon: Music, name: "MIDI File", desc: "For any DAW or notation software", tier: "pro" as const },
+  { icon: FileCode, name: "MusicXML", desc: "For Sibelius, Finale, MuseScore", tier: "pro" as const },
+  { icon: Guitar, name: "Guitar Pro", desc: "Tabs and notation for guitarists", tier: "studio" as const },
 ];
 
 /* ── Processing steps config ── */
