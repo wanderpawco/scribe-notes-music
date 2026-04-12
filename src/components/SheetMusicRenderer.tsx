@@ -21,18 +21,20 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
           osmdRef.current = new OpenSheetMusicDisplay(containerRef.current!, {
             autoResize: true,
             backend: "svg",
-            drawTitle: false,
+            drawTitle: true,
             drawComposer: false,
             drawCredits: false,
             drawLyricist: false,
-            drawPartNames: false,
+            drawPartNames: true,
             drawMeasureNumbers: true,
             drawTimeSignatures: true,
-            
             followCursor: false,
             defaultColorStem: "#1a1a2e",
             defaultColorNotehead: "#1a1a2e",
             defaultColorRest: "#1a1a2e",
+            pageFormat: "Endless",
+            pageBackgroundColor: "#ffffff",
+            renderSingleHorizontalStaffline: false,
           });
         }
 
@@ -61,7 +63,7 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
   }
 
   return (
-    <div ref={containerRef} className="w-full min-h-[200px] bg-white rounded-lg overflow-x-auto" />
+    <div ref={containerRef} className="w-full min-h-[300px] bg-white rounded-2xl border border-border p-6 overflow-x-auto shadow-sm" />
   );
 };
 

@@ -107,9 +107,13 @@
   body > * {
     display: none !important;
   }
+  nav {
+    display: none !important;
+  }
   #print-sheet {
     display: block !important;
     width: 100%;
+    padding: 20px;
   }
   #print-sheet svg {
     width: 100% !important;
