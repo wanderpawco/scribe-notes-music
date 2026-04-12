@@ -48,6 +48,50 @@ const processingSteps = [
   { label: "Generating notation", duration: 30 },
 ];
 
+function estimateProcessingTime(
+  fileSizeBytes: number,
+  fileType: string,
+  stemCount: number
+): { minutes: number; label: string } {
+  // Estimate audio duration from file size and format
+  let bytesPerSecond: number;
+  const ext = fileType.toLowerCase();
+
+  if (ext.includes("wav")) {
+    bytesPerSecond = 176400; // 44.1kHz, 16-bit stereo
+  } else if (ext.includes("flac")) {
+    bytesPerSecond = 128000; // ~1MB per 8s average
+  } else {
+    bytesPerSecond = 24000; // MP3/M4A at ~192kbps average
+  }
+
+  const estimatedDurationSecs = fileSizeBytes / bytesPerSecond;
+  const estimatedDurationMins = estimatedDurationSecs / 60;
+
+  // Pipeline timing estimates (seconds)
+  const separationTime = estimatedDurationMins * 45; // Music.AI
+  const transcriptionTime = estimatedDurationMins * 20 * stemCount; // Basic Pitch
+  const conversionTime = stemCount * 5; // music21
+
+  const totalSeconds = separationTime + transcriptionTime + conversionTime;
+  const totalMinutes = Math.ceil(totalSeconds / 60);
+
+  let label: string;
+  if (totalMinutes <= 2) {
+    label = "~1–2 minutes";
+  } else if (totalMinutes <= 4) {
+    label = "~2–4 minutes";
+  } else if (totalMinutes <= 7) {
+    label = "~4–7 minutes";
+  } else if (totalMinutes <= 12) {
+    label = "~7–12 minutes";
+  } else {
+    label = `~${totalMinutes} minutes`;
+  }
+
+  return { minutes: totalMinutes, label };
+}
+
 const AppPage = () => {
   const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
@@ -58,6 +102,7 @@ const AppPage = () => {
   // Stage 1
   const [scanning, setScanning] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
+  const [estimatedTime, setEstimatedTime] = useState<string | null>(null);
 
   // Stage 2
   const [processing, setProcessing] = useState(true);
@@ -107,6 +152,21 @@ const AppPage = () => {
     }, 1500);
     return () => clearTimeout(t);
   }, [stage, scanning]);
+
+  /* ── Calculate estimated time when file or instruments change ── */
+  useEffect(() => {
+    if (!audioFile || selected.length === 0) {
+      setEstimatedTime(null);
+      return;
+    }
+
+    const estimate = estimateProcessingTime(
+      audioFile.size,
+      audioFile.name,
+      selected.length
+    );
+    setEstimatedTime(estimate.label);
+  }, [audioFile, selected]);
 
   /* ── Stage 2: poll transcription status ── */
   useEffect(() => {
@@ -293,6 +353,7 @@ const AppPage = () => {
     setFileName("");
     setAudioFile(null);
     setSelected([]);
+    setEstimatedTime(null);
     setScanning(true);
     setProcessing(true);
     setProcStep(0);
@@ -482,9 +543,25 @@ const AppPage = () => {
                   })}
                 </div>
 
-                <p className="text-sm text-ink-soft text-center mt-6">
-                  {selected.length} instrument{selected.length !== 1 ? "s" : ""} selected
-                </p>
+                <div className="text-center mt-6">
+                  <p className="text-sm text-ink-soft">
+                    {selected.length} instrument{selected.length !== 1 ? "s" : ""} selected
+                  </p>
+                  {estimatedTime && (
+                    <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 
+                    bg-surface border border-border rounded-full">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <circle cx="6" cy="6" r="5" stroke="#9a9ab0" strokeWidth="1.2"/>
+                        <path d="M6 3.5V6L7.5 7.5" stroke="#9a9ab0" strokeWidth="1.2" 
+                        strokeLinecap="round"/>
+                      </svg>
+                      <span className="text-xs text-ink-muted">
+                        Estimated processing time: <span className="text-ink font-medium">
+                        {estimatedTime}</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
 
                 {transcriptionError && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
@@ -553,7 +630,7 @@ const AppPage = () => {
                   </button>
                 </div>
               ) : (
-                <ProcessingView procStep={procStep} />
+                <ProcessingView procStep={procStep} estimatedTime={estimatedTime} />
               )
             ) : (
               <ResultsView
@@ -579,7 +656,12 @@ const AppPage = () => {
 };
 
 /* ── Processing sub-view ── */
-const ProcessingView = ({ procStep }: { procStep: number }) => {
+interface ProcessingViewProps {
+  procStep: number;
+  estimatedTime: string | null;
+}
+
+const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   const [elapsed, setElapsed] = useState(0);
   const [stepProgress, setStepProgress] = useState(0);
   const stepStartRef = useRef(0);
@@ -628,9 +710,16 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
         Transcribing your music...
       </h2>
 
-      <p className="text-sm text-ink-muted mb-10">
-        {stepMessages[procStep] || "Processing..."}
-      </p>
+      <div className="mb-10">
+        <p className="text-sm text-ink-muted">
+          {stepMessages[procStep] || "Processing..."}
+        </p>
+        {estimatedTime && procStep <= 1 && (
+          <p className="text-xs text-ink-muted mt-1">
+            Expected total time: <span className="font-medium">{estimatedTime}</span>
+          </p>
+        )}
+      </div>
 
       <div className="max-w-md mx-auto space-y-0">
         {processingSteps.map((step, i) => {
