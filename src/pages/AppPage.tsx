@@ -1175,23 +1175,7 @@ const handleDownload = (
 
           {/* Right: Download buttons — gold gradient */}
           <div className="flex items-center gap-2">
-            {/* PDF — always available */}
-            <button
-              onClick={() => {
-                const container = document.getElementById("osmd-render-container");
-                if (!container) return;
-                const printWindow = window.open("", "_blank");
-                if (!printWindow) { alert("Please allow pop-ups for printing."); return; }
-                printWindow.document.write(`<html><head><title>${displayName} - ${activeInstrumentName}</title><style>@page{margin:0.5in;size:A4 portrait;}*{margin:0;padding:0;box-sizing:border-box;}html,body{margin:0;padding:0;background:#fff;width:100%;}svg{max-width:100%;height:auto;display:block;transform-origin:top left;page-break-inside:avoid;break-inside:avoid;}.systemline,.staffline,g[class*="system"],g[class*="System"]{page-break-inside:avoid;break-inside:avoid;}</style></head><body>${container.innerHTML}</body></html>`);
-                printWindow.document.close();
-                printWindow.onload = () => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); };
-              }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-110"
-              style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
-            >
-              <FileText size={14} />
-              PDF Sheet Music
-            </button>
+            <PdfButtonGroup displayName={displayName} activeInstrumentName={activeInstrumentName} />
 
             {/* MIDI */}
             {outputs.some(o => o.format === "midi") ? (
