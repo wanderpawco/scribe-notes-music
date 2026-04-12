@@ -66,6 +66,7 @@ const AppPage = () => {
   const [keyDropdownOpen, setKeyDropdownOpen] = useState(false);
   const [bpm, setBpm] = useState(120);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Transcription tracking
   const [transcriptionId, setTranscriptionId] = useState<string | null>(null);
@@ -177,19 +178,62 @@ const AppPage = () => {
   const handleTranscribe = async () => {
     if (!audioFile || selected.length === 0) return;
 
+    const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+    if (audioFile.size > MAX_FILE_SIZE) {
+      setTranscriptionError("File too large. Maximum file size is 500MB.");
+      return;
+    }
+
     setUploading(true);
+    setUploadProgress(0);
     setTranscriptionError(null);
 
     try {
-      // A) Upload audio to Supabase Storage
+      // A) Upload audio to Supabase Storage using TUS resumable upload
       const fileId = crypto.randomUUID();
       const storagePath = `${fileId}/${audioFile.name}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("audio-uploads")
-        .upload(storagePath, audioFile);
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
+      const tus = await import("tus-js-client");
+
+      await new Promise<void>((resolve, reject) => {
+        const tusUpload = new tus.Upload(audioFile, {
+          endpoint: `${supabaseUrl}/storage/v1/upload/resumable`,
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          headers: {
+            authorization: `Bearer ${supabaseAnonKey}`,
+            "x-upsert": "true",
+          },
+          uploadDataDuringCreation: true,
+          removeFingerprintOnSuccess: true,
+          metadata: {
+            bucketName: "audio-uploads",
+            objectName: storagePath,
+            contentType: audioFile.type || "audio/mpeg",
+            cacheControl: "3600",
+          },
+          chunkSize: 6 * 1024 * 1024, // 6MB chunks
+          onError: (error) => {
+            reject(new Error(`Upload failed: ${error.message}`));
+          },
+          onProgress: (bytesUploaded, bytesTotal) => {
+            const percent = Math.round((bytesUploaded / bytesTotal) * 100);
+            setUploadProgress(percent);
+          },
+          onSuccess: () => {
+            resolve();
+          },
+        });
+
+        tusUpload.findPreviousUploads().then((previousUploads) => {
+          if (previousUploads.length) {
+            tusUpload.resumeFromPreviousUpload(previousUploads[0]);
+          }
+          tusUpload.start();
+        });
+      });
 
       // Get public URL
       const { data: urlData } = supabase.storage
@@ -249,6 +293,7 @@ const AppPage = () => {
     setSelectedKey("C Major");
     setBpm(120);
     setUploading(false);
+    setUploadProgress(0);
     setTranscriptionId(null);
     setTranscriptionError(null);
     setTranscriptionOutputs([]);
@@ -330,7 +375,7 @@ const AppPage = () => {
                 Drop your audio file here
               </h2>
               <p className="text-sm text-ink-muted mb-5">
-                MP3, WAV, FLAC, M4A — up to 250MB
+                MP3, WAV, FLAC, M4A — up to 500MB
               </p>
               <button
                 className="px-5 py-2.5 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
@@ -451,10 +496,24 @@ const AppPage = () => {
                   }`}
                 >
                   {uploading ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      Uploading...
-                    </>
+                    <div className="flex flex-col items-center w-full gap-1">
+                      <div className="flex items-center gap-2">
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>
+                          {uploadProgress < 100
+                            ? `Uploading... ${uploadProgress}%`
+                            : "Processing..."}
+                        </span>
+                      </div>
+                      {uploadProgress > 0 && uploadProgress < 100 && (
+                        <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-white rounded-full transition-all duration-300"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
                   ) : (
                     "Transcribe Selected Instruments →"
                   )}
