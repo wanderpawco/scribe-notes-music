@@ -475,7 +475,7 @@ const AppPage = () => {
               <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300 ${
+className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-colors duration-300 ${
                       i <= activeStep
                         ? "bg-gold text-white"
                         : stage === 0
@@ -483,10 +483,10 @@ className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font
                         : "bg-surface border border-border text-ink-muted"
                     }`}
                   >
-                    {i < activeStep ? <Check size={14} /> : i + 1}
+                    {i < activeStep ? <Check size={18} /> : i + 1}
                   </div>
                   <span
-                    className={`text-sm mt-1.5 font-semibold transition-colors duration-300 ${
+                    className={`text-base mt-1.5 font-bold transition-colors duration-300 ${
                       i <= activeStep 
                         ? "text-gold" 
                         : stage === 0
@@ -502,7 +502,7 @@ className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font
                 </div>
                 {i < stepLabels.length - 1 && (
 <div
-                    className={`w-20 md:w-32 h-px mx-2 mb-5 transition-colors duration-300 ${
+                    className={`w-28 md:w-40 h-px mx-2 mb-5 transition-colors duration-300 ${
                       i < activeStep 
                         ? "bg-gold" 
                         : stage === 0

@@ -66,17 +66,17 @@ const Navbar = () => {
       >
         <div className="container flex items-center justify-between max-w-6xl mx-auto px-6">
           <Link to="/" className="flex items-center gap-1.5 text-ink">
-            <span className="text-3xl leading-none">𝄞</span>
-            <span className="font-heading text-2xl font-bold">ScribeNoter</span>
+            <span className="text-4xl leading-none">𝄞</span>
+            <span className="font-heading text-3xl font-bold">ScribeNoter</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-12">
             {navLinks.map((link) =>
               link.href.startsWith("#") ? (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-base text-ink-soft hover:text-ink transition-colors duration-200"
+                  className="text-lg text-ink-soft hover:text-ink transition-colors duration-200"
                 >
                   {link.label}
                 </a>
@@ -84,7 +84,7 @@ const Navbar = () => {
                 <Link
                   key={link.label}
                   to={link.href}
-                  className="text-base text-ink-soft hover:text-ink transition-colors duration-200"
+                  className="text-lg text-ink-soft hover:text-ink transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
