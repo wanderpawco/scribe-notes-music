@@ -29,7 +29,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/terms" className="text-sm text-ink-soft hover:text-ink transition-colors">Terms</Link></li>
               <li><Link to="/privacy" className="text-sm text-ink-soft hover:text-ink transition-colors">Privacy</Link></li>
-              <li><a href="mailto:devops@scribenoter.com" className="text-sm text-ink-soft hover:text-ink transition-colors">Contact</a></li>
+              <li><Link to="/contact" className="text-sm text-ink-soft hover:text-ink transition-colors">Contact</Link></li>
             </ul>
           </div>
         </div>
