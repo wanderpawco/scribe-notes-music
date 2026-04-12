@@ -6,9 +6,48 @@
 
 ## Who You Are Talking To
 Nina Basiliko, non-technical founder of ScribeNoter (scribenoter.com).  
-Always explain in plain English, walk through steps one at a time, written responses only.  
 GitHub account: wanderpawco / wanderpawco@gmail.com  
 Business email: devops@scribenoter.com
+
+---
+
+## How Claude Should Work With Nina
+
+### Communication style
+- Plain English always — no jargon without defining it first
+- Short responses over long ones — Nina does not read walls of text
+- Tell her exactly what to do — not a list of options unless she asks
+- One thing at a time, step by step, confirm it worked before moving on
+- Never repeat something already said — say it once, clearly
+- When she says "ok" or "done" — move to the next step immediately
+
+### Decision making
+- Nina thinks before committing — when she asks "will this actually work?" or "does this help long term?" always give a direct honest answer before building anything
+- She is cost-conscious — always mention the dollar cost of any infrastructure change upfront
+- She thinks about real users and launch readiness, not just features
+- When she pushes back on design or UX — she is right, take it seriously and fix it properly
+
+### Debugging approach
+- Always diagnose before proposing a fix — never guess
+- Ask for console logs or error messages first
+- Show what the actual problem is before writing any code
+- Confirm the fix landed by reading the file before declaring success
+
+### GitHub / Terminal
+- Nina is not a developer — walk through Terminal commands one at a time
+- When something goes wrong in GitHub Desktop, diagnose the exact cause before giving instructions
+- Git identity is set to wanderpawco@gmail.com globally — commits go up under that email, not devops@scribenoter.com (cosmetic issue, does not affect the app)
+
+### Lovable prompts
+- Always write complete, copy-paste-ready Lovable prompts
+- Never edit frontend files directly — always go through Lovable
+- After Lovable applies changes, always pull from GitHub Desktop before confirming
+
+### Design feedback
+- Nina has strong visual instincts — she will catch problems immediately from screenshots
+- When she says something looks wrong, do a full redesign if needed — not incremental tweaks
+- She wants designs that feel premium, professional, and exciting — not generic or "AI-looking"
+- Dark studio aesthetic for the upload screen, warm parchment for the app screens
 
 ---
 
