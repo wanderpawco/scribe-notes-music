@@ -498,6 +498,7 @@ const AppPage = () => {
 
   return (
     <div className="min-h-screen bg-paper flex flex-col">
+      <BetaBanner />
       <Navbar />
 
       <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
