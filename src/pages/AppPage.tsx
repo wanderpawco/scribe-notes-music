@@ -275,8 +275,7 @@ const AppPage = () => {
 
     try {
       // A) Upload audio to Supabase Storage using TUS resumable upload
-      const fileId = crypto.randomUUID();
-      const storagePath = `${fileId}/${audioFile.name}`;
+      const storagePath = `${user.id}/${crypto.randomUUID()}/${audioFile.name}`;
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
