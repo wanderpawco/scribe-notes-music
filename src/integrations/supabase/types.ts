@@ -62,6 +62,7 @@ export type Database = {
           id: string
           music_ai_job_id: string | null
           selected_instruments: string[]
+          song_title: string | null
           status: string
           stem_urls: Json | null
           updated_at: string
@@ -79,6 +80,7 @@ export type Database = {
           id?: string
           music_ai_job_id?: string | null
           selected_instruments?: string[]
+          song_title?: string | null
           status?: string
           stem_urls?: Json | null
           updated_at?: string
@@ -96,6 +98,7 @@ export type Database = {
           id?: string
           music_ai_job_id?: string | null
           selected_instruments?: string[]
+          song_title?: string | null
           status?: string
           stem_urls?: Json | null
           updated_at?: string
