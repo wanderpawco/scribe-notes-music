@@ -592,6 +592,12 @@ const ResultsView = ({
   const displayName = fileName.replace(/\.[^/.]+$/, "");
   const [activeInstrument, setActiveInstrument] = useState(0);
 
+  const activeInstrumentName = selected[activeInstrument];
+  const activeXmlOutput = outputs.find(
+    (o) => o.instrument === activeInstrumentName && o.format === "musicxml"
+  );
+  const activeMusicXml = activeXmlOutput?.file_path ?? null;
+
   const handleDownload = (output: { instrument: string; format: string; file_path: string }) => {
     const base64Data = output.file_path;
     let mimeType: string;
