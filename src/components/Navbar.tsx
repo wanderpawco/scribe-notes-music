@@ -19,9 +19,9 @@ const BetaBanner = () => {
   if (dismissed) return null;
 
   return (
-    <div className="bg-[#0f0f1a] text-gold text-sm py-2 px-4 flex items-center justify-center relative">
+    <div className="bg-[#0f0f1a] text-gold text-base py-3 px-6 flex items-center justify-center relative">
       <span className="text-center">
-        🎵 ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
+        <span className="text-lg">🎵</span> ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
         <a href="mailto:devops@scribenoter.com" className="underline hover:text-gold-light transition-colors">
           feedback
         </a>.
