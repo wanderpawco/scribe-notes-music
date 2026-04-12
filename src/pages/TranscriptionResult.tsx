@@ -271,7 +271,16 @@ const TranscriptionResult = () => {
                         </div>
                       )}
                     </div>
-                  </div>
+                    </div>
+                    {selectedKey !== appliedKey && (
+                      <button
+                        onClick={() => setAppliedKey(selectedKey)}
+                        className="inline-flex items-center px-4 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-125"
+                        style={{ border: '1px solid #c8a96e', color: '#c8a96e', background: 'transparent', height: '40px' }}
+                      >
+                        Apply
+                      </button>
+                    )}
 
                   {/* Right: Download buttons — gold gradient */}
                   <div className="flex items-center gap-2">
@@ -327,7 +336,7 @@ const TranscriptionResult = () => {
               {/* Sheet music */}
               <div id="osmd-render-container" className="bg-paper rounded-2xl overflow-hidden">
                 {activeMusicXml ? (
-                  <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+                  <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
                 ) : (
                   <div className="flex items-center justify-center py-20 text-ink-muted">
                     <Music size={48} className="opacity-50" />
