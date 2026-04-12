@@ -2,10 +2,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard,
   FileText, FileCode, Lock, ChevronDown, RefreshCw, ArrowUpDown, Minus, Plus,
+  Loader2,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SheetMusicSVG from "@/components/SheetMusicSVG";
+import { supabase } from "@/integrations/supabase/client";
 
 const stepLabels = ["Upload", "Select Instruments", "Get Results"];
 
@@ -49,6 +51,7 @@ const processingSteps = [
 const AppPage = () => {
   const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -62,10 +65,21 @@ const AppPage = () => {
   const [selectedKey, setSelectedKey] = useState("C Major");
   const [keyDropdownOpen, setKeyDropdownOpen] = useState(false);
   const [bpm, setBpm] = useState(120);
+  const [uploading, setUploading] = useState(false);
+
+  // Transcription tracking
+  const [transcriptionId, setTranscriptionId] = useState<string | null>(null);
+  const [transcriptionError, setTranscriptionError] = useState<string | null>(null);
+  const [transcriptionOutputs, setTranscriptionOutputs] = useState<Array<{
+    instrument: string;
+    format: string;
+    file_path: string;
+  }>>([]);
 
   /* ── File selection handler ── */
   const handleFile = useCallback((file: File) => {
     setFileName(file.name);
+    setAudioFile(file);
     setStage(1);
     setScanning(true);
     setSelected([]);
@@ -93,26 +107,65 @@ const AppPage = () => {
     return () => clearTimeout(t);
   }, [stage, scanning]);
 
-  /* ── Stage 2: processing animation ── */
+  /* ── Stage 2: poll transcription status ── */
   useEffect(() => {
-    if (stage !== 2 || !processing) return;
-    setProcStep(0);
+    if (stage !== 2 || !processing || !transcriptionId) return;
 
-    // Step 0 completes instantly
-    let cumulative = 200;
-    const timers: ReturnType<typeof setTimeout>[] = [];
+    const interval = setInterval(async () => {
+      const { data, error } = await supabase
+        .from("transcriptions")
+        .select("status, error_message")
+        .eq("id", transcriptionId)
+        .single();
 
-    // complete step 0 immediately
-    timers.push(setTimeout(() => setProcStep(1), cumulative));
+      if (error) {
+        console.error("Poll error:", error);
+        return;
+      }
 
-    for (let i = 1; i < processingSteps.length; i++) {
-      cumulative += processingSteps[i].duration;
-      timers.push(setTimeout(() => setProcStep(i + 1), cumulative));
-    }
+      if (!data) return;
 
-    timers.push(setTimeout(() => setProcessing(false), cumulative + 400));
-    return () => timers.forEach(clearTimeout);
-  }, [stage, processing]);
+      switch (data.status) {
+        case "pending":
+          setProcStep(0);
+          break;
+        case "separating":
+          setProcStep(1);
+          break;
+        case "transcribing":
+          setProcStep(3);
+          break;
+        case "completed":
+          setProcStep(4);
+          setTimeout(() => setProcessing(false), 600);
+          clearInterval(interval);
+          break;
+        case "failed":
+          setTranscriptionError(data.error_message || "An unknown error occurred");
+          clearInterval(interval);
+          break;
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [stage, processing, transcriptionId]);
+
+  /* ── Load outputs when processing completes ── */
+  useEffect(() => {
+    if (stage !== 2 || processing || !transcriptionId) return;
+
+    const loadOutputs = async () => {
+      const { data, error } = await supabase
+        .from("transcription_outputs")
+        .select("instrument, format, file_path")
+        .eq("transcription_id", transcriptionId);
+
+      if (!error && data) {
+        setTranscriptionOutputs(data);
+      }
+    };
+    loadOutputs();
+  }, [stage, processing, transcriptionId]);
 
   const toggleInstrument = (name: string) => {
     setSelected((prev) =>
@@ -120,20 +173,85 @@ const AppPage = () => {
     );
   };
 
-  const goToStage = (s: number) => {
-    setStage(s);
-    if (s === 2) setProcessing(true);
+  /* ── Transcribe handler ── */
+  const handleTranscribe = async () => {
+    if (!audioFile || selected.length === 0) return;
+
+    setUploading(true);
+    setTranscriptionError(null);
+
+    try {
+      // A) Upload audio to Supabase Storage
+      const fileId = crypto.randomUUID();
+      const storagePath = `${fileId}/${audioFile.name}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("audio-uploads")
+        .upload(storagePath, audioFile);
+
+      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("audio-uploads")
+        .getPublicUrl(storagePath);
+
+      const audioUrl = urlData.publicUrl;
+
+      // B) Insert transcription row
+      const { data: insertData, error: insertError } = await supabase
+        .from("transcriptions")
+        .insert({
+          file_name: audioFile.name,
+          file_path: storagePath,
+          status: "pending",
+          selected_instruments: selected,
+          detected_key: "C Major",
+          detected_bpm: 120,
+        })
+        .select("id")
+        .single();
+
+      if (insertError || !insertData) throw new Error(`Insert failed: ${insertError?.message}`);
+
+      const newId = insertData.id;
+      setTranscriptionId(newId);
+
+      // C) Call edge function (fire and forget — it runs async)
+      supabase.functions.invoke("process-transcription", {
+        body: {
+          transcription_id: newId,
+          audio_url: audioUrl,
+          selected_instruments: selected,
+        },
+      }).catch((err) => console.error("Edge function invoke error:", err));
+
+      // D) Advance to Stage 2
+      setUploading(false);
+      setStage(2);
+      setProcessing(true);
+      setProcStep(0);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      setTranscriptionError(msg);
+      setUploading(false);
+    }
   };
 
   const resetAll = () => {
     setStage(0);
     setFileName("");
+    setAudioFile(null);
     setSelected([]);
     setScanning(true);
     setProcessing(true);
     setProcStep(0);
     setSelectedKey("C Major");
     setBpm(120);
+    setUploading(false);
+    setTranscriptionId(null);
+    setTranscriptionError(null);
+    setTranscriptionOutputs([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -317,16 +435,29 @@ const AppPage = () => {
                   {selected.length} instrument{selected.length !== 1 ? "s" : ""} selected
                 </p>
 
+                {transcriptionError && (
+                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                    {transcriptionError}
+                  </div>
+                )}
+
                 <button
-                  onClick={() => goToStage(2)}
-                  disabled={selected.length === 0}
-                  className={`w-full mt-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    selected.length > 0
+                  onClick={handleTranscribe}
+                  disabled={selected.length === 0 || uploading}
+                  className={`w-full mt-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+                    selected.length > 0 && !uploading
                       ? "bg-gold text-white hover:bg-gold-dark"
                       : "bg-border text-ink-muted cursor-not-allowed"
                   }`}
                 >
-                  Transcribe Selected Instruments →
+                  {uploading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    "Transcribe Selected Instruments →"
+                  )}
                 </button>
               </div>
             )}
@@ -341,7 +472,24 @@ const AppPage = () => {
             }`}
           >
             {processing ? (
-              <ProcessingView procStep={procStep} />
+              transcriptionError ? (
+                <div className="text-center py-12 animate-fade-in">
+                  <h2 className="font-heading text-2xl font-semibold text-ink mb-4">
+                    Transcription Failed
+                  </h2>
+                  <p className="text-sm text-ink-soft mb-6 max-w-md mx-auto">
+                    {transcriptionError}
+                  </p>
+                  <button
+                    onClick={resetAll}
+                    className="px-6 py-3 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              ) : (
+                <ProcessingView procStep={procStep} />
+              )
             ) : (
               <ResultsView
                 fileName={fileName}
@@ -353,6 +501,7 @@ const AppPage = () => {
                 bpm={bpm}
                 setBpm={setBpm}
                 resetAll={resetAll}
+                outputs={transcriptionOutputs}
               />
             )}
           </div>
@@ -396,12 +545,9 @@ const ProcessingView = ({ procStep }: { procStep: number }) => (
                 >
                   {step.label}
                 </span>
-                {active && step.duration > 0 && (
+                {active && (
                   <div className="mt-1.5 h-1.5 bg-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-teal rounded-full animate-scan-bar"
-                      style={{ animationDuration: `${step.duration}ms` }}
-                    />
+                    <div className="h-full bg-teal rounded-full animate-scan-bar" />
                   </div>
                 )}
               </div>
@@ -427,6 +573,7 @@ interface ResultsViewProps {
   bpm: number;
   setBpm: (b: number) => void;
   resetAll: () => void;
+  outputs: Array<{ instrument: string; format: string; file_path: string }>;
 }
 
 const ResultsView = ({
@@ -439,9 +586,43 @@ const ResultsView = ({
   bpm,
   setBpm,
   resetAll,
+  outputs,
 }: ResultsViewProps) => {
   const displayName = fileName.replace(/\.[^/.]+$/, "");
   const [activeInstrument, setActiveInstrument] = useState(0);
+
+  const handleDownload = (output: { instrument: string; format: string; file_path: string }) => {
+    const base64Data = output.file_path;
+    let mimeType: string;
+    let extension: string;
+
+    if (output.format === "midi") {
+      mimeType = "audio/midi";
+      extension = "mid";
+    } else {
+      mimeType = "application/vnd.recordare.musicxml+xml";
+      extension = "musicxml";
+    }
+
+    try {
+      const binaryString = atob(base64Data);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${displayName}_${output.instrument.toLowerCase().replace(/\s+/g, "_")}.${extension}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed:", err);
+    }
+  };
 
   return (
     <div className="animate-fade-in">
@@ -576,6 +757,10 @@ const ResultsView = ({
           <div className="space-y-3">
             {exportOptions.map((opt) => {
               const Icon = opt.icon;
+              // Check if we have real outputs for this format
+              const formatKey = opt.name === "MIDI File" ? "midi" : opt.name === "MusicXML" ? "musicxml" : null;
+              const hasOutput = formatKey && outputs.some((o) => o.format === formatKey);
+
               return (
                 <div
                   key={opt.name}
@@ -601,7 +786,20 @@ const ResultsView = ({
                     <p className="text-xs text-ink-muted">{opt.desc}</p>
                   </div>
                   {opt.tier === "free" ? (
-                    <button className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200">
+                    <button
+                      className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200"
+                      title="Coming Soon"
+                    >
+                      Download
+                    </button>
+                  ) : hasOutput ? (
+                    <button
+                      onClick={() => {
+                        const matchingOutputs = outputs.filter((o) => o.format === formatKey);
+                        matchingOutputs.forEach((o) => handleDownload(o));
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200"
+                    >
                       Download
                     </button>
                   ) : opt.tier === "pro" ? (
