@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import AuthModal from "@/components/AuthModal";
+import type { User } from "@supabase/supabase-js";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const avatarRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const isLanding = location.pathname === "/";
 
@@ -14,11 +21,41 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Close avatar menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
+        setAvatarMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setAvatarMenuOpen(false);
+  };
+
   const navLinks = [
     { label: "How It Works", href: isLanding ? "#how-it-works" : "/#how-it-works" },
     { label: "Instruments", href: isLanding ? "#instruments" : "/#instruments" },
     { label: "Pricing", href: "/pricing" },
   ];
+
+  const userInitial = user?.email?.[0]?.toUpperCase() || "?";
 
   return (
     <>
@@ -56,15 +93,58 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <button className="px-4 py-2 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200">
-              Sign In
-            </button>
-            <Link
-              to="/app"
-              className="px-4 py-2 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
-            >
-              Try Free
-            </Link>
+            {user ? (
+              <>
+                <div ref={avatarRef} className="relative">
+                  <button
+                    onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
+                    className="w-9 h-9 rounded-full bg-gold/15 border-2 border-gold text-gold font-bold text-sm flex items-center justify-center hover:bg-gold/25 transition-colors"
+                  >
+                    {userInitial}
+                  </button>
+                  {avatarMenuOpen && (
+                    <div className="absolute right-0 top-12 w-48 bg-surface border border-border rounded-xl shadow-lg py-1.5 z-50">
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setAvatarMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink hover:bg-paper transition-colors"
+                      >
+                        <LayoutDashboard size={15} className="text-ink-muted" />
+                        My Transcriptions
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink hover:bg-paper transition-colors"
+                      >
+                        <LogOut size={15} className="text-ink-muted" />
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <Link
+                  to="/app"
+                  className="px-4 py-2 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
+                >
+                  Try Free
+                </Link>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setAuthOpen(true)}
+                  className="px-4 py-2 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => setAuthOpen(true)}
+                  className="px-4 py-2 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all duration-200"
+                >
+                  Try Free
+                </button>
+              </>
+            )}
           </div>
 
           <button
@@ -102,19 +182,50 @@ const Navbar = () => {
               )
             )}
             <hr className="border-border" />
-            <button className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium">
-              Sign In
-            </button>
-            <Link
-              to="/app"
-              className="px-4 py-3 rounded-lg bg-gold text-white text-sm font-medium text-center"
-              onClick={() => setMobileOpen(false)}
-            >
-              Try Free
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium text-center"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  My Transcriptions
+                </Link>
+                <button
+                  onClick={() => { handleSignOut(); setMobileOpen(false); }}
+                  className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium"
+                >
+                  Sign Out
+                </button>
+                <Link
+                  to="/app"
+                  className="px-4 py-3 rounded-lg bg-gold text-white text-sm font-medium text-center"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Try Free
+                </Link>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => { setAuthOpen(true); setMobileOpen(false); }}
+                  className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => { setAuthOpen(true); setMobileOpen(false); }}
+                  className="px-4 py-3 rounded-lg bg-gold text-white text-sm font-medium text-center"
+                >
+                  Try Free
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </>
   );
 };
