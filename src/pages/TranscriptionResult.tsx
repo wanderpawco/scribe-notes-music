@@ -133,6 +133,7 @@ const TranscriptionResult = () => {
       }
     } catch (err) {
       console.error("Download failed:", err);
+      alert("Download failed — please try again.");
     }
   };
 
