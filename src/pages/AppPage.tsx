@@ -526,7 +526,9 @@ const AppPage = () => {
             />
 
             {/* Dark hero upload zone */}
-            <div className="relative rounded-2xl overflow-hidden bg-[#0f0f14] border border-white/10 animate-fade-up">
+            <div className={`relative rounded-2xl overflow-hidden bg-[#0f0f14] border-2 border-dashed transition-all duration-300 animate-fade-up ${
+              dragOver ? "border-gold" : "border-white/20 hover:border-white/40"
+            }`}>
 
               {/* Animated waveform background */}
               <div className="absolute inset-0 flex items-center justify-center gap-[3px] opacity-20 pointer-events-none">
@@ -558,16 +560,16 @@ const AppPage = () => {
                   <Upload size={32} className="text-gold" />
                 </div>
 
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-2 animate-fade-up-delay-1">
+                <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 text-center animate-fade-up-delay-1">
                   Drop your audio file here
                 </h2>
 
-                <p className="text-white/40 text-sm mb-6 animate-fade-up-delay-2">
+                <p className="text-white/40 text-base mb-8 text-center animate-fade-up-delay-2">
                   MP3, WAV, FLAC, M4A — up to 500MB
                 </p>
 
                 <button
-                  className="px-6 py-3 rounded-xl bg-gold text-white text-sm font-semibold hover:bg-gold-dark transition-all duration-200 shadow-lg shadow-gold/20 animate-fade-up-delay-3"
+                  className="px-8 py-3.5 rounded-xl bg-gold text-white text-base font-bold hover:bg-gold-dark transition-all duration-200 shadow-lg shadow-gold/20 animate-fade-up-delay-3"
                   onClick={(e) => { 
                     e.stopPropagation(); 
                     fileInputRef.current?.click(); 
@@ -589,9 +591,16 @@ const AppPage = () => {
             {!recording ? (
               <button
                 onClick={startRecording}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border border-white/10 text-white/70 text-sm font-medium hover:bg-white/5 hover:border-white/20 transition-all duration-200 animate-fade-up-delay-3"
+                className="w-full flex items-center justify-center gap-3 px-4 py-4 rounded-2xl border-2 text-base font-semibold transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] animate-fade-up-delay-3"
+                style={{ 
+                  borderColor: "#c8a96e",
+                  color: "#c8a96e",
+                  background: "rgba(200, 169, 110, 0.08)",
+                }}
               >
-                <Mic size={16} />
+                <div className="w-8 h-8 rounded-full border border-gold/60 flex items-center justify-center" style={{ background: "rgba(200, 169, 110, 0.15)" }}>
+                  <Mic size={16} className="text-gold" />
+                </div>
                 Record live audio
               </button>
             ) : (
@@ -620,14 +629,14 @@ const AppPage = () => {
               {["MP3", "WAV", "FLAC", "M4A"].map((fmt) => (
                 <span
                   key={fmt}
-                  className="px-3 py-1 rounded-full text-xs text-white/30 bg-white/5 border border-white/10"
+                  className="px-4 py-1.5 rounded-full text-xs font-medium tracking-wider text-white/30 bg-white/5 border border-white/10"
                 >
                   {fmt}
                 </span>
               ))}
             </div>
 
-            <p className="text-center text-xs text-white/25 mt-6">
+            <p className="text-center text-sm text-white/25 mt-5">
               Free account required — sign up takes 30 seconds
             </p>
           </div>
