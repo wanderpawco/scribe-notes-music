@@ -35,8 +35,8 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
             pageFormat: "A4 P",
             pageBackgroundColor: "#ffffff",
             renderSingleHorizontalStaffline: false,
-            } as any);
-          });
+            fitLastSystemFillScreen: false,
+          } as any);
         }
 
         await osmdRef.current.load(xmlString);
