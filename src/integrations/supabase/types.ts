@@ -65,6 +65,7 @@ export type Database = {
           status: string
           stem_urls: Json | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           basic_pitch_job_ids?: Json | null
@@ -81,6 +82,7 @@ export type Database = {
           status?: string
           stem_urls?: Json | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           basic_pitch_job_ids?: Json | null
@@ -97,6 +99,7 @@ export type Database = {
           status?: string
           stem_urls?: Json | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
