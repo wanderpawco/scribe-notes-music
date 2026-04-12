@@ -681,13 +681,7 @@ const ResultsView = ({
             </div>
           )}
 
-          <SheetMusicSVG />
-
-  const activeInstrumentName = selected[activeInstrument];
-  const activeXmlOutput = outputs.find(
-    (o) => o.instrument === activeInstrumentName && o.format === "musicxml"
-  );
-  const activeMusicXml = activeXmlOutput?.file_path ?? null;
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
 
 
           {/* ── ORIGINAL RECORDING ── */}
