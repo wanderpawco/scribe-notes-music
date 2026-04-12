@@ -470,12 +470,12 @@ const AppPage = () => {
         <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator — hidden on results screen */}
           {stage < 2 && (
-          <div className="flex items-center justify-center gap-0 mb-10">
+          <div className="flex items-center justify-center gap-0 mb-12">
             {stepLabels.map((step, i) => (
               <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
+className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300 ${
                       i <= activeStep
                         ? "bg-gold text-white"
                         : stage === 0
@@ -486,7 +486,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                     {i < activeStep ? <Check size={14} /> : i + 1}
                   </div>
                   <span
-                    className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
+                    className={`text-sm mt-1.5 font-semibold transition-colors duration-300 ${
                       i <= activeStep 
                         ? "text-gold" 
                         : stage === 0
@@ -502,7 +502,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                 </div>
                 {i < stepLabels.length - 1 && (
 <div
-                    className={`w-16 md:w-24 h-px mx-2 mb-5 transition-colors duration-300 ${
+                    className={`w-20 md:w-32 h-px mx-2 mb-5 transition-colors duration-300 ${
                       i < activeStep 
                         ? "bg-gold" 
                         : stage === 0
