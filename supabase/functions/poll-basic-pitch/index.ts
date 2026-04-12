@@ -25,69 +25,90 @@ Deno.serve(async (req) => {
       .single();
 
     if (error || !txn) throw new Error("Transcription not found");
+
+    // If already completed or failed, return current status
+    if (txn.status === "completed" || txn.status === "failed") {
+      return new Response(JSON.stringify({ status: txn.status }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (txn.status !== "transcribing") {
       return new Response(JSON.stringify({ status: txn.status }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const jobIds = txn.basic_pitch_job_ids as Record<string, string> || {};
-    const instruments = Object.keys(jobIds);
-    
-    if (instruments.length === 0) {
-      await supabase.from("transcriptions").update({
-        status: "failed",
-        error_message: "No Basic Pitch jobs found",
-      }).eq("id", transcription_id);
-      return new Response(JSON.stringify({ status: "failed" }), {
+    const jobIds = txn.basic_pitch_job_ids as Record<string, string> | null;
+
+    if (!jobIds || Object.keys(jobIds).length === 0) {
+      // Jobs not written yet — still waiting for poll-music-ai to complete
+      return new Response(JSON.stringify({ status: "transcribing" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    const instruments = Object.keys(jobIds);
     let allCompleted = true;
     let anyFailed = false;
 
     await Promise.all(instruments.map(async (instrument) => {
       const jobId = jobIds[instrument];
-      
-      // Check if already stored
+
+      // Check if already stored in outputs
       const { data: existing } = await supabase
         .from("transcription_outputs")
         .select("id")
         .eq("transcription_id", transcription_id)
         .eq("instrument", instrument)
         .limit(1);
-      
+
       if (existing && existing.length > 0) return; // already saved
 
       try {
         const pollRes = await fetch(`${BASIC_PITCH_BASE}/job/${jobId}`);
-        if (!pollRes.ok) { allCompleted = false; return; }
+
+        // 404 means Render restarted and lost the job — mark as failed for this instrument
+        if (pollRes.status === 404) {
+          console.error(`Job ${jobId} not found on Basic Pitch server (server restarted?)`);
+          anyFailed = true;
+          return;
+        }
+
+        if (!pollRes.ok) {
+          allCompleted = false;
+          return;
+        }
 
         const pollData = await pollRes.json();
 
         if (pollData.status === "completed") {
-          if (pollData.result?.midi_b64) {
+          // Result fields are at pollData.result.midi_b64 and pollData.result.musicxml_b64
+          const midiB64 = pollData.result?.midi_b64;
+          const xmlB64 = pollData.result?.musicxml_b64;
+
+          if (midiB64) {
             await supabase.from("transcription_outputs").insert({
               transcription_id,
               instrument,
               format: "midi",
-              file_path: pollData.result.midi_b64,
+              file_path: midiB64,
             });
           }
-          if (pollData.result?.musicxml_b64) {
+          if (xmlB64) {
             await supabase.from("transcription_outputs").insert({
               transcription_id,
               instrument,
               format: "musicxml",
-              file_path: pollData.result.musicxml_b64,
+              file_path: xmlB64,
             });
           }
         } else if (pollData.status === "failed") {
           anyFailed = true;
-          console.error(`Basic Pitch failed for ${instrument}`);
+          console.error(`Basic Pitch failed for ${instrument}: ${pollData.error}`);
         } else {
-          allCompleted = false; // still processing
+          // Still processing
+          allCompleted = false;
         }
       } catch (e) {
         allCompleted = false;
@@ -95,7 +116,7 @@ Deno.serve(async (req) => {
       }
     }));
 
-    if (allCompleted) {
+    if (allCompleted && !anyFailed) {
       await supabase.from("transcriptions").update({
         status: "completed",
         completed_at: new Date().toISOString(),
@@ -105,11 +126,21 @@ Deno.serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ 
-      status: anyFailed ? "partial" : "transcribing" 
-    }), {
+    if (anyFailed && allCompleted) {
+      // All jobs either completed or failed — mark as completed with partial results
+      await supabase.from("transcriptions").update({
+        status: "completed",
+        completed_at: new Date().toISOString(),
+      }).eq("id", transcription_id);
+      return new Response(JSON.stringify({ status: "completed" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ status: "transcribing" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: msg }), {
