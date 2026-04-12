@@ -402,7 +402,7 @@ const AppPage = () => {
       <Navbar />
 
       <main className="flex-1 pt-24 pb-16 px-6">
-        <div className="max-w-[800px] mx-auto">
+        <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator */}
           <div className="flex items-center justify-center gap-0 mb-10">
             {stepLabels.map((step, i) => (
@@ -886,52 +886,28 @@ const ResultsView = ({
   };
 
   return (
-    <div className="animate-fade-in">
-      {/* Hidden printable sheet */}
-      <div id="print-sheet" className="hidden">
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "24px", marginBottom: "4px" }}>{displayName}</h1>
-        <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>{activeInstrumentName}</p>
-        <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
-      </div>
-
-      {/* Success banner */}
-      <div className="flex items-center justify-center gap-2 bg-teal text-white rounded-xl py-3 px-4 mb-8">
-        <Check size={18} />
+    <div className="animate-fade-in space-y-4">
+      {/* ── SUCCESS BANNER ── */}
+      <div className="flex items-center justify-center gap-2 bg-teal text-white rounded-xl py-2.5 px-4">
+        <Check size={16} />
         <span className="text-sm font-medium">Your sheet music is ready</span>
       </div>
 
-      {(outputs.length === 0 || !activeMusicXml) && (
-        <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mb-4 font-mono text-xs space-y-1">
-          <p>Outputs count: {outputs.length}</p>
-          {outputs.map((o, i) => (
-            <p key={i}>{o.instrument} | {o.format} | file_path length: {o.file_path.length} chars</p>
-          ))}
-          <p>Active instrument: {activeInstrumentName}</p>
-          <p>Active MusicXML found: {activeMusicXml ? "YES" : "NO"}</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left: Sheet music preview */}
-        <div className="bg-white border border-border rounded-xl p-6">
-          {/* Title */}
-          <h3 className="font-heading text-lg font-semibold text-ink">{displayName}</h3>
-          <div className="flex items-center gap-1.5 mt-0.5 mb-4">
-            <Music size={12} className="text-ink-soft" />
-            <span className="text-sm text-ink-soft">{selected[activeInstrument]}</span>
-          </div>
-
-          {/* Stem tabs */}
+      {/* ── FLOATING TOOLBAR ── */}
+      <div className="bg-surface border border-border rounded-2xl px-4 py-3 flex flex-wrap items-center gap-3">
+        {/* File name + instrument tabs */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-sm font-heading font-semibold text-ink truncate max-w-[160px]">{displayName}</span>
           {selected.length > 1 ? (
-            <div className="flex gap-1.5 overflow-x-auto mb-4 pb-1">
+            <div className="flex gap-1 overflow-x-auto">
               {selected.map((name, i) => (
                 <button
                   key={name}
                   onClick={() => setActiveInstrument(i)}
-                  className={`px-3 py-1.5 text-xs rounded-full border whitespace-nowrap transition-all duration-200 ${
+                  className={`px-2.5 py-1 text-xs rounded-full border whitespace-nowrap transition-all ${
                     i === activeInstrument
                       ? "bg-gold text-white border-gold font-medium"
-                      : "bg-surface text-ink-soft border-border hover:border-ink-muted"
+                      : "bg-paper text-ink-soft border-border hover:border-ink-muted"
                   }`}
                 >
                   {name}
@@ -939,174 +915,170 @@ const ResultsView = ({
               ))}
             </div>
           ) : (
-            <div className="mb-4">
-              <span className="px-3 py-1.5 text-xs rounded-full bg-gold text-white border border-gold font-medium">
-                {selected[0]}
-              </span>
-            </div>
+            <span className="px-2.5 py-1 text-xs rounded-full bg-gold text-white border border-gold font-medium">
+              {selected[0]}
+            </span>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-border hidden md:block" />
+
+        {/* Original recording info */}
+        <div className="flex items-center gap-3 text-xs text-ink-soft flex-shrink-0">
+          <span>Key: <span className="text-ink font-medium">C Major</span></span>
+          <span>BPM: <span className="text-ink font-medium">120</span></span>
+        </div>
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-border hidden md:block" />
+
+        {/* Adjustments */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Transpose */}
+          <div className="relative">
+            <button
+              onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border text-xs text-ink hover:bg-paper transition-all h-8"
+            >
+              <ArrowUpDown size={12} />
+              {selectedKey}
+              <ChevronDown size={12} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {keyDropdownOpen && (
+              <div className="absolute z-20 mt-1 left-0 w-44 bg-surface border border-border rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto">
+                {allKeys.map((k) => (
+                  <button
+                    key={k}
+                    onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
+                    className={`w-full text-left text-xs px-3 py-2 rounded-lg transition-colors ${
+                      k === selectedKey
+                        ? "bg-gold-light text-gold font-medium"
+                        : "text-ink hover:bg-paper"
+                    }`}
+                  >
+                    {k}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* BPM */}
+          <div className="inline-flex items-center border border-border rounded-lg h-8">
+            <button
+              onClick={() => setBpm(Math.max(40, bpm - 5))}
+              className="px-1.5 text-ink-soft hover:text-ink transition-colors"
+            >
+              <Minus size={12} />
+            </button>
+            <span className="text-xs font-medium text-ink min-w-[28px] text-center">{bpm}</span>
+            <button
+              onClick={() => setBpm(Math.min(240, bpm + 5))}
+              className="px-1.5 text-ink-soft hover:text-ink transition-colors"
+            >
+              <Plus size={12} />
+            </button>
+          </div>
+          <span className="text-[10px] text-ink-muted">BPM</span>
+        </div>
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-border hidden md:block" />
+
+        {/* Download buttons */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* PDF */}
+          <button
+            onClick={() => window.print()}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all"
+          >
+            <FileText size={12} />
+            PDF
+          </button>
+
+          {/* MIDI */}
+          {outputs.some(o => o.format === "midi") ? (
+            <button
+              onClick={() => {
+                outputs.filter(o => o.format === "midi").forEach(o => handleDownload(o));
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all"
+            >
+              <Music size={12} />
+              MIDI
+            </button>
+          ) : (
+            <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed">
+              <Lock size={12} />
+              MIDI
+            </button>
           )}
 
-          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+          {/* MusicXML */}
+          {outputs.some(o => o.format === "musicxml") ? (
+            <button
+              onClick={() => {
+                outputs.filter(o => o.format === "musicxml").forEach(o => handleDownload(o));
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all"
+            >
+              <FileCode size={12} />
+              MusicXML
+            </button>
+          ) : (
+            <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed">
+              <Lock size={12} />
+              MusicXML
+            </button>
+          )}
 
-
-          {/* ── ORIGINAL RECORDING ── */}
-          <div className="border-t border-border mt-4 pt-4">
-            <span className="text-[11px] text-ink-muted uppercase tracking-wider font-medium">
-              Original Recording
-            </span>
-            <div className="flex items-center bg-paper border border-border rounded-lg px-4 py-3 mt-2">
-              <div>
-                <span className="text-[10px] text-ink-muted uppercase tracking-wider block">Key</span>
-                <span className="text-sm font-medium text-ink">C Major</span>
-              </div>
-              <div className="w-px bg-border self-stretch mx-4" />
-              <div>
-                <span className="text-[10px] text-ink-muted uppercase tracking-wider block">BPM</span>
-                <span className="text-sm font-medium text-ink">120</span>
-              </div>
-            </div>
-          </div>
-
-          {/* ── ADJUSTMENTS ── */}
-          <div className="border-t border-border mt-4 pt-4">
-            <span className="text-[11px] text-ink-muted uppercase tracking-wider font-medium">
-              Adjustments
-            </span>
-            <div className="flex gap-2 mt-2">
-              {/* Transpose */}
-              <div className="relative">
-                <button
-                  onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm text-ink hover:bg-surface transition-all duration-200 h-10"
-                >
-                  <ArrowUpDown size={14} />
-                  {selectedKey}
-                  <ChevronDown size={14} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
-                {keyDropdownOpen && (
-                  <div className="absolute z-20 mt-1 left-0 w-48 bg-surface border border-border rounded-xl shadow-card p-1 max-h-60 overflow-y-auto">
-                    {allKeys.map((k) => (
-                      <button
-                        key={k}
-                        onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
-                        className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
-                          k === selectedKey
-                            ? "bg-gold-light text-gold font-medium"
-                            : "text-ink hover:bg-paper"
-                        }`}
-                      >
-                        {k}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* BPM control */}
-              <div className="inline-flex items-center border border-border rounded-lg h-10">
-                <button
-                  onClick={() => setBpm(Math.max(40, bpm - 5))}
-                  className="px-2 text-ink-soft hover:text-ink transition-colors"
-                >
-                  <Minus size={14} />
-                </button>
-                <span className="text-sm font-medium text-ink min-w-[36px] text-center">{bpm}</span>
-                <button
-                  onClick={() => setBpm(Math.min(240, bpm + 5))}
-                  className="px-2 text-ink-soft hover:text-ink transition-colors"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-              <span className="text-[10px] text-ink-muted self-center ml-1">BPM</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Export panel */}
-        <div>
-          <h3 className="font-heading text-lg font-semibold text-ink mb-4">
-            Download your files
-          </h3>
-          <div className="space-y-3">
-            {exportOptions.map((opt) => {
-              const Icon = opt.icon;
-              // Check if we have real outputs for this format
-              const formatKey = opt.name === "MIDI File" ? "midi" : opt.name === "MusicXML" ? "musicxml" : null;
-              const hasOutput = formatKey && outputs.some((o) => o.format === formatKey);
-
-              return (
-                <div
-                  key={opt.name}
-                  className="flex items-center gap-3 p-3 bg-surface border border-border rounded-xl"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-paper flex items-center justify-center shrink-0">
-                    <Icon size={18} className="text-gold" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-medium text-ink">{opt.name}</span>
-                      {opt.tier === "pro" && (
-                        <span className="text-[10px] font-bold bg-gold-light text-gold px-1.5 py-0.5 rounded">
-                          Pro
-                        </span>
-                      )}
-                      {opt.tier === "studio" && (
-                        <span className="text-[10px] font-bold bg-ink text-paper px-1.5 py-0.5 rounded">
-                          Studio
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-ink-muted">{opt.desc}</p>
-                  </div>
-                  {opt.tier === "free" ? (
-                    <button
-                      onClick={() => window.print()}
-                      className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200"
-                      title="Download as PDF"
-                    >
-                      Download
-                    </button>
-                  ) : hasOutput ? (
-                    <button
-                      onClick={() => {
-                        const matchingOutputs = outputs.filter((o) => o.format === formatKey);
-                        matchingOutputs.forEach((o) => handleDownload(o));
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200"
-                    >
-                      Download
-                    </button>
-                  ) : opt.tier === "pro" ? (
-                    <button
-                      className="px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed flex items-center gap-1"
-                      title="Upgrade to Pro to unlock"
-                    >
-                      <Lock size={12} />
-                      Download
-                    </button>
-                  ) : (
-                    <button
-                      className="px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed flex items-center gap-1"
-                      title="Upgrade to Studio to unlock"
-                    >
-                      <Lock size={12} />
-                      Download
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <button
-            onClick={resetAll}
-            className="w-full mt-6 flex items-center justify-center gap-2 py-3 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200"
-          >
-            <RefreshCw size={14} />
-            Start a new transcription
+          {/* Guitar Pro */}
+          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed">
+            <Guitar size={12} />
+            GP
+            <span className="text-[9px] bg-ink text-paper px-1 rounded">Studio</span>
           </button>
         </div>
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-border hidden md:block" />
+
+        {/* New transcription */}
+        <button
+          onClick={resetAll}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-xs text-ink font-medium hover:bg-paper transition-all"
+        >
+          <RefreshCw size={12} />
+          New
+        </button>
+      </div>
+
+      {/* ── SHEET MUSIC — FULL WIDTH ── */}
+      <div className="w-full">
+        {/* Hidden print area */}
+        <div id="print-sheet" className="hidden">
+          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "24px", marginBottom: "4px" }}>
+            {displayName}
+          </h1>
+          <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
+            {activeInstrumentName}
+          </p>
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+        </div>
+
+        <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+
+        {(outputs.length === 0 || !activeMusicXml) && (
+          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mt-4 font-mono text-xs space-y-1">
+            <p>Outputs count: {outputs.length}</p>
+            {outputs.map((o, i) => (
+              <p key={i}>{o.instrument} | {o.format} | {o.file_path.length} chars</p>
+            ))}
+            <p>Active instrument: {activeInstrumentName}</p>
+            <p>MusicXML: {activeMusicXml ? "YES" : "NO"}</p>
+          </div>
+        )}
       </div>
     </div>
   );
