@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard,
   FileText, FileCode, Lock, ChevronDown, RefreshCw, ArrowUpDown, Minus, Plus,
-  Loader2,
+  Loader2, Clock,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -575,20 +575,18 @@ const AppPage = () => {
                   <p className="text-sm text-ink-soft">
                     {selected.length} instrument{selected.length !== 1 ? "s" : ""} selected
                   </p>
-                  {estimatedTime && (
-                    <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 
-                    bg-surface border border-border rounded-full">
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <circle cx="6" cy="6" r="5" stroke="#9a9ab0" strokeWidth="1.2"/>
-                        <path d="M6 3.5V6L7.5 7.5" stroke="#9a9ab0" strokeWidth="1.2" 
-                        strokeLinecap="round"/>
-                      </svg>
-                      <span className="text-xs text-ink-muted">
-                        Estimated processing time: <span className="text-ink font-medium">
-                        {estimatedTime}</span>
+                {estimatedTime && (
+                  <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 
+                  bg-teal/10 border border-teal/30 rounded-full">
+                    <Clock size={12} className="text-teal" />
+                    <span className="text-xs text-teal">
+                      Estimated processing time: 
+                      <span className="font-semibold text-teal">
+                        {estimatedTime}
                       </span>
-                    </div>
-                  )}
+                    </span>
+                  </div>
+                )}
                 </div>
 
                 {transcriptionError && (
@@ -601,7 +599,9 @@ const AppPage = () => {
                   onClick={handleTranscribe}
                   disabled={selected.length === 0 || uploading}
                   className={`w-full mt-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
-                    selected.length > 0 && !uploading
+                    uploading
+                      ? "bg-gold-dark text-white cursor-wait"
+                      : selected.length > 0
                       ? "bg-gold text-white hover:bg-gold-dark"
                       : "bg-border text-ink-muted cursor-not-allowed"
                   }`}
@@ -617,9 +617,9 @@ const AppPage = () => {
                         </span>
                       </div>
                       {uploadProgress > 0 && uploadProgress < 100 && (
-                        <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden">
+                        <div className="w-full h-2 bg-ink/20 rounded-full overflow-hidden mt-1">
                           <div
-                            className="h-full bg-white rounded-full transition-all duration-300"
+                            className="h-full bg-teal rounded-full transition-all duration-300"
                             style={{ width: `${uploadProgress}%` }}
                           />
                         </div>
@@ -742,10 +742,16 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
         <p className="text-sm text-ink-muted">
           {stepMessages[procStep] || "Processing..."}
         </p>
-        {estimatedTime && procStep <= 1 && (
-          <p className="text-xs text-ink-muted mt-1">
-            Expected total time: <span className="font-medium">{estimatedTime}</span>
-          </p>
+        {estimatedTime && procStep < 4 && (
+          <div className="inline-flex items-center gap-1.5 
+          mt-2 px-3 py-1.5 bg-teal/10 border border-teal/30 
+          rounded-full">
+            <Clock size={12} className="text-teal" />
+            <span className="text-xs text-teal">
+              Estimated total time: 
+              <span className="font-semibold"> {estimatedTime}</span>
+            </span>
+          </div>
         )}
       </div>
 
