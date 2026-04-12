@@ -20,6 +20,7 @@ Business email: devops@scribenoter.com
 - One thing at a time, step by step, confirm it worked before moving on
 - Never repeat something already said — say it once, clearly
 - When she says "ok" or "done" — move to the next step immediately
+- Always put Lovable prompts in code blocks
 
 ### Decision making
 - Nina thinks before committing — when she asks "will this actually work?" or "does this help long term?" always give a direct honest answer before building anything
@@ -40,6 +41,7 @@ Business email: devops@scribenoter.com
 
 ### Lovable prompts
 - Always write complete, copy-paste-ready Lovable prompts
+- Always put Lovable prompts in code blocks
 - Never edit frontend files directly — always go through Lovable
 - After Lovable applies changes, always pull from GitHub Desktop before confirming
 
@@ -52,7 +54,7 @@ Business email: devops@scribenoter.com
 ---
 
 ## The App
-ScribeNoter is a live AI music transcription web app. Users upload audio or record live, select instruments, enter a song title, and get real sheet music (PDF), MIDI, and MusicXML back. It is fully built and functional — not a prototype. The full pipeline has been tested end-to-end successfully.
+ScribeNoter is a live AI music transcription web app. Users upload audio or record live, select an instrument, enter a song title, and get real sheet music (PDF), MIDI, and MusicXML back. It is fully built and functional — not a prototype. The full pipeline has been tested end-to-end successfully.
 
 Full technical details are in `SCRIBENOTER_PROJECT_BASELINE.md` in this same repo.
 
@@ -76,29 +78,65 @@ Then paste the relevant section from the PENDING ITEMS list below.
 ## Pending Items (as of April 12, 2026)
 
 ### IMMEDIATE — Do these first
-1. **Render Standard upgrade** — Go to dashboard.render.com → scribenoter-transcription-api → Settings → Instance Type → upgrade from Starter to Standard ($25/mo). Required before WAV files work reliably (Starter tier crashes at 512MB RAM on large WAV files).
+1. **Render Standard upgrade** — Go to dashboard.render.com → scribenoter-transcription-api → Settings → Instance Type → upgrade from Starter to Standard ($25/mo). Required before WAV files work reliably.
 
-2. **Custom domain** — Point scribenoter.com to the Lovable app. Go to Lovable project → Settings → Custom Domain. Then update DNS at your domain registrar to point to Lovable's servers.
+2. **Custom domain** — Point scribenoter.com to the Lovable app. Go to Lovable project → Settings → Custom Domain. Then update DNS at your domain registrar.
 
-3. **Supabase email template** — The sign-up confirmation email still says generic Supabase copy. In Lovable → Cloud → Auth → Email Templates, customize the confirmation email to say ScribeNoter.
+3. **Supabase email template** — Customize the confirmation email in Lovable → Cloud → Auth → Email Templates.
 
-4. **Upload screen redesign — final polish** — Dark studio aesthetic is applied but last prompt (fixing drop zone border visibility, waveform brightness, font sizes, gold record button, format badge colors, step indicator contrast) was just submitted. Pull from GitHub Desktop, test on the live app, and confirm it looks outstanding before moving on.
+4. **Test new backend deploy** — Backend was redeployed April 12 with full instrument-specific transposition, clef assignment, grand staff for piano/organ, and frequency filtering. Test each instrument group: vocals, bass, piano, brass, woodwinds, strings.
+
+5. **AudioShake API research** — Test AudioShake API capabilities. If it supports guitar TAB generation, add Electric Guitar and Acoustic Guitar back to the instrument list.
 
 ### BEFORE LAUNCH
-5. **Stripe integration** — Pricing tiers are defined but no payment exists. Use Lovable's native Stripe connector. Products needed: Pro ($9.99/mo), Studio ($24.99/mo).
+6. **Stripe integration** — Pricing tiers defined but no payment exists. Use Lovable's native Stripe connector. Products needed: Pro ($9.99/mo), Studio ($24.99/mo). This is a launch blocker — free users currently have unlimited access.
 
-6. **Tier enforcement** — After Stripe: gate features by subscription. Free = 3 transcriptions, 1 instrument, PDF only. Pro = 30, 3 instruments, +MIDI+MusicXML. Studio = 100, 6 instruments, +Guitar Pro.
+7. **Tier enforcement** — After Stripe: gate features by subscription. Free = 3 transcriptions, 1 instrument, PDF only. Pro = 30, 3 instruments, +MIDI+MusicXML. Studio = 100, 6 instruments, all formats.
 
-7. **Guitar Pro output** — Shown in UI as Studio-locked but not implemented. Basic Pitch doesn't produce GP5. Will need a separate conversion library post-launch.
+8. **Free transcription counter** — Show remaining free transcriptions in navbar when user is on free plan. "X transcriptions remaining" badge.
 
-8. **Real key/BPM detection** — Currently hardcoded C Major / 120 BPM. Post-launch nice-to-have.
+9. **Key transposition** — Key selector in results toolbar should re-render OSMD sheet music in the selected key without re-running the pipeline. OSMD supports transposition natively.
+
+10. **PDF print — paginated mode** — PDF button should render a separate hidden OSMD instance in paginated US Letter (8.5x11) mode for printing, with header on every page and page number bottom right corner. Screen view stays in Endless/scroll mode.
+
+11. **Sheet music header** — Instrument name should only appear in the sheet music header, not as a staff label before the first measure. Header should repeat on every printed page.
+
+12. **Guitar Pro output** — Shown as Studio-locked. Not implemented. Requires AudioShake or separate TAB library. Post-launch.
+
+13. **Real key/BPM detection** — Currently hardcoded C Major / 120 BPM. Post-launch nice-to-have.
+
+14. **Tempo change** — Post-launch Studio-tier feature only. Requires full pipeline re-run. Should be triggered by deliberate "Re-transcribe at new tempo" button, not +/- nudge.
 
 ### DESIGN / UX
-9. **Instrument selection screen** — Still on warm parchment background. No redesign needed yet — consistent with results screen.
+15. **Results screen** — Step indicator (Upload → Select Instrument → Get Results) confirmed removed from results screen. ✅
+16. **Instrument selection screen** — No pre-selected instruments. Single selection only. Updated instrument list with 19 instruments. ✅
+17. **Navbar** — Try Free hidden when signed in. ✅
 
-10. **Processing screen** — Has real progress bars, elapsed timers, estimated time badge in teal. Working correctly.
+---
 
-11. **Results screen** — Two-row toolbar with dark download buttons, instrument tabs, key/tempo controls. Full-width OSMD sheet music. Song title from user input. Working correctly.
+## Instrument List (as of April 12, 2026)
+These are the instruments currently available in the app:
+
+**Vocals:** Lead Vocals, Backing Vocals  
+**Bass:** Bass  
+**Keys:** Piano, Organ  
+**Strings:** Strings  
+**Brass:** Trumpet, French Horn, Trombone, Tuba, Flugelhorn, Baritone/Euphonium  
+**Woodwinds:** Flute, Oboe, Clarinet, Alto Saxophone, Tenor Saxophone, Soprano Saxophone, Bassoon  
+
+**Removed (pending fix):**
+- Electric Guitar, Acoustic Guitar — requires TAB generation, blocked on AudioShake testing
+- Drums — Basic Pitch cannot accurately transcribe rhythm
+
+---
+
+## Backend Instrument Config (as of April 12, 2026)
+Each instrument now has specific configuration in main.py on Render:
+- Correct clef (treble, bass, alto)
+- Transposition for Bb instruments (Trumpet, Clarinet, etc), Eb instruments (Alto Sax), F instruments (French Horn)
+- Grand staff split for Piano and Organ (treble + bass at middle C)
+- Frequency range filtering to reduce false notes
+- Melodia filter enabled for monophonic instruments
 
 ---
 
@@ -127,26 +165,23 @@ git push origin main
 - Backend: `/Users/ninab/Documents/GitHub/scribenoter-transcription-api/`
 
 ### Make frontend changes
-Always use Lovable prompts — never edit frontend files directly. After Lovable builds, pull in GitHub Desktop.
+Always use Lovable prompts in code blocks — never edit frontend files directly. After Lovable builds, pull in GitHub Desktop.
 
 ---
 
 ## Architecture Quick Reference
-
-```
 [User Browser]
-    ↓ TUS upload (6MB chunks, session JWT auth) OR MediaRecorder live audio
+↓ TUS upload (6MB chunks, session JWT auth) OR MediaRecorder live audio
 [Supabase Storage — audio-uploads bucket (private, RLS scoped to user_id)]
-    ↓ Signed URL (1hr)
+↓ Signed URL (1hr)
 [start-transcription edge function]
-    ↓ Music.AI API (workflow: untitled-workflow-36652e8)
+↓ Music.AI API (workflow: untitled-workflow-36652e8)
 [poll-music-ai edge function] ← Frontend polls DB every 5s, invokes function
-    ↓ Basic Pitch on Render (auto-restarts if server woke from cold start)
+↓ Basic Pitch on Render (auto-restarts if server woke from cold start)
 [poll-basic-pitch edge function] ← Frontend polls DB every 5s, invokes function
-    ↓ MIDI + MusicXML stored as base64 in transcription_outputs
+↓ MIDI + MusicXML stored as base64 in transcription_outputs
 [Frontend — OSMD renders MusicXML as real sheet music]
 [User downloads PDF (print), MIDI, MusicXML or revisits at /transcription/:id]
-```
 
 ---
 
@@ -166,19 +201,24 @@ Always use Lovable prompts — never edit frontend files directly. After Lovable
 - Live audio recording via MediaRecorder (up to 10 min, red indicator with timer, feeds same pipeline)
 - Music.AI stem separation — smart findStemUrl() with multi-variant key matching for all instruments
 - Basic Pitch transcription + music21 MusicXML conversion with song title embedded
+- Instrument-specific clef, transposition, grand staff, frequency filtering (deployed April 12)
 - Job persistence to disk — survives Render restarts, auto-restart on cold start
-- OSMD sheet music rendering from real MusicXML at full page width
-- PDF print — correctly captures OSMD SVG via print CSS visibility trick
+- OSMD sheet music rendering from real MusicXML at full page width (Endless mode)
+- PDF print — new window method, copies OSMD SVG, prints on page 1. Paginated print (pending item 10)
 - MIDI download — binary decode, 5s revoke delay allows repeated clicks
 - MusicXML download — text decode, 5s revoke delay allows repeated clicks
 - Song title input in Stage 1 → stored in DB → passed to Render → appears on sheet music
 - Estimated processing time on instrument selection screen and processing screen (teal badge)
-- Processing screen — 4 steps with real elapsed timers and time-based progress bars
+- Processing screen — 3 steps (Separating stems, Analyzing pitch, Generating notation) with elapsed timers
 - Auth — sign up, sign in, sign out, email confirmation via Supabase
 - AuthModal — Sign In / Sign Up tabs, error handling, success states
-- Navbar — avatar with dropdown (My Transcriptions, Sign Out) when signed in
-- Dashboard — full transcription history per user, sorted newest first
+- Navbar — avatar with dropdown (My Transcriptions, Sign Out) when signed in. Try Free hidden when signed in.
+- Dashboard — song title shown, full transcription history per user, sorted newest first
+- Dashboard — View Progress link for in-progress transcriptions
 - TranscriptionResult page — revisit any past completed job at /transcription/:id with full downloads
+- TranscriptionResult — processing spinner shown for in-progress jobs
+- Download failure shows alert to user
+- Single instrument selection only (multi-instrument gated for paid tiers, post-launch)
 - RLS security — all tables locked to authenticated owners, no public/anon access
 - Storage security — private bucket, files scoped to user_id folder, session JWT on TUS upload
 - Three-function edge architecture — no Supabase timeout issues (each function under 30s)
