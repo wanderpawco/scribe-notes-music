@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Upload, Wand2, Music } from "lucide-react";
+import { Check, Upload, Wand2, Music, Mic2, Music2, Guitar, Keyboard } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DemoModal from "@/components/DemoModal";
 import PricingCards from "@/components/PricingCards";
 
 const instruments = [
-  { emoji: "🎤", name: "Vocals" },
-  { emoji: "🎙️", name: "Lead Vocals" },
-  { emoji: "🎶", name: "Backing Vocals" },
-  { emoji: "🥁", name: "Drums" },
-  { emoji: "🎸", name: "Bass" },
-  { emoji: "⚡", name: "Electric Guitar" },
-  { emoji: "🪕", name: "Acoustic Guitar" },
-  { emoji: "🎹", name: "Piano" },
-  { emoji: "🎛️", name: "Organ" },
-  { emoji: "🎻", name: "Strings" },
-  { emoji: "🎺", name: "Brass" },
-  { emoji: "🪈", name: "Woodwinds" },
+  { icon: Mic2, name: "Vocals" },
+  { icon: Mic2, name: "Lead Vocals" },
+  { icon: Mic2, name: "Backing Vocals" },
+  { icon: Music2, name: "Drums" },
+  { icon: Music, name: "Bass" },
+  { icon: Guitar, name: "Electric Guitar" },
+  { icon: Guitar, name: "Acoustic Guitar" },
+  { icon: Music, name: "Piano" },
+  { icon: Keyboard, name: "Organ" },
+  { icon: Music, name: "Strings" },
+  { icon: Music2, name: "Brass" },
+  { icon: Music, name: "Woodwinds" },
 ];
 
 const Index = () => {
@@ -97,15 +97,18 @@ const Index = () => {
             From full bands to solo performances — ScribeNoter handles the complete musical spectrum.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {instruments.map((inst) => (
-              <div
-                key={inst.name}
-                className="bg-surface border border-border rounded-xl p-4 flex flex-col items-center gap-2 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default"
-              >
-                <span className="text-2xl">{inst.emoji}</span>
-                <span className="text-sm font-medium text-ink">{inst.name}</span>
-              </div>
-            ))}
+            {instruments.map((inst) => {
+              const IconComponent = inst.icon;
+              return (
+                <div
+                  key={inst.name}
+                  className="bg-surface border border-border rounded-xl p-4 flex flex-col items-center justify-center gap-3 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default min-h-[80px]"
+                >
+                  <IconComponent size={24} className="text-gold" />
+                  <span className="text-sm font-medium text-ink">{inst.name}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
