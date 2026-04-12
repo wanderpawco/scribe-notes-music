@@ -1174,8 +1174,16 @@ const handleDownload = (
                 </div>
               )}
             </div>
+            {selectedKey !== appliedKey && (
+              <button
+                onClick={() => setAppliedKey(selectedKey)}
+                className="inline-flex items-center px-4 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-125"
+                style={{ border: '1px solid #c8a96e', color: '#c8a96e', background: 'transparent', height: '40px' }}
+              >
+                Apply
+              </button>
+            )}
           </div>
-
           {/* Right: Download buttons — gold gradient */}
           <div className="flex items-center gap-2">
             <PdfButtonGroup displayName={displayName} activeInstrumentName={activeInstrumentName} />
