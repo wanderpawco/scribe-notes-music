@@ -55,8 +55,15 @@ const TranscriptionResult = () => {
         return;
       }
 
-      if (txn.status !== "completed") {
+      const inProgressStatuses = ["pending", "separating", "transcribing"];
+      if (txn.status !== "completed" && !inProgressStatuses.includes(txn.status)) {
         setError(`This transcription has status: ${txn.status}. Only completed transcriptions can be viewed.`);
+        setLoading(false);
+        return;
+      }
+
+      if (txn.status !== "completed" && inProgressStatuses.includes(txn.status)) {
+        setError("__processing__");
         setLoading(false);
         return;
       }
@@ -157,6 +164,17 @@ const TranscriptionResult = () => {
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 size={32} className="animate-spin text-gold" />
+            </div>
+          ) : error === "__processing__" ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <Loader2 size={48} className="animate-spin text-gold mb-4" />
+              <p className="text-ink font-medium mb-2">Your transcription is still processing — check back soon.</p>
+              <Link
+                to="/dashboard"
+                className="text-gold hover:text-gold-dark text-sm font-medium mt-4"
+              >
+                ← Back to My Transcriptions
+              </Link>
             </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
