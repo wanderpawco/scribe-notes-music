@@ -5,6 +5,38 @@ import { supabase } from "@/integrations/supabase/client";
 import AuthModal from "@/components/AuthModal";
 import type { User } from "@supabase/supabase-js";
 
+// Beta banner component
+const BetaBanner = () => {
+  const [dismissed, setDismissed] = useState(() => {
+    return sessionStorage.getItem("betaBannerDismissed") === "true";
+  });
+
+  const handleDismiss = () => {
+    sessionStorage.setItem("betaBannerDismissed", "true");
+    setDismissed(true);
+  };
+
+  if (dismissed) return null;
+
+  return (
+    <div className="bg-[#0f0f1a] text-gold text-sm py-2 px-4 flex items-center justify-center relative">
+      <span className="text-center">
+        🎵 ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
+        <a href="mailto:devops@scribenoter.com" className="underline hover:text-gold-light transition-colors">
+          feedback
+        </a>.
+      </span>
+      <button
+        onClick={handleDismiss}
+        className="absolute right-4 p-1 hover:bg-white/10 rounded transition-colors"
+        aria-label="Dismiss beta banner"
+      >
+        <X size={16} />
+      </button>
+    </div>
+  );
+};
+
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,6 +91,7 @@ const Navbar = () => {
 
   return (
     <>
+      <BetaBanner />
       <nav
         className={`fixed top-0 left-0 right-0 z-50 h-16 flex items-center transition-all duration-200 ${
           scrolled ? "backdrop-blur-md bg-paper/80 shadow-card" : "bg-paper"
