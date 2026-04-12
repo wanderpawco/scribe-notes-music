@@ -182,8 +182,6 @@ const AppPage = () => {
 
       if (error || !data) return;
 
-      console.log("DB Status:", data?.status, "| music_ai_job_id:", data?.music_ai_job_id, "| basic_pitch_job_ids:", JSON.stringify(data?.basic_pitch_job_ids));
-
       switch (data.status) {
         case "pending":
           setProcStep(0);
@@ -191,25 +189,17 @@ const AppPage = () => {
         case "separating":
           setProcStep(1);
           if (data.music_ai_job_id) {
-            console.log("Invoked poll-music-ai for:", transcriptionId);
             supabase.functions.invoke("poll-music-ai", {
               body: { transcription_id: transcriptionId },
-            }).then(({ data, error }) => {
-              if (error) console.error("poll-music-ai error:", error);
-              else console.log("poll-music-ai response:", JSON.stringify(data));
-            }).catch(console.error);
+            }).catch(() => {});
           }
           break;
         case "transcribing":
           setProcStep(3);
           if (data.basic_pitch_job_ids) {
-            console.log("Invoked poll-basic-pitch for:", transcriptionId);
             supabase.functions.invoke("poll-basic-pitch", {
               body: { transcription_id: transcriptionId },
-            }).then(({ data, error }) => {
-              if (error) console.error("poll-basic-pitch error:", error);
-              else console.log("poll-basic-pitch response:", JSON.stringify(data));
-            }).catch(console.error);
+            }).catch(() => {});
           }
           break;
         case "completed":
@@ -364,7 +354,7 @@ const AppPage = () => {
           audio_url: audioUrl,
           selected_instruments: selected,
         },
-      }).catch((err) => console.error("Start transcription error:", err));
+      }).catch(() => {});
 
       // D) Advance to Stage 2
       setUploading(false);
@@ -1111,16 +1101,6 @@ const handleDownload = (
 
         <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
 
-        {(outputs.length === 0 || !activeMusicXml) && (
-          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mt-4 font-mono text-xs space-y-1">
-            <p>Outputs count: {outputs.length}</p>
-            {outputs.map((o, i) => (
-              <p key={i}>{o.instrument} | {o.format} | {o.file_path.length} chars</p>
-            ))}
-            <p>Active instrument: {activeInstrumentName}</p>
-            <p>MusicXML: {activeMusicXml ? "YES" : "NO"}</p>
-          </div>
-        )}
       </div>
     </div>
   );
