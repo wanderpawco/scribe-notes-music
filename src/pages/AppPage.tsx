@@ -275,8 +275,7 @@ const AppPage = () => {
 
     try {
       // A) Upload audio to Supabase Storage using TUS resumable upload
-      const fileId = crypto.randomUUID();
-      const storagePath = `${fileId}/${audioFile.name}`;
+      const storagePath = `${user.id}/${crypto.randomUUID()}/${audioFile.name}`;
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -328,7 +327,6 @@ const AppPage = () => {
       const audioUrl = urlData.publicUrl;
 
       // B) Insert transcription row
-      const { data: { user } } = await supabase.auth.getUser();
       const { data: insertData, error: insertError } = await supabase
         .from("transcriptions")
         .insert({
