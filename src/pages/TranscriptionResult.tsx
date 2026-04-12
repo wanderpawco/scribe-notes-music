@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
-  Music, FileText, FileCode, Guitar, Lock,
+  Music, FileText, FileCode, Lock,
   ChevronDown, ArrowLeft, Loader2, Minus, Plus, RefreshCw
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
