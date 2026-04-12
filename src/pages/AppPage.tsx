@@ -626,6 +626,13 @@ const ResultsView = ({
 
   return (
     <div className="animate-fade-in">
+      {/* Hidden printable sheet */}
+      <div id="print-sheet" className="hidden">
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "24px", marginBottom: "4px" }}>{displayName}</h1>
+        <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>{selected[activeInstrument]}</p>
+        <SheetMusicSVG />
+      </div>
+
       {/* Success banner */}
       <div className="flex items-center justify-center gap-2 bg-teal text-white rounded-xl py-3 px-4 mb-8">
         <Check size={18} />
@@ -643,7 +650,7 @@ const ResultsView = ({
           </div>
 
           {/* Stem tabs */}
-          {selected.length > 1 && (
+          {selected.length > 1 ? (
             <div className="flex gap-1.5 overflow-x-auto mb-4 pb-1">
               {selected.map((name, i) => (
                 <button
@@ -659,21 +666,16 @@ const ResultsView = ({
                 </button>
               ))}
             </div>
+          ) : (
+            <div className="mb-4">
+              <span className="px-3 py-1.5 text-xs rounded-full bg-gold text-white border border-gold font-medium">
+                {selected[0]}
+              </span>
+            </div>
           )}
 
           <SheetMusicSVG />
 
-          {/* Instrument tags */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {selected.map((name) => (
-              <span
-                key={name}
-                className="px-2.5 py-1 rounded-full text-xs font-medium bg-gold-light text-gold border border-gold/20"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
 
           {/* ── ORIGINAL RECORDING ── */}
           <div className="border-t border-border mt-4 pt-4">
@@ -787,8 +789,9 @@ const ResultsView = ({
                   </div>
                   {opt.tier === "free" ? (
                     <button
+                      onClick={() => window.print()}
                       className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200"
-                      title="Coming Soon"
+                      title="Download as PDF"
                     >
                       Download
                     </button>

@@ -96,3 +96,14 @@
   }
   .animate-scan-bar { animation: scanBar 1.4s ease-in-out forwards; }
 }
+
+@media print {
+  body > *:not(#print-sheet) {
+    display: none !important;
+  }
+  #print-sheet {
+    display: block !important;
+    width: 100%;
+    padding: 20px;
+  }
+}
