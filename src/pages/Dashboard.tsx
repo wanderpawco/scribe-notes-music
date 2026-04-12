@@ -113,10 +113,10 @@ const Dashboard = () => {
                       <td className="px-4 py-3 text-right">
                         {t.status === "completed" && (
                           <Link
-                            to="/app"
-                            className="text-gold hover:text-gold-dark text-xs font-medium"
+                            to={`/transcription/${t.id}`}
+                            className="text-gold hover:text-gold-dark text-xs font-medium inline-flex items-center gap-1"
                           >
-                            View Results
+                            View Results →
                           </Link>
                         )}
                       </td>
