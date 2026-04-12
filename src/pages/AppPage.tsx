@@ -852,38 +852,60 @@ const ResultsView = ({
   );
   const activeMusicXml = activeXmlOutput?.file_path ?? null;
 
-  const handleDownload = (output: { instrument: string; format: string; file_path: string }) => {
-    const base64Data = output.file_path;
-    let mimeType: string;
-    let extension: string;
-
-    if (output.format === "midi") {
-      mimeType = "audio/midi";
-      extension = "mid";
-    } else {
-      mimeType = "application/vnd.recordare.musicxml+xml";
-      extension = "musicxml";
+const handleDownload = (
+  output: { instrument: string; format: string; file_path: string }
+) => {
+  const base64Data = output.file_path;
+  const safeName = displayName
+    .replace(/[^a-z0-9]/gi, "_")
+    .toLowerCase();
+  const instName = output.instrument
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+  try {
+    if (output.format === "musicxml") {
+      // MusicXML is text — decode base64 to string then
+      // save as UTF-8 text blob
+      const xmlString = atob(base64Data);
+      const blob = new Blob([xmlString], {
+        type: "application/vnd.recordare.musicxml+xml",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${safeName}_${instName}.musicxml`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      // Delay revoke so browser can start the download
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      return;
     }
-
-    try {
+    if (output.format === "midi") {
+      // MIDI is binary — decode base64 to byte array
       const binaryString = atob(base64Data);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
-      const blob = new Blob([bytes], { type: mimeType });
+      const blob = new Blob([bytes], { type: "audio/midi" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${displayName}_${output.instrument.toLowerCase().replace(/\s+/g, "_")}.${extension}`;
+      a.download = `${safeName}_${instName}.mid`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
+      // Delay revoke so browser can start the download
+      // and so repeated clicks still work
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      return;
     }
-  };
+  } catch (err) {
+    console.error("Download failed:", err);
+    alert("Download failed — please try again.");
+  }
+};
 
   return (
     <div className="animate-fade-in space-y-4">
