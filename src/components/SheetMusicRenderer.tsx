@@ -32,9 +32,10 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
             defaultColorStem: "#1a1a2e",
             defaultColorNotehead: "#1a1a2e",
             defaultColorRest: "#1a1a2e",
-            pageFormat: "Endless",
+            pageFormat: "A4 P",
             pageBackgroundColor: "#ffffff",
             renderSingleHorizontalStaffline: false,
+            fitLastSystemFillScreen: false,
           });
         }
 
@@ -63,7 +64,7 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
   }
 
   return (
-    <div ref={containerRef} className="w-full min-h-[300px] bg-white rounded-2xl border border-border p-6 overflow-x-auto shadow-sm" />
+    <div ref={containerRef} className="w-full min-h-[300px] bg-white rounded-2xl border border-border p-6 shadow-sm" style={{ overflow: "hidden", width: "100%" }} />
   );
 };
 

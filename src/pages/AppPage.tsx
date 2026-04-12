@@ -1201,7 +1201,7 @@ const handleDownload = (
                 if (!container) return;
                 const printWindow = window.open("", "_blank");
                 if (!printWindow) { alert("Please allow pop-ups for printing."); return; }
-                printWindow.document.write(`<html><head><title>${displayName} - ${activeInstrumentName}</title><style>@page{margin:0.5in;}*{margin:0;padding:0;box-sizing:border-box;}html,body{margin:0;padding:0;background:#fff;width:100%;}svg{width:100%;height:auto;display:block;}</style></head><body>${container.innerHTML}</body></html>`);
+                printWindow.document.write(`<html><head><title>${displayName} - ${activeInstrumentName}</title><style>@page{margin:0.5in;size:A4 portrait;}*{margin:0;padding:0;box-sizing:border-box;}html,body{margin:0;padding:0;background:#fff;width:100%;}svg{max-width:100%;height:auto;display:block;transform-origin:top left;page-break-inside:avoid;break-inside:avoid;}.systemline,.staffline,g[class*="system"],g[class*="System"]{page-break-inside:avoid;break-inside:avoid;}</style></head><body>${container.innerHTML}</body></html>`);
                 printWindow.document.close();
                 printWindow.onload = () => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); };
               }}
