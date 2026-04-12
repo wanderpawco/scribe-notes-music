@@ -424,6 +424,8 @@ interface ResultsViewProps {
   setSelectedKey: (k: string) => void;
   keyDropdownOpen: boolean;
   setKeyDropdownOpen: (o: boolean) => void;
+  bpm: number;
+  setBpm: (b: number) => void;
   resetAll: () => void;
 }
 
@@ -434,9 +436,12 @@ const ResultsView = ({
   setSelectedKey,
   keyDropdownOpen,
   setKeyDropdownOpen,
+  bpm,
+  setBpm,
   resetAll,
 }: ResultsViewProps) => {
   const displayName = fileName.replace(/\.[^/.]+$/, "");
+  const [activeInstrument, setActiveInstrument] = useState(0);
 
   return (
     <div className="animate-fade-in">
@@ -449,9 +454,32 @@ const ResultsView = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left: Sheet music preview */}
         <div className="bg-white border border-border rounded-xl p-6">
-          <h3 className="font-heading text-lg font-semibold text-ink mb-4">
-            {displayName}
-          </h3>
+          {/* Title */}
+          <h3 className="font-heading text-lg font-semibold text-ink">{displayName}</h3>
+          <div className="flex items-center gap-1.5 mt-0.5 mb-4">
+            <Music size={12} className="text-ink-soft" />
+            <span className="text-sm text-ink-soft">{selected[activeInstrument]}</span>
+          </div>
+
+          {/* Stem tabs */}
+          {selected.length > 1 && (
+            <div className="flex gap-1.5 overflow-x-auto mb-4 pb-1">
+              {selected.map((name, i) => (
+                <button
+                  key={name}
+                  onClick={() => setActiveInstrument(i)}
+                  className={`px-3 py-1.5 text-xs rounded-full border whitespace-nowrap transition-all duration-200 ${
+                    i === activeInstrument
+                      ? "bg-gold text-white border-gold font-medium"
+                      : "bg-surface text-ink-soft border-border hover:border-ink-muted"
+                  }`}
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          )}
+
           <SheetMusicSVG />
 
           {/* Instrument tags */}
@@ -466,43 +494,77 @@ const ResultsView = ({
             ))}
           </div>
 
-          {/* Meta badges */}
-          <div className="flex flex-wrap items-center gap-2 mt-3">
-            <span className="text-xs text-ink-muted bg-surface px-2.5 py-1 rounded-full border border-border">
-              Key: {selectedKey}
+          {/* ── ORIGINAL RECORDING ── */}
+          <div className="border-t border-border mt-4 pt-4">
+            <span className="text-[11px] text-ink-muted uppercase tracking-wider font-medium">
+              Original Recording
             </span>
-            <span className="text-xs text-ink-muted bg-surface px-2.5 py-1 rounded-full border border-border">
-              Tempo: 120 BPM
-            </span>
+            <div className="flex items-center bg-paper border border-border rounded-lg px-4 py-3 mt-2">
+              <div>
+                <span className="text-[10px] text-ink-muted uppercase tracking-wider block">Key</span>
+                <span className="text-sm font-medium text-ink">C Major</span>
+              </div>
+              <div className="w-px bg-border self-stretch mx-4" />
+              <div>
+                <span className="text-[10px] text-ink-muted uppercase tracking-wider block">BPM</span>
+                <span className="text-sm font-medium text-ink">120</span>
+              </div>
+            </div>
           </div>
 
-          {/* Transpose */}
-          <div className="relative mt-4">
-            <button
-              onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm text-ink hover:bg-surface transition-all duration-200"
-            >
-              <ArrowUpDown size={14} />
-              Transpose key
-              <ChevronDown size={14} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} />
-            </button>
-            {keyDropdownOpen && (
-              <div className="absolute z-20 mt-1 left-0 w-48 bg-surface border border-border rounded-xl shadow-card p-1 max-h-60 overflow-y-auto">
-                {allKeys.map((k) => (
-                  <button
-                    key={k}
-                    onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
-                    className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
-                      k === selectedKey
-                        ? "bg-gold-light text-gold font-medium"
-                        : "text-ink hover:bg-paper"
-                    }`}
-                  >
-                    {k}
-                  </button>
-                ))}
+          {/* ── ADJUSTMENTS ── */}
+          <div className="border-t border-border mt-4 pt-4">
+            <span className="text-[11px] text-ink-muted uppercase tracking-wider font-medium">
+              Adjustments
+            </span>
+            <div className="flex gap-2 mt-2">
+              {/* Transpose */}
+              <div className="relative">
+                <button
+                  onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm text-ink hover:bg-surface transition-all duration-200 h-10"
+                >
+                  <ArrowUpDown size={14} />
+                  {selectedKey}
+                  <ChevronDown size={14} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                {keyDropdownOpen && (
+                  <div className="absolute z-20 mt-1 left-0 w-48 bg-surface border border-border rounded-xl shadow-card p-1 max-h-60 overflow-y-auto">
+                    {allKeys.map((k) => (
+                      <button
+                        key={k}
+                        onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
+                        className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
+                          k === selectedKey
+                            ? "bg-gold-light text-gold font-medium"
+                            : "text-ink hover:bg-paper"
+                        }`}
+                      >
+                        {k}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* BPM control */}
+              <div className="inline-flex items-center border border-border rounded-lg h-10">
+                <button
+                  onClick={() => setBpm(Math.max(40, bpm - 5))}
+                  className="px-2 text-ink-soft hover:text-ink transition-colors"
+                >
+                  <Minus size={14} />
+                </button>
+                <span className="text-sm font-medium text-ink min-w-[36px] text-center">{bpm}</span>
+                <button
+                  onClick={() => setBpm(Math.min(240, bpm + 5))}
+                  className="px-2 text-ink-soft hover:text-ink transition-colors"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+              <span className="text-[10px] text-ink-muted self-center ml-1">BPM</span>
+            </div>
           </div>
         </div>
 
