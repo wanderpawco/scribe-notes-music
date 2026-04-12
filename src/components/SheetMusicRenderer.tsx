@@ -28,7 +28,7 @@ const SheetMusicRenderer = ({ musicXmlBase64, instrument }: SheetMusicRendererPr
             drawPartNames: false,
             drawMeasureNumbers: true,
             drawTimeSignatures: true,
-            drawKeySignatures: true,
+            
             followCursor: false,
             defaultColorStem: "#1a1a2e",
             defaultColorNotehead: "#1a1a2e",
