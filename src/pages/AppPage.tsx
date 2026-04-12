@@ -7,6 +7,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SheetMusicSVG from "@/components/SheetMusicSVG";
+import SheetMusicRenderer from "@/components/SheetMusicRenderer";
 import { supabase } from "@/integrations/supabase/client";
 
 const stepLabels = ["Upload", "Select Instruments", "Get Results"];
