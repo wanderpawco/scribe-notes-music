@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Music, FileText, FileCode, Lock,
-  ChevronDown, ArrowLeft, Loader2, Minus, Plus, RefreshCw
+  ChevronDown, ArrowLeft, Loader2, RefreshCw
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -190,40 +190,52 @@ const TranscriptionResult = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {/* ── TITLE ── */}
-              <h2 className="font-heading text-xl font-semibold text-ink mb-3">{displayName}</h2>
+              {/* ── HEADING ── */}
+              <div className="mb-4">
+                <h2 className="font-heading text-[2rem] font-bold text-ink">{displayName}</h2>
+                <p className="text-[14px] text-ink-muted mt-1">
+                  {activeInstrumentName}  •  {selectedKey}  •  {bpm} BPM
+                </p>
+              </div>
 
-              {/* ── Guitar Pro locked badge ── */}
+              {/* ── Free Plan badge ── */}
               <div className="flex justify-end">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase" style={{ background: 'rgba(200,169,110,0.1)', color: '#c8a96e', border: '1px solid rgba(200,169,110,0.25)' }}>
-                  <Lock size={10} />
-                  Guitar Pro — Coming Soon
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase" style={{ color: '#c8a96e', border: '1px solid rgba(200,169,110,0.5)', background: 'transparent' }}>
+                  Free Plan
                 </span>
               </div>
 
               {/* ── TOOLBAR ── */}
-              <div className="rounded-2xl overflow-hidden mb-4 shadow-lg" style={{ background: '#0f0f1a', border: '1px solid rgba(200,169,110,0.3)' }}>
-                {/* TOP ROW — centered instrument tabs only */}
-                <div className="flex items-center justify-center gap-3 px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div className="flex items-center gap-2 flex-wrap">
+              <div className="rounded-2xl mb-4 shadow-lg" style={{ background: '#0f0f1a', border: '1px solid rgba(200,169,110,0.3)', overflow: 'visible' }}>
+                {/* TOP ROW — centered instrument tabs + right-aligned New Transcription */}
+                <div className="relative flex items-center justify-center gap-3 px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div className="flex items-center gap-2 flex-wrap justify-center">
                     {selected.map((name, i) => (
                       <button
                         key={name}
                         onClick={() => setActiveInstrument(i)}
-                        className="px-5 py-2 text-sm font-semibold whitespace-nowrap transition-all rounded-full"
+                        className="px-5 py-2 text-[14px] font-semibold whitespace-nowrap transition-all rounded-full"
                         style={i === activeInstrument
-                          ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#0f0f1a', border: '1px solid #c8a96e' }
-                          : { background: '#ffffff', color: '#0f0f1a', border: '1px solid rgba(200,169,110,0.8)' }
+                          ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#0f0f1a', border: '1px solid #c8a96e', minHeight: '40px' }
+                          : { background: '#ffffff', color: '#0f0f1a', border: '1px solid rgba(200,169,110,0.8)', minHeight: '40px' }
                         }
                       >
                         {name}
                       </button>
                     ))}
                   </div>
+                  <Link
+                    to="/app"
+                    className="absolute right-5 inline-flex items-center gap-2 px-5 py-2 rounded-xl text-[13px] font-bold transition-all hover:brightness-110"
+                    style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
+                  >
+                    <RefreshCw size={14} />
+                    New Transcription
+                  </Link>
                 </div>
 
-                {/* BOTTOM ROW — controls + all transcriptions + downloads */}
-                <div className="flex items-center gap-4 px-6 py-4 flex-wrap" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                {/* BOTTOM ROW — Key left, downloads right */}
+                <div className="flex items-center justify-between gap-4 px-6 py-4 flex-wrap" style={{ background: 'rgba(255,255,255,0.03)', overflow: 'visible' }}>
                   {/* Left: Key transpose */}
                   <div className="flex items-center gap-2">
                     <span className="text-xs uppercase tracking-wider font-bold" style={{ color: '#c8a96e' }}>Key</span>
@@ -237,7 +249,7 @@ const TranscriptionResult = () => {
                         <ChevronDown size={14} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} style={{ color: '#c8a96e' }} />
                       </button>
                       {keyDropdownOpen && (
-                        <div className="absolute z-20 mt-1 left-0 w-44 rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto" style={{ background: '#1a1a2e', border: '1px solid rgba(200,169,110,0.3)' }}>
+                        <div className="fixed z-50 w-44 rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto" style={{ background: '#1a1a2e', border: '1px solid rgba(200,169,110,0.3)' }}>
                           {allKeys.map((k) => (
                             <button
                               key={k}
@@ -256,41 +268,6 @@ const TranscriptionResult = () => {
                         </div>
                       )}
                     </div>
-                  </div>
-
-                  {/* Left: BPM */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-wider font-bold" style={{ color: '#c8a96e' }}>Tempo</span>
-                    <div className="inline-flex items-center rounded-lg" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)', height: '40px' }}>
-                      <button
-                        onClick={() => setBpm(Math.max(40, bpm - 5))}
-                        className="px-3 py-2 transition-colors"
-                        style={{ color: 'rgba(255,255,255,0.5)' }}
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <span className="text-sm font-bold min-w-[36px] text-center" style={{ color: '#e8e8f0' }}>{bpm}</span>
-                      <button
-                        onClick={() => setBpm(Math.min(240, bpm + 5))}
-                        className="px-3 py-2 transition-colors"
-                        style={{ color: 'rgba(255,255,255,0.5)' }}
-                      >
-                        <Plus size={14} />
-                      </button>
-                    </div>
-                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>BPM</span>
-                  </div>
-
-                  {/* Center: All Transcriptions — ghost button */}
-                  <div className="flex-1 flex justify-center">
-                    <Link
-                      to="/dashboard"
-                      className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all"
-                      style={{ background: 'transparent', border: '1px solid rgba(200,169,110,0.5)', color: '#ffffff', height: '40px' }}
-                    >
-                      <RefreshCw size={14} />
-                      All Transcriptions
-                    </Link>
                   </div>
 
                   {/* Right: Download buttons — gold gradient */}
