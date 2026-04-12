@@ -99,8 +99,12 @@ Deno.serve(async (req) => {
     }
 
     if (statusData.status === "FAILED") {
+      console.error("Music.AI job FAILED:", JSON.stringify(statusData));
       await supabase.from("transcriptions")
-        .update({ status: "failed", error_message: "Music.AI stem separation failed" })
+        .update({ 
+          status: "failed", 
+          error_message: `Music.AI failed: ${JSON.stringify(statusData.error || statusData)}` 
+        })
         .eq("id", transcription_id);
       return new Response(JSON.stringify({ status: "failed" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

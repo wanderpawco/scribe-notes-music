@@ -77,6 +77,12 @@ Deno.serve(async (req) => {
       }),
     });
 
+    console.log("Submitting to Music.AI:", JSON.stringify({
+      workflow: "untitled-workflow-36652e8",
+      inputUrl: audio_url,
+      stemParams
+    }));
+
     if (!jobRes.ok) {
       const errText = await jobRes.text();
       throw new Error(`Music.AI job creation failed [${jobRes.status}]: ${errText}`);
