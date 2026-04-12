@@ -321,7 +321,7 @@ const TranscriptionResult = () => {
               {/* Sheet music */}
               <div className="bg-paper rounded-2xl overflow-hidden">
                 {activeMusicXml ? (
-                  <SheetMusicRenderer musicXml={activeMusicXml} />
+                  <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
                 ) : (
                   <div className="flex items-center justify-center py-20 text-ink-muted">
                     <Music size={48} className="opacity-50" />
