@@ -923,7 +923,7 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
         <p className="text-sm text-ink-muted">
           {stepMessages[procStep] || "Processing..."}
         </p>
-        {estimatedTime && procStep < 4 && (
+        {estimatedTime && procStep < 3 && (
           <div className="inline-flex items-center gap-1.5 
           mt-2 px-3 py-1.5 bg-teal/10 border border-teal/30 
           rounded-full">
