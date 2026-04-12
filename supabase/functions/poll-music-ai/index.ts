@@ -8,25 +8,54 @@ const corsHeaders = {
 const MUSIC_AI_BASE = "https://api.music.ai/v1";
 const BASIC_PITCH_BASE = "https://scribenoter-transcription-api.onrender.com";
 
-const instrumentMapping: Record<string, Record<string, boolean>> = {
-  "Vocals": { vocals: true },
-  "Lead Vocals": { lead_vocals: true },
-  "Backing Vocals": { backing_vocals: true },
-  "Drums": { drums: true, kick_drum: true, snare_drum: true, toms: true, "hi-hat": true, cymbals: true },
-  "Bass": { bass: true },
-  "Electric Guitar": { electric_guitar: true, guitars: true },
-  "Acoustic Guitar": { acoustic_guitar: true, guitars: true },
-  "Piano": { piano: true },
-  "Organ": { keys: true },
-  "Strings": { strings: true },
-  "Brass": { wind: true },
-  "Woodwinds": { wind: true },
-};
-
-function getPrimaryStemKeys(instrument: string): string[] {
-  const mapping = instrumentMapping[instrument];
-  if (!mapping) return [];
-  return Object.keys(mapping);
+function findStemUrl(
+  instrument: string, 
+  result: Record<string, string>
+): string | null {
+  console.log("Available stem keys from Music.AI:", Object.keys(result));
+  
+  const normalizedResult: Record<string, string> = {};
+  for (const [key, val] of Object.entries(result)) {
+    normalizedResult[key.toLowerCase()] = val;
+  }
+  
+  const keyVariants: Record<string, string[]> = {
+    "Vocals": ["vocals", "vocal", "voice", "voices", "singing"],
+    "Lead Vocals": ["lead_vocals", "lead vocals", "leadVocals", "vocals", "vocal"],
+    "Backing Vocals": ["backing_vocals", "backing vocals", "backingVocals", "backing", "vocals"],
+    "Drums": ["drums", "drum", "percussion", "kick_drum", "kit"],
+    "Bass": ["bass", "bass_guitar", "bassGuitar", "electric_bass"],
+    "Electric Guitar": ["electric_guitar", "electricGuitar", "guitar", "guitars", "electric"],
+    "Acoustic Guitar": ["acoustic_guitar", "acousticGuitar", "guitar", "guitars", "acoustic"],
+    "Piano": ["piano", "keys", "keyboard", "keyboards", "piano_keys"],
+    "Organ": ["organ", "keys", "keyboard", "keyboards"],
+    "Strings": ["strings", "string", "violin", "orchestra", "orchestral"],
+    "Brass": ["wind", "brass", "winds", "horn", "horns", "woodwind"],
+    "Woodwinds": ["wind", "woodwind", "woodwinds", "winds", "flute"],
+  };
+  const variants = keyVariants[instrument] || [];
+  
+  for (const variant of variants) {
+    if (result[variant]) {
+      console.log(`Found stem for ${instrument} using key: ${variant}`);
+      return result[variant];
+    }
+    if (normalizedResult[variant.toLowerCase()]) {
+      console.log(`Found stem for ${instrument} using normalized key: ${variant}`);
+      return normalizedResult[variant.toLowerCase()];
+    }
+  }
+  
+  const fallbackKeys = Object.keys(result).filter(k => 
+    !["other", "accompaniment", "accompaniments", "no_vocals"].includes(k.toLowerCase())
+  );
+  if (fallbackKeys.length > 0) {
+    console.warn(`No exact match for ${instrument}, using fallback key: ${fallbackKeys[0]}`);
+    return result[fallbackKeys[0]];
+  }
+  
+  console.error(`No stem URL found for ${instrument}. Available keys: ${Object.keys(result).join(", ")}`);
+  return null;
 }
 
 Deno.serve(async (req) => {
@@ -89,16 +118,9 @@ Deno.serve(async (req) => {
 
       // Submit Basic Pitch job for each selected instrument
       await Promise.all(txn.selected_instruments.map(async (instrument: string) => {
-        const stemKeys = getPrimaryStemKeys(instrument);
-        let stemUrl: string | null = null;
-        for (const key of stemKeys) {
-          if (result[key]) { stemUrl = result[key]; break; }
-        }
-
-        console.log(`Instrument: ${instrument}, stemKeys: ${JSON.stringify(stemKeys)}, stemUrl found: ${stemUrl ? "YES" : "NO"}`);
-
+        const stemUrl = findStemUrl(instrument, result);
         if (!stemUrl) {
-          console.warn(`No stem URL for ${instrument}`);
+          console.warn(`Skipping ${instrument} — no stem URL found`);
           return;
         }
 
