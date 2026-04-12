@@ -152,6 +152,7 @@ const AppPage = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [estimatedTime, setEstimatedTime] = useState<string | null>(null);
   const [songTitle, setSongTitle] = useState("");
+  const [rightsConfirmed, setRightsConfirmed] = useState(false);
 
   // Stage 2
   const [processing, setProcessing] = useState(true);
@@ -819,6 +820,19 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                   </p>
                 </div>
 
+                <div className="mt-6 flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="rights-confirm"
+                    checked={rightsConfirmed}
+                    onChange={(e) => setRightsConfirmed(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-border text-gold focus:ring-gold/50 focus:ring-2"
+                  />
+                  <label htmlFor="rights-confirm" className="text-sm text-ink-soft leading-relaxed cursor-pointer">
+                    I confirm that I own or have the rights to transcribe this audio recording.
+                  </label>
+                </div>
+
                 {transcriptionError && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
                     {transcriptionError}
@@ -827,11 +841,11 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
 
                 <button
                   onClick={handleTranscribe}
-                  disabled={selected.length === 0 || songTitle.trim() === '' || uploading}
+                  disabled={selected.length === 0 || songTitle.trim() === '' || !rightsConfirmed || uploading}
                   className={`w-full mt-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
                     uploading
                       ? "bg-gold-dark text-white cursor-wait"
-                      : selected.length > 0 && songTitle.trim() !== ''
+                      : selected.length > 0 && songTitle.trim() !== '' && rightsConfirmed
                       ? "bg-gold text-white hover:bg-gold-dark"
                       : "bg-border text-ink-muted cursor-not-allowed"
                   }`}
