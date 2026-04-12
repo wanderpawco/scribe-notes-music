@@ -51,6 +51,7 @@ export type Database = {
       }
       transcriptions: {
         Row: {
+          basic_pitch_job_ids: Json | null
           completed_at: string | null
           created_at: string
           detected_bpm: number | null
@@ -66,6 +67,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          basic_pitch_job_ids?: Json | null
           completed_at?: string | null
           created_at?: string
           detected_bpm?: number | null
@@ -81,6 +83,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          basic_pitch_job_ids?: Json | null
           completed_at?: string | null
           created_at?: string
           detected_bpm?: number | null
