@@ -395,11 +395,8 @@ const ProcessingView = ({ procStep }: { procStep: number }) => (
                 {active && step.duration > 0 && (
                   <div className="mt-1.5 h-1.5 bg-border rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-teal rounded-full transition-all ease-linear"
-                      style={{
-                        width: "100%",
-                        transitionDuration: `${step.duration}ms`,
-                      }}
+                      className="h-full bg-teal rounded-full animate-scan-bar"
+                      style={{ animationDuration: `${step.duration}ms` }}
                     />
                   </div>
                 )}
