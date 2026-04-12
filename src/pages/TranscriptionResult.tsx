@@ -134,7 +134,7 @@ const TranscriptionResult = () => {
       <Navbar />
       <main className="flex-1 pt-20 pb-4 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between">
             {/* Back link */}
             <Link
               to="/dashboard"
@@ -142,6 +142,15 @@ const TranscriptionResult = () => {
             >
               <ArrowLeft size={16} />
               Back to My Transcriptions
+            </Link>
+
+            {/* Start Over - New Transcription */}
+            <Link
+              to="/app"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gold text-white text-sm font-medium hover:bg-gold-dark transition-all"
+            >
+              <RefreshCw size={16} />
+              Start Over
             </Link>
           </div>
 

@@ -1265,11 +1265,11 @@ const handleDownload = (
 
           {/* New transcription */}
           <button
-            onClick={resetAll}
+            onClick={() => navigate("/app")}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-white text-ink text-xs font-medium hover:bg-surface transition-all ml-1"
           >
             <RefreshCw size={12} />
-            New
+            New Transcription
           </button>
         </div>
       </div>
