@@ -502,7 +502,7 @@ const AppPage = () => {
       <BetaBanner />
       <Navbar />
 
-      <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
+      <main className={`flex-1 pt-32 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
         <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator — hidden on results screen */}
           {stage < 2 && (

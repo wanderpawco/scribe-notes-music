@@ -91,13 +91,14 @@ const Navbar = () => {
 
   return (
     <>
-      <BetaBanner />
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 h-16 flex items-center transition-all duration-200 ${
-          scrolled ? "backdrop-blur-md bg-paper/80 shadow-card" : "bg-paper"
-        }`}
-      >
-        <div className="container flex items-center justify-between max-w-6xl mx-auto px-6">
+      <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+        <BetaBanner />
+        <nav
+          className={`h-16 flex items-center transition-all duration-200 ${
+            scrolled ? "backdrop-blur-md bg-paper/80 shadow-card" : "bg-paper"
+          }`}
+        >
+          <div className="container flex items-center justify-between max-w-6xl mx-auto px-6">
           <Link to="/" className="flex items-center gap-1.5 text-ink">
             <span className="text-5xl leading-none">𝄞</span>
             <span className="font-heading text-3xl font-bold">ScribeNoter</span>
@@ -249,6 +250,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
+    </div>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </>
