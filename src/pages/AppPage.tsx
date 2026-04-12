@@ -1044,6 +1044,7 @@ const ResultsView = ({
   outputs,
   songTitle,
 }: ResultsViewProps) => {
+  const navigate = useNavigate();
   const displayName = songTitle || fileName.replace(/\.[^/.]+$/, "");
   const [activeInstrument, setActiveInstrument] = useState(0);
 
