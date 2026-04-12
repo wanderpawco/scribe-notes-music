@@ -350,6 +350,8 @@ const AppPage = () => {
                 setSelectedKey={setSelectedKey}
                 keyDropdownOpen={keyDropdownOpen}
                 setKeyDropdownOpen={setKeyDropdownOpen}
+                bpm={bpm}
+                setBpm={setBpm}
                 resetAll={resetAll}
               />
             )}
