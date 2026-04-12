@@ -353,6 +353,7 @@ const AppPage = () => {
     setFileName("");
     setAudioFile(null);
     setSelected([]);
+    setEstimatedTime(null);
     setScanning(true);
     setProcessing(true);
     setProcStep(0);
@@ -655,7 +656,12 @@ const AppPage = () => {
 };
 
 /* ── Processing sub-view ── */
-const ProcessingView = ({ procStep }: { procStep: number }) => {
+interface ProcessingViewProps {
+  procStep: number;
+  estimatedTime: string | null;
+}
+
+const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   const [elapsed, setElapsed] = useState(0);
   const [stepProgress, setStepProgress] = useState(0);
   const stepStartRef = useRef(0);
@@ -704,9 +710,16 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
         Transcribing your music...
       </h2>
 
-      <p className="text-sm text-ink-muted mb-10">
-        {stepMessages[procStep] || "Processing..."}
-      </p>
+      <div className="mb-10">
+        <p className="text-sm text-ink-muted">
+          {stepMessages[procStep] || "Processing..."}
+        </p>
+        {estimatedTime && procStep <= 1 && (
+          <p className="text-xs text-ink-muted mt-1">
+            Expected total time: <span className="font-medium">{estimatedTime}</span>
+          </p>
+        )}
+      </div>
 
       <div className="max-w-md mx-auto space-y-0">
         {processingSteps.map((step, i) => {
