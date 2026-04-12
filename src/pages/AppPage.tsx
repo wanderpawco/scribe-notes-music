@@ -319,6 +319,7 @@ const AppPage = () => {
       const audioUrl = urlData.publicUrl;
 
       // B) Insert transcription row
+      const { data: { user } } = await supabase.auth.getUser();
       const { data: insertData, error: insertError } = await supabase
         .from("transcriptions")
         .insert({
@@ -328,6 +329,7 @@ const AppPage = () => {
           selected_instruments: selected,
           detected_key: "C Major",
           detected_bpm: 120,
+          user_id: user?.id ?? null,
         })
         .select("id")
         .single();
