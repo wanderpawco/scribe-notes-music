@@ -587,22 +587,35 @@ const ResultsView = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
                       <span className="text-sm font-medium text-ink">{opt.name}</span>
-                      {!opt.free && (
+                      {opt.tier === "pro" && (
                         <span className="text-[10px] font-bold bg-gold-light text-gold px-1.5 py-0.5 rounded">
                           Pro
+                        </span>
+                      )}
+                      {opt.tier === "studio" && (
+                        <span className="text-[10px] font-bold bg-ink text-paper px-1.5 py-0.5 rounded">
+                          Studio
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-ink-muted">{opt.desc}</p>
                   </div>
-                  {opt.free ? (
+                  {opt.tier === "free" ? (
                     <button className="px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all duration-200">
+                      Download
+                    </button>
+                  ) : opt.tier === "pro" ? (
+                    <button
+                      className="px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed flex items-center gap-1"
+                      title="Upgrade to Pro to unlock"
+                    >
+                      <Lock size={12} />
                       Download
                     </button>
                   ) : (
                     <button
                       className="px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed flex items-center gap-1"
-                      title="Upgrade to Pro to unlock"
+                      title="Upgrade to Studio to unlock"
                     >
                       <Lock size={12} />
                       Download
