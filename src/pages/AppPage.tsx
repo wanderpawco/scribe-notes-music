@@ -200,7 +200,7 @@ const AppPage = () => {
           setProcStep(0);
           break;
         case "separating":
-          setProcStep(1);
+          setProcStep(0);
           if (data.music_ai_job_id) {
             supabase.functions.invoke("poll-music-ai", {
               body: { transcription_id: transcriptionId },
@@ -208,7 +208,7 @@ const AppPage = () => {
           }
           break;
         case "transcribing":
-          setProcStep(3);
+          setProcStep(1);
           if (data.basic_pitch_job_ids) {
             supabase.functions.invoke("poll-basic-pitch", {
               body: { transcription_id: transcriptionId },
@@ -216,7 +216,7 @@ const AppPage = () => {
           }
           break;
         case "completed":
-          setProcStep(4);
+          setProcStep(3);
           setTimeout(() => setProcessing(false), 600);
           return;
         case "failed":
