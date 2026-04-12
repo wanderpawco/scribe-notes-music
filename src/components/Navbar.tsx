@@ -104,7 +104,7 @@ const Navbar = () => {
             <span className="font-heading text-3xl font-bold">ScribeNoter</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-12">
+          <div className="hidden md:flex items-center justify-center gap-12">
             {navLinks.map((link) =>
               link.href.startsWith("#") ? (
                 <a
@@ -126,7 +126,7 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center justify-end gap-3">
             {user ? (
               <div ref={avatarRef} className="relative">
                   <button
