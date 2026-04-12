@@ -1245,11 +1245,11 @@ const handleDownload = (
           <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
             {activeInstrumentName}
           </p>
-          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
         </div>
 
         <div id="osmd-render-container">
-          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
+          <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
         </div>
 
       </div>
