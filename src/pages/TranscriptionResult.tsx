@@ -193,24 +193,32 @@ const TranscriptionResult = () => {
               {/* ── TITLE ── */}
               <h2 className="font-heading text-xl font-semibold text-ink mb-3">{displayName}</h2>
 
+              {/* ── Guitar Pro locked badge ── */}
+              <div className="flex justify-end">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase" style={{ background: 'rgba(200,169,110,0.1)', color: '#c8a96e', border: '1px solid rgba(200,169,110,0.25)' }}>
+                  <Lock size={10} />
+                  Guitar Pro — Coming Soon
+                </span>
+              </div>
+
               {/* ── TOOLBAR ── */}
-              <div className="bg-white border border-border rounded-2xl overflow-hidden mb-4 shadow-sm">
+              <div className="rounded-2xl overflow-hidden mb-4 shadow-lg" style={{ background: '#0f0f1a', border: '1px solid rgba(200,169,110,0.3)' }}>
                 {/* TOP ROW — file name + instrument tabs */}
-                <div className="flex items-center gap-3 px-5 py-3 border-b border-border">
+                <div className="flex items-center gap-3 px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                   <div className="flex items-center gap-2 min-w-0 flex-1">
                     <Music size={14} className="text-gold shrink-0" />
-                    <span className="font-heading text-sm font-semibold text-ink truncate">{displayName}</span>
+                    <span className="font-heading text-sm font-semibold truncate" style={{ color: '#e8e8f0' }}>{displayName}</span>
                   </div>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {selected.map((name, i) => (
                       <button
                         key={name}
                         onClick={() => setActiveInstrument(i)}
-                        className={`px-3 py-1 text-xs rounded-full border font-medium whitespace-nowrap transition-all ${
-                          i === activeInstrument
-                            ? "bg-ink text-paper border-ink"
-                            : "bg-paper text-ink-soft border-border hover:border-ink-muted hover:text-ink"
-                        }`}
+                        className="px-3 py-1 text-xs rounded-full font-medium whitespace-nowrap transition-all"
+                        style={i === activeInstrument
+                          ? { background: 'rgba(255,255,255,0.1)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.2)', borderBottom: '2px solid #c8a96e' }
+                          : { background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.12)' }
+                        }
                       >
                         {name}
                       </button>
@@ -219,29 +227,32 @@ const TranscriptionResult = () => {
                 </div>
 
                 {/* BOTTOM ROW — controls + downloads */}
-                <div className="flex items-center gap-2 px-5 py-3 flex-wrap bg-surface">
+                <div className="flex items-center gap-2 px-5 py-3 flex-wrap" style={{ background: 'rgba(255,255,255,0.03)' }}>
                   {/* Key transpose */}
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] uppercase tracking-wider font-semibold text-ink-muted">Key</span>
+                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: '#c8a96e' }}>Key</span>
                     <div className="relative">
                       <button
                         onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border bg-white text-xs text-ink hover:border-ink-muted transition-all h-8 font-medium"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all h-8 font-medium"
+                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)', color: '#e8e8f0' }}
                       >
                         {selectedKey}
-                        <ChevronDown size={11} className={`transition-transform text-ink-muted ${keyDropdownOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown size={11} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} style={{ color: '#c8a96e' }} />
                       </button>
                       {keyDropdownOpen && (
-                        <div className="absolute z-20 mt-1 left-0 w-44 bg-white border border-border rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto">
+                        <div className="absolute z-20 mt-1 left-0 w-44 rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto" style={{ background: '#1a1a2e', border: '1px solid rgba(200,169,110,0.3)' }}>
                           {allKeys.map((k) => (
                             <button
                               key={k}
                               onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
-                              className={`w-full text-left text-xs px-3 py-2 rounded-lg transition-colors ${
-                                k === selectedKey
-                                  ? "bg-gold text-white font-medium"
-                                  : "text-ink hover:bg-surface"
-                              }`}
+                              className="w-full text-left text-xs px-3 py-2 rounded-lg transition-colors"
+                              style={k === selectedKey
+                                ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', fontWeight: 500 }
+                                : { color: '#e8e8f0' }
+                              }
+                              onMouseEnter={e => { if (k !== selectedKey) (e.target as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
+                              onMouseLeave={e => { if (k !== selectedKey) (e.target as HTMLButtonElement).style.background = 'transparent'; }}
                             >
                               {k}
                             </button>
@@ -253,29 +264,31 @@ const TranscriptionResult = () => {
 
                   {/* BPM */}
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] uppercase tracking-wider font-semibold text-ink-muted">Tempo</span>
-                    <div className="inline-flex items-center bg-white border border-border rounded-lg h-8">
+                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: '#c8a96e' }}>Tempo</span>
+                    <div className="inline-flex items-center rounded-lg h-8" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)' }}>
                       <button
                         onClick={() => setBpm(Math.max(40, bpm - 5))}
-                        className="px-2 text-ink-muted hover:text-ink transition-colors"
+                        className="px-2 transition-colors"
+                        style={{ color: 'rgba(255,255,255,0.5)' }}
                       >
                         <Minus size={11} />
                       </button>
-                      <span className="text-xs font-semibold text-ink min-w-[32px] text-center">{bpm}</span>
+                      <span className="text-xs font-semibold min-w-[32px] text-center" style={{ color: '#e8e8f0' }}>{bpm}</span>
                       <button
                         onClick={() => setBpm(Math.min(240, bpm + 5))}
-                        className="px-2 text-ink-muted hover:text-ink transition-colors"
+                        className="px-2 transition-colors"
+                        style={{ color: 'rgba(255,255,255,0.5)' }}
                       >
                         <Plus size={11} />
                       </button>
                     </div>
-                    <span className="text-[10px] text-ink-muted">BPM</span>
+                    <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>BPM</span>
                   </div>
 
                   {/* Spacer */}
                   <div className="flex-1" />
 
-                  {/* Download buttons — dark background so they stand out against parchment */}
+                  {/* Download buttons — gold gradient */}
                   <div className="flex items-center gap-2">
                     {/* PDF — always available */}
                     <button
@@ -288,7 +301,8 @@ const TranscriptionResult = () => {
                         printWindow.document.close();
                         printWindow.onload = () => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); };
                       }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110"
+                      style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810' }}
                     >
                       <FileText size={13} />
                       PDF Sheet Music
@@ -298,19 +312,21 @@ const TranscriptionResult = () => {
                     {outputs.some(o => o.format === "midi") ? (
                       <button
                         onClick={() => outputs.filter(o => o.format === "midi").forEach(o => handleDownload(o))}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110"
+                        style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810' }}
                       >
                         <Music size={13} />
                         MIDI File
                       </button>
                     ) : (
                       <button
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-ink-muted text-xs font-medium cursor-not-allowed"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium cursor-not-allowed"
                         title="Available on Pro plan"
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' }}
                       >
                         <Lock size={13} />
                         MIDI
-                        <span className="text-[9px] bg-gold/20 text-gold px-1.5 py-0.5 rounded font-bold">PRO</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(200,169,110,0.2)', color: '#c8a96e' }}>PRO</span>
                       </button>
                     )}
 
@@ -318,37 +334,30 @@ const TranscriptionResult = () => {
                     {outputs.some(o => o.format === "musicxml") ? (
                       <button
                         onClick={() => outputs.filter(o => o.format === "musicxml").forEach(o => handleDownload(o))}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110"
+                        style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810' }}
                       >
                         <FileCode size={13} />
                         MusicXML
                       </button>
                     ) : (
                       <button
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-ink-muted text-xs font-medium cursor-not-allowed"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium cursor-not-allowed"
                         title="Available on Pro plan"
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' }}
                       >
                         <Lock size={13} />
                         MusicXML
-                        <span className="text-[9px] bg-gold/20 text-gold px-1.5 py-0.5 rounded font-bold">PRO</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(200,169,110,0.2)', color: '#c8a96e' }}>PRO</span>
                       </button>
                     )}
-
-                    {/* Guitar Pro — Studio only */}
-                    <button
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-ink-muted text-xs font-medium cursor-not-allowed"
-                      title="Available on Studio plan"
-                    >
-                      <Guitar size={13} />
-                      Guitar Pro
-                      <span className="text-[9px] bg-ink text-paper px-1.5 py-0.5 rounded font-bold">STUDIO</span>
-                    </button>
                   </div>
 
-                  {/* All Transcriptions link */}
+                  {/* All Transcriptions — ghost button */}
                   <Link
                     to="/dashboard"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-white text-ink text-xs font-medium hover:bg-surface transition-all ml-1"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ml-1"
+                    style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}
                   >
                     <RefreshCw size={12} />
                     All Transcriptions
