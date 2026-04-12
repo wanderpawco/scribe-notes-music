@@ -461,7 +461,7 @@ const AppPage = () => {
     <div className="min-h-screen bg-paper flex flex-col">
       <Navbar />
 
-      <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#0f0f14]" : ""}`}>
+      <main className={`flex-1 pt-24 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
         <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator */}
           <div className="flex items-center justify-center gap-0 mb-10">
@@ -469,22 +469,22 @@ const AppPage = () => {
               <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
+className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
                       i <= activeStep
                         ? "bg-gold text-white"
                         : stage === 0
-                        ? "bg-white/10 border border-white/20 text-white/40"
+                        ? "border border-white/30 text-white/70"
                         : "bg-surface border border-border text-ink-muted"
                     }`}
                   >
                     {i < activeStep ? <Check size={14} /> : i + 1}
                   </div>
                   <span
-                    className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
+className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
                       i <= activeStep 
                         ? "text-gold" 
                         : stage === 0
-                        ? "text-white/30"
+                        ? "text-white/50"
                         : "text-ink-muted"
                     }`}
                   >
@@ -495,12 +495,12 @@ const AppPage = () => {
                   )}
                 </div>
                 {i < stepLabels.length - 1 && (
-                  <div
+<div
                     className={`w-16 md:w-24 h-px mx-2 mb-5 transition-colors duration-300 ${
                       i < activeStep 
                         ? "bg-gold" 
                         : stage === 0
-                        ? "bg-white/10"
+                        ? "bg-white/15"
                         : "bg-border"
                     }`}
                   />
@@ -509,7 +509,7 @@ const AppPage = () => {
             ))}
           </div>
 
-          {/* ═══════════ STAGE 0: Upload ═══════════ */}
+{/* ═══════════ STAGE 0: Upload ═══════════ */}
           <div
             className={`transition-all duration-400 ${
               stage === 0
@@ -525,118 +525,157 @@ const AppPage = () => {
               onChange={onFileInput}
             />
 
-            {/* Dark hero upload zone */}
-            <div className={`relative rounded-2xl overflow-hidden bg-[#0f0f14] border-2 border-dashed transition-all duration-300 animate-fade-up ${
-              dragOver ? "border-gold" : "border-white/20 hover:border-white/40"
-            }`}>
-
-              {/* Animated waveform background */}
-              <div className="absolute inset-0 flex items-center justify-center gap-[3px] opacity-20 pointer-events-none">
-                {[...Array(80)].map((_, i) => (
+            {/* ── MAIN DROP ZONE ── */}
+            <div
+              className={`relative rounded-2xl overflow-hidden bg-[#080810] border-[3px] border-gold animate-border-glow animate-fade-up cursor-pointer transition-all duration-300 ${
+                dragOver ? "scale-[1.01]" : "hover:border-gold-light"
+              }`}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={onDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              
+              {/* Animated waveform — bright and visible */}
+              <div className="absolute inset-0 flex items-center justify-center gap-[4px] opacity-40 pointer-events-none">
+                {[...Array(60)].map((_, i) => (
                   <div
                     key={i}
-                    className="w-[3px] rounded-full bg-gold"
+                    className="w-[4px] rounded-full bg-gold"
                     style={{
-                      animation: `wave${(i % 5) + 1} ${1.5 + (i % 7) * 0.3}s ease-in-out infinite`,
-                      animationDelay: `${i * 0.05}s`,
+                      animation: `wave${(i % 5) + 1} ${1.2 + (i % 6) * 0.25}s ease-in-out infinite`,
+                      animationDelay: `${i * 0.04}s`,
                     }}
                   />
                 ))}
               </div>
 
-              {/* Upload content */}
+              {/* Upload content — sits above waveform */}
               <div
-                className={`relative z-10 flex flex-col items-center justify-center min-h-[340px] p-10 cursor-pointer transition-all duration-300 ${
-                  dragOver ? "bg-gold/10" : ""
-                }`}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={onDrop}
-                onClick={() => fileInputRef.current?.click()}
+                className="relative z-10 flex flex-col items-center justify-center min-h-[360px] p-10"
               >
-
-                {/* Glowing upload icon */}
-                <div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mb-6 animate-glow-pulse">
-                  <Upload size={32} className="text-gold" />
+                
+                {/* Upload icon */}
+                <div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mb-8 animate-glow-pulse">
+                  <Upload size={36} className="text-gold" />
                 </div>
 
-                <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 text-center animate-fade-up-delay-1">
+                {/* Main heading — BIG and white */}
+                <h2 className="font-heading text-5xl md:text-6xl font-bold mb-4 text-center text-white animate-fade-up-delay-1">
                   Drop your audio file here
                 </h2>
 
-                <p className="text-white/40 text-base mb-8 text-center animate-fade-up-delay-2">
+                {/* Subtitle */}
+                <p className="text-lg text-white/40 mb-10 text-center animate-fade-up-delay-2">
                   MP3, WAV, FLAC, M4A — up to 500MB
                 </p>
 
+                {/* Browse button */}
                 <button
-                  className="px-8 py-3.5 rounded-xl bg-gold text-white text-base font-bold hover:bg-gold-dark transition-all duration-200 shadow-lg shadow-gold/20 animate-fade-up-delay-3"
                   onClick={(e) => { 
                     e.stopPropagation(); 
                     fileInputRef.current?.click(); 
                   }}
+                  style={{
+                    background: "linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)",
+                    color: "#080810",
+                    fontSize: "1.1rem",
+                    fontWeight: "800",
+                    padding: "16px 48px",
+                    borderRadius: "14px",
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 30px rgba(200,169,110,0.5)",
+                    letterSpacing: "0.03em",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={e => {
+                    (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+                    (e.target as HTMLButtonElement).style.boxShadow = "0 6px 40px rgba(200,169,110,0.7)";
+                  }}
+                  onMouseLeave={e => {
+                    (e.target as HTMLButtonElement).style.transform = "scale(1)";
+                    (e.target as HTMLButtonElement).style.boxShadow = "0 4px 30px rgba(200,169,110,0.5)";
+                  }}
+                  className="animate-fade-up-delay-3"
                 >
                   Browse Files
                 </button>
               </div>
             </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-4 my-6 animate-fade-up-delay-2">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-sm text-white/30">or</span>
-              <div className="flex-1 h-px bg-white/10" />
+            {/* ── DIVIDER ── */}
+            <div className="flex items-center gap-4 my-8 animate-fade-up-delay-2">
+              <div className="flex-1 h-px bg-white/15" />
+              <span className="text-base text-white/30 font-medium">or</span>
+              <div className="flex-1 h-px bg-white/15" />
             </div>
 
-            {/* Record button */}
+            {/* ── RECORD BUTTON ── */}
             {!recording ? (
               <button
                 onClick={startRecording}
-                className="w-full flex items-center justify-center gap-3 px-4 py-4 rounded-2xl border-2 text-base font-semibold transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] animate-fade-up-delay-3"
+                className="w-full flex items-center justify-center gap-4 px-6 py-5 rounded-2xl text-base font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-fade-up-delay-3"
                 style={{ 
-                  borderColor: "#c8a96e",
-                  color: "#c8a96e",
-                  background: "rgba(200, 169, 110, 0.08)",
+                  background: "#c8a96e",
+                  color: "#080810",
+                  boxShadow: "0 4px 30px rgba(200,169,110,0.4)",
+                }}
+                onMouseEnter={e => {
+                  (e.target as HTMLButtonElement).style.background = "#e8c98e";
+                  (e.target as HTMLButtonElement).style.boxShadow = "0 6px 40px rgba(200,169,110,0.6)";
+                }}
+                onMouseLeave={e => {
+                  (e.target as HTMLButtonElement).style.background = "#c8a96e";
+                  (e.target as HTMLButtonElement).style.boxShadow = "0 4px 30px rgba(200,169,110,0.4)";
                 }}
               >
-                <div className="w-8 h-8 rounded-full border border-gold/60 flex items-center justify-center" style={{ background: "rgba(200, 169, 110, 0.15)" }}>
-                  <Mic size={16} className="text-gold" />
+                <div className="w-10 h-10 rounded-full border-2 border-[#080810]/20 flex items-center justify-center bg-[#080810]/10">
+                  <Mic size={20} className="text-[#080810]" />
                 </div>
                 Record live audio
               </button>
             ) : (
-              <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 border-red-500/50 bg-red-500/10 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="font-medium text-red-400">
+              <div className="w-full flex items-center justify-between px-6 py-4 rounded-2xl border-2 border-red-500 bg-red-500/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+                  <span className="font-semibold text-red-400 text-base">
                     Recording
                   </span>
-                  <span className="text-red-400/70 font-mono text-xs">
-                    {Math.floor(recordingTime / 60).toString().padStart(2, "0")}:
+                  <span className="text-red-400/70 font-mono text-sm">
+                    {Math.floor(recordingTime / 60).toString()
+                      .padStart(2, "0")}:
                     {(recordingTime % 60).toString().padStart(2, "0")}
                   </span>
                 </div>
                 <button
                   onClick={stopRecording}
-                  className="px-4 py-1.5 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-all"
+                  className="px-6 py-2 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 transition-all"
                 >
                   Stop & Transcribe
                 </button>
               </div>
             )}
 
-            {/* Format pills */}
-            <div className="flex items-center justify-center gap-2 mt-6">
-              {["MP3", "WAV", "FLAC", "M4A"].map((fmt) => (
-                <span
-                  key={fmt}
-                  className="px-4 py-1.5 rounded-full text-xs font-medium tracking-wider text-white/30 bg-white/5 border border-white/10"
-                >
-                  {fmt}
-                </span>
-              ))}
+            {/* ── FORMAT BADGES ── */}
+            <div className="flex flex-col items-center mt-8 animate-fade-up-delay-3">
+              <p className="text-sm text-white/30 font-medium mb-3 tracking-wide uppercase">
+                Supported formats:
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                {["MP3", "WAV", "FLAC", "M4A"].map((fmt) => (
+                  <span
+                    key={fmt}
+                    className="px-5 py-2 rounded-full text-sm font-bold tracking-wider text-gold border border-gold/40 bg-gold/5"
+                  >
+                    {fmt}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <p className="text-center text-sm text-white/25 mt-5">
+            {/* ── FOOTER NOTE ── */}
+            <p className="text-center text-base text-white/25 mt-8 font-medium">
               Free account required — sign up takes 30 seconds
             </p>
           </div>
