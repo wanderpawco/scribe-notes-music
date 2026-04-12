@@ -260,7 +260,15 @@ const TranscriptionResult = () => {
                   <div className="flex items-center gap-2">
                     {/* PDF — always available */}
                     <button
-                      onClick={() => window.print()}
+                      onClick={() => {
+                        const container = document.getElementById("osmd-render-container");
+                        if (!container) return;
+                        const printWindow = window.open("", "_blank");
+                        if (!printWindow) { alert("Please allow pop-ups for printing."); return; }
+                        printWindow.document.write(`<html><head><title>${displayName} - ${activeInstrumentName}</title><style>@page{margin:0.5in;size:A4 portrait;}*{margin:0;padding:0;box-sizing:border-box;}html,body{margin:0;padding:0;background:#fff;width:100%;}svg{max-width:100%;height:auto;display:block;}</style></head><body>${container.innerHTML}</body></html>`);
+                        printWindow.document.close();
+                        printWindow.onload = () => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); };
+                      }}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
                     >
                       <FileText size={13} />
@@ -330,7 +338,7 @@ const TranscriptionResult = () => {
               </div>
 
               {/* Sheet music */}
-              <div className="bg-paper rounded-2xl overflow-hidden">
+              <div id="osmd-render-container" className="bg-paper rounded-2xl overflow-hidden">
                 {activeMusicXml ? (
                   <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} />
                 ) : (
