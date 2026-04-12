@@ -165,6 +165,17 @@ const TranscriptionResult = () => {
             <div className="flex items-center justify-center py-20">
               <Loader2 size={32} className="animate-spin text-gold" />
             </div>
+          ) : error === "__processing__" ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <Loader2 size={48} className="animate-spin text-gold mb-4" />
+              <p className="text-ink font-medium mb-2">Your transcription is still processing — check back soon.</p>
+              <Link
+                to="/dashboard"
+                className="text-gold hover:text-gold-dark text-sm font-medium mt-4"
+              >
+                ← Back to My Transcriptions
+              </Link>
+            </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <Music size={48} className="text-ink-muted mb-4" />
