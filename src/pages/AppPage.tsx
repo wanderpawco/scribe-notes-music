@@ -112,19 +112,14 @@ const AppPage = () => {
   useEffect(() => {
     if (stage !== 2 || !processing || !transcriptionId) return;
 
-    const interval = setInterval(async () => {
+    const pollTranscription = async () => {
       const { data, error } = await supabase
         .from("transcriptions")
-        .select("status, error_message")
+        .select("status, error_message, music_ai_job_id, basic_pitch_job_ids")
         .eq("id", transcriptionId)
         .single();
 
-      if (error) {
-        console.error("Poll error:", error);
-        return;
-      }
-
-      if (!data) return;
+      if (error || !data) return;
 
       switch (data.status) {
         case "pending":
@@ -132,22 +127,33 @@ const AppPage = () => {
           break;
         case "separating":
           setProcStep(1);
+          if (data.music_ai_job_id) {
+            supabase.functions.invoke("poll-music-ai", {
+              body: { transcription_id: transcriptionId },
+            }).catch(console.error);
+          }
           break;
         case "transcribing":
-          setProcStep(3);
+          setProcStep(2);
+          if (data.basic_pitch_job_ids) {
+            supabase.functions.invoke("poll-basic-pitch", {
+              body: { transcription_id: transcriptionId },
+            }).catch(console.error);
+          }
           break;
         case "completed":
           setProcStep(4);
           setTimeout(() => setProcessing(false), 600);
-          clearInterval(interval);
-          break;
+          return;
         case "failed":
-          setTranscriptionError(data.error_message || "An unknown error occurred");
-          clearInterval(interval);
-          break;
+          setTranscriptionError(
+            data.error_message || "An unknown error occurred"
+          );
+          return;
       }
-    }, 3000);
+    };
 
+    const interval = setInterval(pollTranscription, 5000);
     return () => clearInterval(interval);
   }, [stage, processing, transcriptionId]);
 
@@ -262,13 +268,13 @@ const AppPage = () => {
       setTranscriptionId(newId);
 
       // C) Call edge function (fire and forget — it runs async)
-      supabase.functions.invoke("process-transcription", {
+      supabase.functions.invoke("start-transcription", {
         body: {
           transcription_id: newId,
           audio_url: audioUrl,
           selected_instruments: selected,
         },
-      }).catch((err) => console.error("Edge function invoke error:", err));
+      }).catch((err) => console.error("Start transcription error:", err));
 
       // D) Advance to Stage 2
       setUploading(false);

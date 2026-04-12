@@ -1,0 +1,1 @@
+ALTER TABLE transcriptions ADD COLUMN IF NOT EXISTS basic_pitch_job_ids jsonb;
