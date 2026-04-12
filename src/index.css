@@ -89,4 +89,10 @@
 
   .animate-pop-in { animation: popIn 0.3s ease forwards; }
   .animate-fade-in { animation: fadeIn 0.4s ease forwards; }
+
+  @keyframes scanBar {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+  .animate-scan-bar { animation: scanBar 1.4s ease-in-out forwards; }
 }
