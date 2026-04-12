@@ -55,8 +55,15 @@ const TranscriptionResult = () => {
         return;
       }
 
-      if (txn.status !== "completed") {
+      const inProgressStatuses = ["pending", "separating", "transcribing"];
+      if (txn.status !== "completed" && !inProgressStatuses.includes(txn.status)) {
         setError(`This transcription has status: ${txn.status}. Only completed transcriptions can be viewed.`);
+        setLoading(false);
+        return;
+      }
+
+      if (txn.status !== "completed" && inProgressStatuses.includes(txn.status)) {
+        setError("__processing__");
         setLoading(false);
         return;
       }

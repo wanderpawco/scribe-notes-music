@@ -112,14 +112,21 @@ const Dashboard = () => {
                         {t.selected_instruments.length > 3 && ` +${t.selected_instruments.length - 3}`}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        {t.status === "completed" && (
+                        {t.status === "completed" ? (
                           <Link
                             to={`/transcription/${t.id}`}
                             className="text-gold hover:text-gold-dark text-xs font-medium inline-flex items-center gap-1"
                           >
                             View Results →
                           </Link>
-                        )}
+                        ) : ["pending", "separating", "transcribing"].includes(t.status) ? (
+                          <Link
+                            to={`/transcription/${t.id}`}
+                            className="text-gold hover:text-gold-dark text-xs font-medium inline-flex items-center gap-1"
+                          >
+                            View Progress →
+                          </Link>
+                        ) : null}
                       </td>
                     </tr>
                   ))}
