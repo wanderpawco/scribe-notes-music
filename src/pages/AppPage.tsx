@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard,
-  FileText, FileCode, Lock, ChevronDown, RefreshCw, ArrowUpDown,
+  FileText, FileCode, Lock, ChevronDown, RefreshCw, ArrowUpDown, Minus, Plus,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
