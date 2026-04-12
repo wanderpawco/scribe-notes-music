@@ -254,6 +254,15 @@ const AppPage = () => {
   const handleTranscribe = async () => {
     if (!audioFile || selected.length === 0) return;
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setTranscriptionError(
+        "Please sign in to transcribe audio. Click Sign In above."
+      );
+      setUploading(false);
+      return;
+    }
+
     const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
     if (audioFile.size > MAX_FILE_SIZE) {
       setTranscriptionError("File too large. Maximum file size is 500MB.");
@@ -487,7 +496,7 @@ const AppPage = () => {
             </div>
 
             <p className="text-center text-xs text-ink-muted mt-6">
-              No account needed to try — sign up free to save and export your results
+              Free account required — sign up takes 30 seconds
             </p>
           </div>
 
