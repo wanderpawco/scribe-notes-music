@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 import SheetMusicRenderer from "@/components/SheetMusicRenderer";
 import { supabase } from "@/integrations/supabase/client";
 
-const stepLabels = ["Upload", "Select Instruments", "Get Results"];
+const stepLabels = ["Upload", "Select Instrument", "Get Results"];
 
 const allInstruments = [
   { icon: Mic2, name: "Vocals" },
@@ -247,7 +247,7 @@ const AppPage = () => {
 
   const toggleInstrument = (name: string) => {
     setSelected((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+      prev.includes(name) ? [] : [name]
     );
   };
 
@@ -678,7 +678,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
             </p>
           </div>
 
-          {/* ═══════════ STAGE 1: Select Instruments ═══════════ */}
+          {/* ═══════════ STAGE 1: Select Instrument ═══════════ */}
           <div
             className={`transition-all duration-400 ${
               stage === 1
@@ -713,7 +713,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                   What do you want to transcribe?
                 </h2>
                 <p className="text-sm text-ink-soft text-center mb-8">
-                  Our AI detected these instruments in your audio. Select all that apply.
+                  Our AI detected these instruments in your audio. Select an instrument.
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -732,7 +732,9 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                       >
                         {isSelected && (
                           <div className="absolute top-2 right-2">
-                            <Check size={14} className="text-gold" />
+                            <div className="w-3.5 h-3.5 rounded-full bg-gold flex items-center justify-center">
+                              <Check size={10} className="text-white" />
+                            </div>
                           </div>
                         )}
                         <Icon size={24} className="text-gold" />
@@ -744,7 +746,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
 
                 <div className="text-center mt-6">
                   <p className="text-sm text-ink-soft">
-                    {selected.length} instrument{selected.length !== 1 ? "s" : ""} selected
+                    {selected.length === 0 ? "No instrument selected" : `${selected[0]} selected`}
                   </p>
                 {estimatedTime && (
                   <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 
@@ -814,7 +816,7 @@ className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-b
                       )}
                     </div>
                   ) : (
-                    "Transcribe Selected Instruments →"
+                    "Transcribe Selected Instrument →"
                   )}
                 </button>
               </div>
