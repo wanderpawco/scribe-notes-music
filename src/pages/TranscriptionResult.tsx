@@ -45,7 +45,7 @@ const TranscriptionResult = () => {
 
       const { data: txn, error: txnErr } = await supabase
         .from("transcriptions")
-        .select("file_name, selected_instruments, status, detected_key, detected_bpm")
+        .select("file_name, selected_instruments, status, detected_key, detected_bpm, song_title")
         .eq("id", id)
         .single();
 
@@ -61,7 +61,7 @@ const TranscriptionResult = () => {
         return;
       }
 
-      setFileName(txn.file_name);
+      setFileName(txn.song_title || txn.file_name || "");
       setSelected(txn.selected_instruments || []);
       if (txn.detected_key) setSelectedKey(txn.detected_key);
       if (txn.detected_bpm) setBpm(txn.detected_bpm);

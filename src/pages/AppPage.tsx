@@ -103,6 +103,7 @@ const AppPage = () => {
   const [scanning, setScanning] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
   const [estimatedTime, setEstimatedTime] = useState<string | null>(null);
+  const [songTitle, setSongTitle] = useState("");
 
   // Stage 2
   const [processing, setProcessing] = useState(true);
@@ -346,6 +347,7 @@ const AppPage = () => {
           detected_key: "C Major",
           detected_bpm: 120,
           user_id: user?.id ?? null,
+          song_title: songTitle.trim() || audioFile.name.replace(/\.[^/.]+$/, ""),
         })
         .select("id")
         .single();
@@ -382,6 +384,7 @@ const AppPage = () => {
     setAudioFile(null);
     setSelected([]);
     setEstimatedTime(null);
+    setSongTitle("");
     setScanning(true);
     setProcessing(true);
     setProcStep(0);
@@ -589,6 +592,23 @@ const AppPage = () => {
                 )}
                 </div>
 
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-ink mb-1.5">
+                    Song Title
+                  </label>
+                  <input
+                    type="text"
+                    value={songTitle}
+                    onChange={(e) => setSongTitle(e.target.value)}
+                    placeholder="e.g. Stairway to Heaven"
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-ink text-sm placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
+                    maxLength={100}
+                  />
+                  <p className="text-xs text-ink-muted mt-1">
+                    This will appear as the title on your sheet music
+                  </p>
+                </div>
+
                 {transcriptionError && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
                     {transcriptionError}
@@ -672,6 +692,7 @@ const AppPage = () => {
                 setBpm={setBpm}
                 resetAll={resetAll}
                 outputs={transcriptionOutputs}
+                songTitle={songTitle}
               />
             )}
           </div>
@@ -835,6 +856,7 @@ interface ResultsViewProps {
   setBpm: (b: number) => void;
   resetAll: () => void;
   outputs: Array<{ instrument: string; format: string; file_path: string }>;
+  songTitle: string;
 }
 
 const ResultsView = ({
@@ -848,8 +870,9 @@ const ResultsView = ({
   setBpm,
   resetAll,
   outputs,
+  songTitle,
 }: ResultsViewProps) => {
-  const displayName = fileName.replace(/\.[^/.]+$/, "");
+  const displayName = songTitle || fileName.replace(/\.[^/.]+$/, "");
   const [activeInstrument, setActiveInstrument] = useState(0);
 
   const activeInstrumentName = selected[activeInstrument];

@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
     // Get transcription record
     const { data: txn, error } = await supabase
       .from("transcriptions")
-      .select("music_ai_job_id, selected_instruments, status")
+      .select("music_ai_job_id, selected_instruments, status, song_title")
       .eq("id", transcription_id)
       .single();
 
@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
         const bpRes = await fetch(`${BASIC_PITCH_BASE}/transcribe`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ audio_url: stemUrl, instrument, job_id: bpJobId }),
+          body: JSON.stringify({ audio_url: stemUrl, instrument, job_id: bpJobId, song_title: txn.song_title || instrument }),
         });
         if (!bpRes.ok) console.error(`Basic Pitch submit failed for ${instrument}`);
       }));
