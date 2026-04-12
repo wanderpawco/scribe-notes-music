@@ -203,21 +203,17 @@ const TranscriptionResult = () => {
 
               {/* ── TOOLBAR ── */}
               <div className="rounded-2xl overflow-hidden mb-4 shadow-lg" style={{ background: '#0f0f1a', border: '1px solid rgba(200,169,110,0.3)' }}>
-                {/* TOP ROW — file name + instrument tabs */}
-                <div className="flex items-center gap-3 px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <Music size={14} className="text-gold shrink-0" />
-                    <span className="font-heading text-sm font-semibold truncate" style={{ color: '#e8e8f0' }}>{displayName}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
+                {/* TOP ROW — centered instrument tabs only */}
+                <div className="flex items-center justify-center gap-3 px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div className="flex items-center gap-2 flex-wrap">
                     {selected.map((name, i) => (
                       <button
                         key={name}
                         onClick={() => setActiveInstrument(i)}
-                        className="px-3 py-1 text-xs rounded-full font-medium whitespace-nowrap transition-all"
+                        className="px-5 py-2 text-sm font-semibold whitespace-nowrap transition-all rounded-full"
                         style={i === activeInstrument
-                          ? { background: 'rgba(255,255,255,0.1)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.2)', borderBottom: '2px solid #c8a96e' }
-                          : { background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.12)' }
+                          ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#0f0f1a', border: '1px solid #c8a96e' }
+                          : { background: '#ffffff', color: '#0f0f1a', border: '1px solid rgba(200,169,110,0.8)' }
                         }
                       >
                         {name}
@@ -226,19 +222,19 @@ const TranscriptionResult = () => {
                   </div>
                 </div>
 
-                {/* BOTTOM ROW — controls + downloads */}
-                <div className="flex items-center gap-2 px-5 py-3 flex-wrap" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                  {/* Key transpose */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: '#c8a96e' }}>Key</span>
+                {/* BOTTOM ROW — controls + all transcriptions + downloads */}
+                <div className="flex items-center gap-4 px-6 py-4 flex-wrap" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                  {/* Left: Key transpose */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-wider font-bold" style={{ color: '#c8a96e' }}>Key</span>
                     <div className="relative">
                       <button
                         onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all h-8 font-medium"
-                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)', color: '#e8e8f0' }}
+                        className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm transition-all font-semibold"
+                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)', color: '#e8e8f0', height: '40px' }}
                       >
                         {selectedKey}
-                        <ChevronDown size={11} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} style={{ color: '#c8a96e' }} />
+                        <ChevronDown size={14} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} style={{ color: '#c8a96e' }} />
                       </button>
                       {keyDropdownOpen && (
                         <div className="absolute z-20 mt-1 left-0 w-44 rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto" style={{ background: '#1a1a2e', border: '1px solid rgba(200,169,110,0.3)' }}>
@@ -246,9 +242,9 @@ const TranscriptionResult = () => {
                             <button
                               key={k}
                               onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
-                              className="w-full text-left text-xs px-3 py-2 rounded-lg transition-colors"
+                              className="w-full text-left text-sm px-3 py-2.5 rounded-lg transition-colors"
                               style={k === selectedKey
-                                ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', fontWeight: 500 }
+                                ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', fontWeight: 600 }
                                 : { color: '#e8e8f0' }
                               }
                               onMouseEnter={e => { if (k !== selectedKey) (e.target as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
@@ -262,33 +258,42 @@ const TranscriptionResult = () => {
                     </div>
                   </div>
 
-                  {/* BPM */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: '#c8a96e' }}>Tempo</span>
-                    <div className="inline-flex items-center rounded-lg h-8" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)' }}>
+                  {/* Left: BPM */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-wider font-bold" style={{ color: '#c8a96e' }}>Tempo</span>
+                    <div className="inline-flex items-center rounded-lg" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(200,169,110,0.3)', height: '40px' }}>
                       <button
                         onClick={() => setBpm(Math.max(40, bpm - 5))}
-                        className="px-2 transition-colors"
+                        className="px-3 py-2 transition-colors"
                         style={{ color: 'rgba(255,255,255,0.5)' }}
                       >
-                        <Minus size={11} />
+                        <Minus size={14} />
                       </button>
-                      <span className="text-xs font-semibold min-w-[32px] text-center" style={{ color: '#e8e8f0' }}>{bpm}</span>
+                      <span className="text-sm font-bold min-w-[36px] text-center" style={{ color: '#e8e8f0' }}>{bpm}</span>
                       <button
                         onClick={() => setBpm(Math.min(240, bpm + 5))}
-                        className="px-2 transition-colors"
+                        className="px-3 py-2 transition-colors"
                         style={{ color: 'rgba(255,255,255,0.5)' }}
                       >
-                        <Plus size={11} />
+                        <Plus size={14} />
                       </button>
                     </div>
-                    <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>BPM</span>
+                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>BPM</span>
                   </div>
 
-                  {/* Spacer */}
-                  <div className="flex-1" />
+                  {/* Center: All Transcriptions — ghost button */}
+                  <div className="flex-1 flex justify-center">
+                    <Link
+                      to="/dashboard"
+                      className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all"
+                      style={{ background: 'transparent', border: '1px solid rgba(200,169,110,0.5)', color: '#ffffff', height: '40px' }}
+                    >
+                      <RefreshCw size={14} />
+                      All Transcriptions
+                    </Link>
+                  </div>
 
-                  {/* Download buttons — gold gradient */}
+                  {/* Right: Download buttons — gold gradient */}
                   <div className="flex items-center gap-2">
                     {/* PDF — always available */}
                     <button
@@ -301,10 +306,10 @@ const TranscriptionResult = () => {
                         printWindow.document.close();
                         printWindow.onload = () => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); };
                       }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-                      style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810' }}
+                      className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-110"
+                      style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
                     >
-                      <FileText size={13} />
+                      <FileText size={14} />
                       PDF Sheet Music
                     </button>
 
@@ -312,17 +317,17 @@ const TranscriptionResult = () => {
                     {outputs.some(o => o.format === "midi") ? (
                       <button
                         onClick={() => outputs.filter(o => o.format === "midi").forEach(o => handleDownload(o))}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-                        style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810' }}
+                        className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-110"
+                        style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
                       >
-                        <Music size={13} />
+                        <Music size={14} />
                         MIDI File
                       </button>
                     ) : (
                       <button
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium cursor-not-allowed"
                         title="Available on Pro plan"
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' }}
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)', height: '40px' }}
                       >
                         <Lock size={13} />
                         MIDI
@@ -334,17 +339,17 @@ const TranscriptionResult = () => {
                     {outputs.some(o => o.format === "musicxml") ? (
                       <button
                         onClick={() => outputs.filter(o => o.format === "musicxml").forEach(o => handleDownload(o))}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-                        style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810' }}
+                        className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-110"
+                        style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
                       >
-                        <FileCode size={13} />
+                        <FileCode size={14} />
                         MusicXML
                       </button>
                     ) : (
                       <button
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium cursor-not-allowed"
                         title="Available on Pro plan"
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' }}
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)', height: '40px' }}
                       >
                         <Lock size={13} />
                         MusicXML
@@ -352,16 +357,6 @@ const TranscriptionResult = () => {
                       </button>
                     )}
                   </div>
-
-                  {/* All Transcriptions — ghost button */}
-                  <Link
-                    to="/dashboard"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ml-1"
-                    style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}
-                  >
-                    <RefreshCw size={12} />
-                    All Transcriptions
-                  </Link>
                 </div>
               </div>
 
