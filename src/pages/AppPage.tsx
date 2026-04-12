@@ -915,171 +915,162 @@ const handleDownload = (
 
   return (
     <div className="animate-fade-in space-y-4">
-      {/* ── SUCCESS BANNER ── */}
-      <div className="flex items-center justify-center gap-2 bg-teal text-white rounded-xl py-2.5 px-4">
-        <Check size={16} />
-        <span className="text-sm font-medium">Your sheet music is ready</span>
-      </div>
+      {/* ── TITLE ── */}
+      <h2 className="font-heading text-xl font-semibold text-ink mb-3">{displayName}</h2>
 
-      {/* ── FLOATING TOOLBAR ── */}
-      <div className="bg-surface border border-border rounded-2xl px-4 py-3 flex flex-wrap items-center gap-3">
-        {/* File name + instrument tabs */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-sm font-heading font-semibold text-ink truncate max-w-[160px]">{displayName}</span>
-          {selected.length > 1 ? (
-            <div className="flex gap-1 overflow-x-auto">
-              {selected.map((name, i) => (
-                <button
-                  key={name}
-                  onClick={() => setActiveInstrument(i)}
-                  className={`px-2.5 py-1 text-xs rounded-full border whitespace-nowrap transition-all ${
-                    i === activeInstrument
-                      ? "bg-gold text-white border-gold font-medium"
-                      : "bg-paper text-ink-soft border-border hover:border-ink-muted"
-                  }`}
-                >
-                  {name}
-                </button>
-              ))}
+      {/* ── TOOLBAR ── */}
+      <div className="bg-white border border-border rounded-2xl overflow-hidden mb-4 shadow-sm">
+        {/* TOP ROW — file name + instrument tabs */}
+        <div className="flex items-center gap-3 px-5 py-3 border-b border-border">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <Music size={14} className="text-gold shrink-0" />
+            <span className="font-heading text-sm font-semibold text-ink truncate">{displayName}</span>
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {selected.map((name, i) => (
+              <button
+                key={name}
+                onClick={() => setActiveInstrument(i)}
+                className={`px-3 py-1 text-xs rounded-full border font-medium whitespace-nowrap transition-all ${
+                  i === activeInstrument
+                    ? "bg-ink text-paper border-ink"
+                    : "bg-paper text-ink-soft border-border hover:border-ink-muted hover:text-ink"
+                }`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* BOTTOM ROW — controls + downloads */}
+        <div className="flex items-center gap-2 px-5 py-3 flex-wrap bg-surface">
+          {/* Key transpose */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-ink-muted">Key</span>
+            <div className="relative">
+              <button
+                onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border bg-white text-xs text-ink hover:border-ink-muted transition-all h-8 font-medium"
+              >
+                {selectedKey}
+                <ChevronDown size={11} className={`transition-transform text-ink-muted ${keyDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+              {keyDropdownOpen && (
+                <div className="absolute z-20 mt-1 left-0 w-44 bg-white border border-border rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto">
+                  {allKeys.map((k) => (
+                    <button
+                      key={k}
+                      onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
+                      className={`w-full text-left text-xs px-3 py-2 rounded-lg transition-colors ${
+                        k === selectedKey
+                          ? "bg-gold text-white font-medium"
+                          : "text-ink hover:bg-surface"
+                      }`}
+                    >
+                      {k}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          ) : (
-            <span className="px-2.5 py-1 text-xs rounded-full bg-gold text-white border border-gold font-medium">
-              {selected[0]}
-            </span>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-6 bg-border hidden md:block" />
-
-        {/* Original recording info */}
-        <div className="flex items-center gap-3 text-xs text-ink-soft flex-shrink-0">
-          <span>Key: <span className="text-ink font-medium">C Major</span></span>
-          <span>BPM: <span className="text-ink font-medium">120</span></span>
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-6 bg-border hidden md:block" />
-
-        {/* Adjustments */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Transpose */}
-          <div className="relative">
-            <button
-              onClick={() => setKeyDropdownOpen(!keyDropdownOpen)}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border text-xs text-ink hover:bg-paper transition-all h-8"
-            >
-              <ArrowUpDown size={12} />
-              {selectedKey}
-              <ChevronDown size={12} className={`transition-transform ${keyDropdownOpen ? "rotate-180" : ""}`} />
-            </button>
-            {keyDropdownOpen && (
-              <div className="absolute z-20 mt-1 left-0 w-44 bg-surface border border-border rounded-xl shadow-lg p-1 max-h-60 overflow-y-auto">
-                {allKeys.map((k) => (
-                  <button
-                    key={k}
-                    onClick={() => { setSelectedKey(k); setKeyDropdownOpen(false); }}
-                    className={`w-full text-left text-xs px-3 py-2 rounded-lg transition-colors ${
-                      k === selectedKey
-                        ? "bg-gold-light text-gold font-medium"
-                        : "text-ink hover:bg-paper"
-                    }`}
-                  >
-                    {k}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* BPM */}
-          <div className="inline-flex items-center border border-border rounded-lg h-8">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-ink-muted">Tempo</span>
+            <div className="inline-flex items-center bg-white border border-border rounded-lg h-8">
+              <button
+                onClick={() => setBpm(Math.max(40, bpm - 5))}
+                className="px-2 text-ink-muted hover:text-ink transition-colors"
+              >
+                <Minus size={11} />
+              </button>
+              <span className="text-xs font-semibold text-ink min-w-[32px] text-center">{bpm}</span>
+              <button
+                onClick={() => setBpm(Math.min(240, bpm + 5))}
+                className="px-2 text-ink-muted hover:text-ink transition-colors"
+              >
+                <Plus size={11} />
+              </button>
+            </div>
+            <span className="text-[10px] text-ink-muted">BPM</span>
+          </div>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Download buttons — dark background so they stand out against parchment */}
+          <div className="flex items-center gap-2">
+            {/* PDF — always available */}
             <button
-              onClick={() => setBpm(Math.max(40, bpm - 5))}
-              className="px-1.5 text-ink-soft hover:text-ink transition-colors"
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
             >
-              <Minus size={12} />
+              <FileText size={13} />
+              PDF Sheet Music
             </button>
-            <span className="text-xs font-medium text-ink min-w-[28px] text-center">{bpm}</span>
+
+            {/* MIDI */}
+            {outputs.some(o => o.format === "midi") ? (
+              <button
+                onClick={() => outputs.filter(o => o.format === "midi").forEach(o => handleDownload(o))}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
+              >
+                <Music size={13} />
+                MIDI File
+              </button>
+            ) : (
+              <button
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-ink-muted text-xs font-medium cursor-not-allowed"
+                title="Available on Pro plan"
+              >
+                <Lock size={13} />
+                MIDI
+                <span className="text-[9px] bg-gold/20 text-gold px-1.5 py-0.5 rounded font-bold">PRO</span>
+              </button>
+            )}
+
+            {/* MusicXML */}
+            {outputs.some(o => o.format === "musicxml") ? (
+              <button
+                onClick={() => outputs.filter(o => o.format === "musicxml").forEach(o => handleDownload(o))}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-paper text-xs font-semibold hover:bg-ink/80 transition-all"
+              >
+                <FileCode size={13} />
+                MusicXML
+              </button>
+            ) : (
+              <button
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-ink-muted text-xs font-medium cursor-not-allowed"
+                title="Available on Pro plan"
+              >
+                <Lock size={13} />
+                MusicXML
+                <span className="text-[9px] bg-gold/20 text-gold px-1.5 py-0.5 rounded font-bold">PRO</span>
+              </button>
+            )}
+
+            {/* Guitar Pro — Studio only */}
             <button
-              onClick={() => setBpm(Math.min(240, bpm + 5))}
-              className="px-1.5 text-ink-soft hover:text-ink transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-ink-muted text-xs font-medium cursor-not-allowed"
+              title="Available on Studio plan"
             >
-              <Plus size={12} />
+              <Guitar size={13} />
+              Guitar Pro
+              <span className="text-[9px] bg-ink text-paper px-1.5 py-0.5 rounded font-bold">STUDIO</span>
             </button>
           </div>
-          <span className="text-[10px] text-ink-muted">BPM</span>
-        </div>
 
-        {/* Divider */}
-        <div className="w-px h-6 bg-border hidden md:block" />
-
-        {/* Download buttons */}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          {/* PDF */}
+          {/* New transcription */}
           <button
-            onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all"
+            onClick={resetAll}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-white text-ink text-xs font-medium hover:bg-surface transition-all ml-1"
           >
-            <FileText size={12} />
-            PDF
-          </button>
-
-          {/* MIDI */}
-          {outputs.some(o => o.format === "midi") ? (
-            <button
-              onClick={() => {
-                outputs.filter(o => o.format === "midi").forEach(o => handleDownload(o));
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all"
-            >
-              <Music size={12} />
-              MIDI
-            </button>
-          ) : (
-            <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed">
-              <Lock size={12} />
-              MIDI
-            </button>
-          )}
-
-          {/* MusicXML */}
-          {outputs.some(o => o.format === "musicxml") ? (
-            <button
-              onClick={() => {
-                outputs.filter(o => o.format === "musicxml").forEach(o => handleDownload(o));
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold text-white text-xs font-medium hover:bg-gold-dark transition-all"
-            >
-              <FileCode size={12} />
-              MusicXML
-            </button>
-          ) : (
-            <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed">
-              <Lock size={12} />
-              MusicXML
-            </button>
-          )}
-
-          {/* Guitar Pro */}
-          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-border text-ink-muted text-xs font-medium cursor-not-allowed">
-            <Guitar size={12} />
-            GP
-            <span className="text-[9px] bg-ink text-paper px-1 rounded">Studio</span>
+            <RefreshCw size={12} />
+            New
           </button>
         </div>
-
-        {/* Divider */}
-        <div className="w-px h-6 bg-border hidden md:block" />
-
-        {/* New transcription */}
-        <button
-          onClick={resetAll}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-xs text-ink font-medium hover:bg-paper transition-all"
-        >
-          <RefreshCw size={12} />
-          New
-        </button>
       </div>
 
       {/* ── SHEET MUSIC — FULL WIDTH ── */}
