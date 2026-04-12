@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface Transcription {
   id: string;
   file_name: string;
+  song_title: string | null;
   created_at: string;
   status: string;
   selected_instruments: string[];
@@ -28,7 +29,7 @@ const Dashboard = () => {
 
       const { data, error } = await supabase
         .from("transcriptions")
-        .select("id, file_name, created_at, status, selected_instruments")
+        .select("id, file_name, song_title, created_at, status, selected_instruments")
         .order("created_at", { ascending: false });
 
       if (!error && data) {
@@ -101,7 +102,7 @@ const Dashboard = () => {
                 <tbody>
                   {transcriptions.map((t) => (
                     <tr key={t.id} className="border-b border-border last:border-b-0 hover:bg-surface/50 transition-colors">
-                      <td className="px-4 py-3 text-ink font-medium truncate max-w-[200px]">{t.file_name}</td>
+                      <td className="px-4 py-3 text-ink font-medium truncate max-w-[200px]">{t.song_title || t.file_name}</td>
                       <td className="px-4 py-3 text-ink-muted hidden sm:table-cell">
                         {new Date(t.created_at).toLocaleDateString()}
                       </td>
