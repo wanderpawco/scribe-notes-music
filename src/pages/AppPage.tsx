@@ -133,8 +133,8 @@ const AppPage = () => {
             }).catch(console.error);
           }
           break;
-        case "transcribing":
-          setProcStep(2);
+      case "transcribing":
+          setProcStep(3);
           if (data.basic_pitch_job_ids) {
             supabase.functions.invoke("poll-basic-pitch", {
               body: { transcription_id: transcriptionId },
@@ -579,53 +579,100 @@ const AppPage = () => {
 };
 
 /* ── Processing sub-view ── */
-const ProcessingView = ({ procStep }: { procStep: number }) => (
-  <div className="text-center py-12 animate-fade-in">
-    <h2 className="font-heading text-2xl font-semibold text-ink mb-10">
-      Transcribing your music...
-    </h2>
-    <div className="max-w-md mx-auto space-y-0">
-      {processingSteps.map((step, i) => {
-        const completed = procStep > i;
-        const active = procStep === i;
-        return (
-          <div key={step.label}>
-            <div className="flex items-center gap-3 py-3">
-              <div
-                className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
-                  completed
-                    ? "bg-teal text-white"
-                    : active
-                    ? "bg-teal/20 text-teal"
-                    : "bg-surface border border-border text-ink-muted"
-                }`}
-              >
-                {completed ? <Check size={14} /> : <span className="text-xs">{i + 1}</span>}
-              </div>
-              <div className="flex-1 text-left">
-                <span
-                  className={`text-sm font-medium transition-colors duration-300 ${
-                    completed ? "text-teal" : active ? "text-ink" : "text-ink-muted"
+const ProcessingView = ({ procStep }: { procStep: number }) => {
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setElapsed((e) => e + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+  };
+
+  const stepMessages: Record<number, string> = {
+    0: "Preparing your file...",
+    1: "Separating stems — this can take 1–3 minutes for longer songs",
+    2: "Stem separation complete — starting transcription",
+    3: "Transcribing notation — analyzing pitch and rhythm",
+    4: "Finalizing your sheet music...",
+  };
+
+  return (
+    <div className="text-center py-12 animate-fade-in">
+      <h2 className="font-heading text-2xl font-semibold text-ink mb-3">
+        Transcribing your music...
+      </h2>
+
+      <p className="text-sm text-ink-soft mb-10">
+        {stepMessages[procStep] || "Processing..."}
+      </p>
+
+      <div className="max-w-md mx-auto space-y-0">
+        {processingSteps.map((step, i) => {
+          const completed = procStep > i;
+          const active = procStep === i;
+          return (
+            <div key={step.label}>
+              <div className="flex items-center gap-3 py-3">
+                <div
+                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
+                    completed
+                      ? "bg-teal text-white"
+                      : active
+                      ? "bg-teal/20 text-teal"
+                      : "bg-surface border border-border text-ink-muted"
                   }`}
                 >
-                  {step.label}
-                </span>
-                {active && (
-                  <div className="mt-1.5 h-1.5 bg-border rounded-full overflow-hidden">
-                    <div className="h-full bg-teal rounded-full animate-scan-bar" />
+                  {completed ? (
+                    <Check size={14} />
+                  ) : active ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <span className="text-xs">{i + 1}</span>
+                  )}
+                </div>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-sm font-medium transition-colors duration-300 ${
+                        completed ? "text-teal" : active ? "text-ink" : "text-ink-muted"
+                      }`}
+                    >
+                      {step.label}
+                    </span>
+                    {active && (
+                      <span className="text-xs text-ink-muted font-mono">
+                        {formatTime(elapsed)}
+                      </span>
+                    )}
                   </div>
-                )}
+                  {active && (
+                    <div className="mt-1.5 h-1.5 bg-border rounded-full overflow-hidden">
+                      <div className="h-full bg-teal rounded-full animate-pulse-slow w-full" />
+                    </div>
+                  )}
+                </div>
               </div>
+              {i < processingSteps.length - 1 && (
+                <div className="ml-3.5 w-px h-3 bg-border" />
+              )}
             </div>
-            {i < processingSteps.length - 1 && (
-              <div className="ml-3.5 w-px h-3 bg-border" />
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+
+      <p className="text-xs text-ink-muted mt-8 font-mono">
+        Total elapsed: {formatTime(elapsed)}
+      </p>
     </div>
-  </div>
-);
+  );
+};
 
 /* ── Results sub-view ── */
 interface ResultsViewProps {
