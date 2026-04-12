@@ -907,11 +907,10 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   };
 
   const stepMessages: Record<number, string> = {
-    0: "Preparing your file...",
-    1: "Separating stems — this takes 1–3 minutes for longer songs",
-    2: "Stem separation complete — starting transcription",
-    3: "Transcribing notation — analyzing pitch and rhythm",
-    4: "Finalizing your sheet music...",
+    0: "Separating stems — this takes 1–3 minutes for longer songs",
+    1: "Transcribing notation — analyzing pitch and rhythm",
+    2: "Generating your sheet music...",
+    3: "Finalizing your sheet music...",
   };
 
   return (
