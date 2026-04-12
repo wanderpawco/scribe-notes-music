@@ -43,9 +43,9 @@ const exportOptions = [
 /* ── Processing steps config ── */
 const processingSteps = [
   { label: "Uploading file", duration: 0 },
-  { label: "Separating stems", duration: 1500 },
-  { label: "Analyzing pitch and rhythm", duration: 1500 },
-  { label: "Generating notation", duration: 1000 },
+  { label: "Separating stems", duration: 120 },
+  { label: "Analyzing pitch and rhythm", duration: 90 },
+  { label: "Generating notation", duration: 30 },
 ];
 
 const AppPage = () => {
@@ -581,6 +581,8 @@ const AppPage = () => {
 /* ── Processing sub-view ── */
 const ProcessingView = ({ procStep }: { procStep: number }) => {
   const [elapsed, setElapsed] = useState(0);
+  const [stepProgress, setStepProgress] = useState(0);
+  const stepStartRef = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -588,6 +590,23 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    stepStartRef.current = 0;
+    setStepProgress(0);
+  }, [procStep]);
+
+  useEffect(() => {
+    const currentStep = processingSteps[procStep];
+    if (!currentStep || currentStep.duration === 0) return;
+
+    stepStartRef.current = (stepStartRef.current || 0) + 1;
+    const pct = Math.min(
+      95,
+      Math.round((stepStartRef.current / currentStep.duration) * 95)
+    );
+    setStepProgress(pct);
+  }, [elapsed, procStep]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -597,7 +616,7 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
 
   const stepMessages: Record<number, string> = {
     0: "Preparing your file...",
-    1: "Separating stems — this can take 1–3 minutes for longer songs",
+    1: "Separating stems — this takes 1–3 minutes for longer songs",
     2: "Stem separation complete — starting transcription",
     3: "Transcribing notation — analyzing pitch and rhythm",
     4: "Finalizing your sheet music...",
@@ -605,11 +624,11 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
 
   return (
     <div className="text-center py-12 animate-fade-in">
-      <h2 className="font-heading text-2xl font-semibold text-ink mb-3">
+      <h2 className="font-heading text-2xl font-semibold text-ink mb-2">
         Transcribing your music...
       </h2>
 
-      <p className="text-sm text-ink-soft mb-10">
+      <p className="text-sm text-ink-muted mb-10">
         {stepMessages[procStep] || "Processing..."}
       </p>
 
@@ -621,7 +640,8 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
             <div key={step.label}>
               <div className="flex items-center gap-3 py-3">
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
+                  className={`w-7 h-7 rounded-full flex items-center justify-center 
+                  shrink-0 transition-colors duration-500 ${
                     completed
                       ? "bg-teal text-white"
                       : active
@@ -629,19 +649,22 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
                       : "bg-surface border border-border text-ink-muted"
                   }`}
                 >
-                  {completed ? (
-                    <Check size={14} />
-                  ) : active ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <span className="text-xs">{i + 1}</span>
-                  )}
+                  {completed
+                    ? <Check size={14} />
+                    : active
+                    ? <Loader2 size={14} className="animate-spin" />
+                    : <span className="text-xs">{i + 1}</span>
+                  }
                 </div>
                 <div className="flex-1 text-left">
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-sm font-medium transition-colors duration-300 ${
-                        completed ? "text-teal" : active ? "text-ink" : "text-ink-muted"
+                        completed
+                          ? "text-teal"
+                          : active
+                          ? "text-ink"
+                          : "text-ink-muted"
                       }`}
                     >
                       {step.label}
@@ -652,9 +675,12 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
                       </span>
                     )}
                   </div>
-                  {active && (
+                  {active && step.duration > 0 && (
                     <div className="mt-1.5 h-1.5 bg-border rounded-full overflow-hidden">
-                      <div className="h-full bg-teal rounded-full animate-pulse-slow w-full" />
+                      <div
+                        className="h-full bg-teal rounded-full transition-all duration-1000"
+                        style={{ width: `${stepProgress}%` }}
+                      />
                     </div>
                   )}
                 </div>
@@ -667,7 +693,7 @@ const ProcessingView = ({ procStep }: { procStep: number }) => {
         })}
       </div>
 
-      <p className="text-xs text-ink-muted mt-8 font-mono">
+      <p className="text-xs text-ink-muted mt-8">
         Total elapsed: {formatTime(elapsed)}
       </p>
     </div>
