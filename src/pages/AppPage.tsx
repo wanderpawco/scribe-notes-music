@@ -677,6 +677,12 @@ const ResultsView = ({
 
           <SheetMusicSVG />
 
+  const activeInstrumentName = selected[activeInstrument];
+  const activeXmlOutput = outputs.find(
+    (o) => o.instrument === activeInstrumentName && o.format === "musicxml"
+  );
+  const activeMusicXml = activeXmlOutput?.file_path ?? null;
+
 
           {/* ── ORIGINAL RECORDING ── */}
           <div className="border-t border-border mt-4 pt-4">
