@@ -73,7 +73,7 @@ const TranscriptionResult = () => {
 
       setFileName(txn.song_title || txn.file_name || "");
       setSelected(txn.selected_instruments || []);
-      if (txn.detected_key) setSelectedKey(txn.detected_key);
+      if (txn.detected_key) { setSelectedKey(txn.detected_key); setAppliedKey(txn.detected_key); }
       if (txn.detected_bpm) setBpm(txn.detected_bpm);
 
       const { data: outs, error: outsErr } = await supabase
