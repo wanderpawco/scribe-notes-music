@@ -47,7 +47,7 @@ const processingSteps = [
 ];
 
 const AppPage = () => {
-  const [stage, setStage] = useState(0); // 0=upload, 1=instruments, 2=results
+  const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,9 +58,10 @@ const AppPage = () => {
 
   // Stage 2
   const [processing, setProcessing] = useState(true);
-  const [procStep, setProcStep] = useState(0); // 0-4
+  const [procStep, setProcStep] = useState(0);
   const [selectedKey, setSelectedKey] = useState("C Major");
   const [keyDropdownOpen, setKeyDropdownOpen] = useState(false);
+  const [bpm, setBpm] = useState(120);
 
   /* ── File selection handler ── */
   const handleFile = useCallback((file: File) => {
