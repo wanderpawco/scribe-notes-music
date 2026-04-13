@@ -318,8 +318,8 @@ const Index = () => {
                   className="p-7 transition-all duration-300"
                   style={{
                     background: 'rgba(13,13,26,0.7)',
-                    border: f.highlight ? '2px solid rgba(184,148,42,0.4)' : '1px solid rgba(255,255,255,0.08)',
-                    borderLeft: f.highlight ? '6px solid #D4AF37' : '5px solid rgba(184,148,42,0.35)',
+                    border: f.highlight ? '1px solid rgba(184,148,42,0.2)' : '1px solid rgba(255,255,255,0.06)',
+                    borderLeft: f.highlight ? '6px solid #D4AF37' : '5px solid rgba(184,148,42,0.5)',
                     borderRadius: '0 12px 12px 0',
                     backdropFilter: 'blur(8px)',
                   }}
