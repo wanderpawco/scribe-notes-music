@@ -205,7 +205,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen" style={{ background: '#05050F' }}>
       <Navbar />
 
       {/* Hero */}
@@ -292,10 +292,10 @@ const Index = () => {
       </section>
 
       {/* Features — Why ScribeNoter? */}
-      <section className="py-16 px-6 bg-surface/50">
+      <section className="py-16 px-6" style={{ background: 'rgba(13,13,26,0.6)' }}>
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="font-heading text-3xl font-semibold text-ink mb-3">Why ScribeNoter?</h2>
-          <p className="text-ink-soft mb-12 max-w-lg mx-auto">
+          <h2 className="font-heading text-3xl font-semibold mb-3" style={{ color: '#F5F0E8' }}>Why ScribeNoter?</h2>
+          <p className="mb-12 max-w-lg mx-auto" style={{ color: 'rgba(245,240,232,0.6)' }}>
             Professional-grade music transcription for every musician.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
@@ -304,21 +304,20 @@ const Index = () => {
               return (
                 <div
                   key={f.title}
-                  className={`rounded-xl p-7 shadow-card transition-all duration-300 hover:shadow-[0_4px_24px_hsl(var(--gold)/0.18)] ${
-                    f.highlight
-                      ? "border-2 border-gold bg-[hsl(var(--ink)/0.03)]"
-                      : "border border-border bg-surface"
-                  }`}
+                  className="rounded-xl p-7 transition-all duration-300"
+                  style={{
+                    background: 'rgba(13,13,26,0.7)',
+                    border: f.highlight ? '2px solid rgba(184,148,42,0.4)' : '1px solid rgba(255,255,255,0.08)',
+                    backdropFilter: 'blur(8px)',
+                  }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
-                      f.highlight ? "bg-gold/15" : "bg-gold-light"
-                    }`}>
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0 bg-gold/15">
                       <Icon size={22} className="text-gold" />
                     </div>
                     <div>
-                      <h3 className="font-heading text-lg font-semibold text-ink mb-2">{f.title}</h3>
-                      <p className="text-sm text-ink-soft leading-relaxed">{f.desc}</p>
+                      <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#F5F0E8' }}>{f.title}</h3>
+                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(245,240,232,0.6)' }}>{f.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -331,21 +330,21 @@ const Index = () => {
       {/* How It Works */}
       <section id="how-it-works" className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-3xl font-semibold text-ink text-center mb-12">How it works</h2>
+          <h2 className="font-heading text-3xl font-semibold text-center mb-12" style={{ color: '#F5F0E8' }}>How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            <div className="hidden md:block absolute top-12 left-[16.7%] right-[16.7%] h-px bg-border" />
+            <div className="hidden md:block absolute top-12 left-[16.7%] right-[16.7%] h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
             {[
               { icon: <Upload size={24} />, title: "Upload your audio", body: "Drop any MP3, WAV, FLAC, or M4A file. Up to 250MB supported.", step: 1 },
               { icon: <Wand2 size={24} />, title: "Select your instruments", body: "Our AI detects what's playing and pre-selects instruments for you. Confirm or adjust.", step: 2 },
               { icon: <Music size={24} />, title: "Get your sheet music", body: "Receive PDF sheet music, MIDI, and MusicXML. Edit, transpose, and export.", step: 3 },
             ].map((s) => (
-              <div key={s.step} className="relative bg-surface border border-border rounded-xl p-6 shadow-card text-center">
-                <div className="w-10 h-10 rounded-full bg-gold-light text-gold flex items-center justify-center mx-auto mb-4 text-sm font-bold relative z-10">
+              <div key={s.step} className="relative rounded-xl p-6 text-center" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="w-10 h-10 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-4 text-sm font-bold relative z-10">
                   {s.step}
                 </div>
                 <div className="flex justify-center mb-3 text-gold">{s.icon}</div>
-                <h3 className="font-heading text-lg font-semibold text-ink mb-2">{s.title}</h3>
-                <p className="text-sm text-ink-soft">{s.body}</p>
+                <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#F5F0E8' }}>{s.title}</h3>
+                <p className="text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>{s.body}</p>
               </div>
             ))}
           </div>
