@@ -180,6 +180,10 @@ const Index = () => {
                 0%, 100% { height: 16px; }
                 50% { height: 50px; }
               }
+              @keyframes shimmer {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
+              }
             `}</style>
             {/* Bar 1 - Gold #B8942A */}
             <div className="w-4 rounded-t-full" style={{ 
