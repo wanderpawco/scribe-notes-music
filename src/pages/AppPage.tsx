@@ -838,6 +838,21 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                   {allInstruments.map((inst) => {
                     const Icon = inst.icon;
                     const isSelected = selected.includes(inst.name);
+                    const vocals = ["Lead Vocals", "Backing Vocals"];
+                    const strings = ["Bass", "Piano", "Organ", "Strings"];
+                    const guitars = ["Electric Guitar", "Acoustic Guitar"];
+                    const brass = ["Trumpet", "French Horn", "Trombone", "Tuba", "Flugelhorn", "Baritone/Euphonium"];
+                    const woodwinds = ["Flute", "Oboe", "Clarinet", "Alto Saxophone", "Tenor Saxophone", "Soprano Saxophone", "Bassoon"];
+
+                    let familyBg = "rgba(168,85,247,0.08)";
+                    let familyBorder = "rgba(168,85,247,0.2)";
+                    let familyIcon = "text-purple-400";
+                    if (vocals.includes(inst.name)) { familyBg = "rgba(244,63,94,0.08)"; familyBorder = "rgba(244,63,94,0.2)"; familyIcon = "text-rose-400"; }
+                    else if (strings.includes(inst.name)) { familyBg = "rgba(184,148,42,0.08)"; familyBorder = "rgba(184,148,42,0.2)"; familyIcon = "text-amber-400"; }
+                    else if (guitars.includes(inst.name)) { familyBg = "rgba(249,115,22,0.08)"; familyBorder = "rgba(249,115,22,0.2)"; familyIcon = "text-orange-400"; }
+                    else if (brass.includes(inst.name)) { familyBg = "rgba(234,179,8,0.08)"; familyBorder = "rgba(234,179,8,0.25)"; familyIcon = "text-yellow-500"; }
+                    else if (woodwinds.includes(inst.name)) { familyBg = "rgba(20,184,166,0.08)"; familyBorder = "rgba(20,184,166,0.2)"; familyIcon = "text-teal-400"; }
+
                     return (
                       <button
                         key={inst.name}
@@ -847,7 +862,10 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                             ? "border-2 border-gold"
                             : "hover:border-gold/30"
                         }`}
-                        style={{ background: isSelected ? 'rgba(184,148,42,0.15)' : 'rgba(13,13,26,0.7)', border: isSelected ? undefined : '1px solid rgba(255,255,255,0.08)' }}
+                        style={{
+                          background: isSelected ? 'rgba(184,148,42,0.15)' : familyBg,
+                          border: isSelected ? undefined : `1px solid ${familyBorder}`,
+                        }}
                       >
                         {isSelected && (
                           <div className="absolute top-2 right-2">
@@ -856,7 +874,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                             </div>
                           </div>
                         )}
-                        <Icon size={32} className="text-gold" />
+                        <Icon size={32} className={isSelected ? "text-gold" : familyIcon} />
                         <span className="text-base font-semibold" style={{ color: '#F5F0E8' }}>{inst.name}</span>
                       </button>
                     );
@@ -864,9 +882,13 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                 </div>
 
                 <div className="text-center mt-6">
-                  <p className="text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>
-                    {selected.length === 0 ? "No instrument selected" : `${selected[0]} selected`}
-                  </p>
+                  {selected.length === 0 ? (
+                    <p className="text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>No instrument selected</p>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 bg-[rgba(78,205,196,0.1)] border border-[rgba(78,205,196,0.3)] text-[#4ECDC4] rounded-full px-4 py-1 text-sm font-medium">
+                      <Check size={14} /> {selected[0]} selected
+                    </span>
+                  )}
                 {estimatedTime && (
                   <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 
                   bg-teal/10 border border-teal/30 rounded-full">
@@ -890,8 +912,8 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     value={songTitle}
                     onChange={(e) => setSongTitle(e.target.value)}
                     placeholder="e.g. Stairway to Heaven"
-                    className="w-full px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
-                    style={{ background: 'rgba(5,5,15,0.8)', border: '1px solid rgba(255,255,255,0.1)', color: '#F5F0E8' }}
+                    className="w-full px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#D4AF37] transition-all border-2 border-[rgba(184,148,42,0.3)]"
+                    style={{ background: 'rgba(5,5,15,0.8)', color: '#F5F0E8' }}
                     maxLength={100}
                   />
                   <p className="text-sm font-medium mt-1" style={{ color: 'rgba(245,240,232,0.6)' }}>
@@ -926,7 +948,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                       ? "bg-gold-dark text-white cursor-wait"
                       : selected.length > 0 && songTitle.trim() !== '' && rightsConfirmed
                       ? "bg-gold text-white hover:bg-gold-dark"
-                      : "bg-border text-ink-muted cursor-not-allowed"
+                      : "bg-[rgba(184,148,42,0.15)] text-[rgba(245,240,232,0.4)] border border-[rgba(184,148,42,0.2)] cursor-not-allowed"
                   }`}
                 >
                   {uploading ? (
