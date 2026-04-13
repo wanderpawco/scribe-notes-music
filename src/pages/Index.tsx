@@ -19,6 +19,13 @@ const instrumentGroups = [
   {
     label: "VOCALS",
     badge: null,
+    colorTheme: {
+      bg: "bg-rose-50",
+      border: "border-rose-200",
+      icon: "text-rose-400",
+      hover: "hover:bg-rose-100",
+      gradient: "from-rose-50 to-rose-100",
+    },
     instruments: [
       { icon: Mic2, name: "Lead Vocals" },
       { icon: Mic2, name: "Backing Vocals" },
@@ -27,6 +34,13 @@ const instrumentGroups = [
   {
     label: "STRINGS & KEYS",
     badge: null,
+    colorTheme: {
+      bg: "bg-amber-50",
+      border: "border-amber-200",
+      icon: "text-amber-500",
+      hover: "hover:bg-amber-100",
+      gradient: "from-amber-50 to-amber-100",
+    },
     instruments: [
       { icon: Music, name: "Bass" },
       { icon: Keyboard, name: "Piano" },
@@ -37,6 +51,13 @@ const instrumentGroups = [
   {
     label: "GUITAR",
     badge: null,
+    colorTheme: {
+      bg: "bg-orange-50",
+      border: "border-orange-200",
+      icon: "text-orange-400",
+      hover: "hover:bg-orange-100",
+      gradient: "from-orange-50 to-orange-100",
+    },
     instruments: [
       { icon: Guitar, name: "Electric Guitar" },
       { icon: Guitar, name: "Acoustic Guitar" },
@@ -44,7 +65,15 @@ const instrumentGroups = [
   },
   {
     label: "BRASS",
-    badge: "Unique to ScribeNoter ✓",
+    badge: "★ Unique to ScribeNoter",
+    colorTheme: {
+      bg: "bg-yellow-50",
+      border: "border-yellow-300",
+      icon: "text-yellow-600",
+      hover: "hover:bg-yellow-100",
+      gradient: "from-yellow-50 to-yellow-100",
+      shimmer: true,
+    },
     instruments: [
       { icon: Music2, name: "Trumpet" },
       { icon: Music2, name: "French Horn" },
@@ -56,7 +85,14 @@ const instrumentGroups = [
   },
   {
     label: "WOODWINDS",
-    badge: "Unique to ScribeNoter ✓",
+    badge: "★ Unique to ScribeNoter",
+    colorTheme: {
+      bg: "bg-teal-50",
+      border: "border-teal-200",
+      icon: "text-teal-500",
+      hover: "hover:bg-teal-100",
+      gradient: "from-teal-50 to-teal-100",
+    },
     instruments: [
       { icon: Music, name: "Flute" },
       { icon: Music, name: "Oboe" },
@@ -70,6 +106,13 @@ const instrumentGroups = [
   {
     label: "PERCUSSION",
     badge: null,
+    colorTheme: {
+      bg: "bg-purple-50",
+      border: "border-purple-200",
+      icon: "text-purple-400",
+      hover: "hover:bg-purple-100",
+      gradient: "from-purple-50 to-purple-100",
+    },
     instruments: [
       { icon: Music2, name: "Drums" },
     ],
