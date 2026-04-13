@@ -19,16 +19,16 @@ const BetaBanner = () => {
   if (dismissed) return null;
 
   return (
-    <div className="text-gold text-base py-3 px-6 flex items-center justify-center relative" style={{ background: 'rgba(5,5,15,0.95)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+    <div className="text-[#05050F] text-base py-3 px-6 flex items-center justify-center relative" style={{ background: '#D4AF37', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
       <span className="text-center">
         <span className="text-lg">🎵</span> ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
-        <Link to="/contact" className="underline hover:text-gold-light transition-colors">
+        <Link to="/contact" className="underline text-[#4ECDC4] hover:text-[#3BBDB4] transition-colors">
           feedback
         </Link>.
       </span>
       <button
         onClick={handleDismiss}
-        className="absolute right-4 p-1 hover:bg-white/10 rounded transition-colors"
+        className="absolute right-4 p-1 text-[#05050F] hover:bg-black/10 rounded transition-colors"
         aria-label="Dismiss beta banner"
       >
         <X size={16} />
