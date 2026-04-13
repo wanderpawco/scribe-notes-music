@@ -128,8 +128,15 @@ const disclaimers = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [demoOpen, setDemoOpen] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState("");
+
+  const handleYoutubeSubmit = () => {
+    const url = youtubeUrl.trim();
+    if (!url) return;
+    navigate(`/app?url=${encodeURIComponent(url)}`);
+  };
 
   useEffect(() => {
     const canvas = document.getElementById('chladni-hero') as HTMLCanvasElement;
