@@ -925,26 +925,28 @@ interface ProcessingViewProps {
 
 const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   const [elapsed, setElapsed] = useState(0);
+  const [stepElapsed, setStepElapsed] = useState(0);
   const [stepProgress, setStepProgress] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setElapsed((e) => e + 1);
+      setStepElapsed((e) => e + 1);
     }, 1000);
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    setElapsed(0);
+    setStepElapsed(0);
     setStepProgress(0);
   }, [procStep]);
 
   useEffect(() => {
     const currentStep = processingSteps[procStep];
     if (!currentStep || currentStep.duration <= 0) return;
-    const pct = Math.min(95, Math.round((elapsed / currentStep.duration) * 95));
+    const pct = Math.min(95, Math.round((stepElapsed / currentStep.duration) * 95));
     setStepProgress(pct);
-  }, [elapsed]);
+  }, [stepElapsed]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
