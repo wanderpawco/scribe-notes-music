@@ -512,6 +512,7 @@ const AppPage = () => {
     setStage(0);
     setFileName("");
     setAudioFile(null);
+    setYoutubeUrl("");
     setSelected([]);
     setEstimatedTime(null);
     setSongTitle("");
