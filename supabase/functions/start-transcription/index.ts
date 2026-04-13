@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
   );
 
   try {
-    const { transcription_id, audio_url, selected_instruments, song_title } = await req.json();
+    const { transcription_id, audio_url, selected_instruments, song_title, file_size_bytes } = await req.json();
 
     const instrument = Array.isArray(selected_instruments) ? selected_instruments[0] : selected_instruments;
     const jobId = `${transcription_id}_${instrument.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
@@ -34,6 +34,7 @@ Deno.serve(async (req) => {
         job_id: jobId,
         song_title: song_title || "Transcription",
         transcription_id: transcription_id,
+        file_size_bytes: file_size_bytes || null,
       }),
     });
 
