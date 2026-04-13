@@ -519,7 +519,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                         ? "bg-gold text-white"
                         : stage === 0
                         ? "border border-white/30 text-white/70"
-                        : "bg-surface border border-border text-ink-muted"
+                        : "border border-white/15 text-white/50"
                     }`}
                   >
                     {i < activeStep ? <Check size={18} /> : i + 1}
@@ -530,7 +530,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                         ? "text-gold" 
                         : stage === 0
                         ? "text-white/70"
-                        : "text-ink-muted"
+                        : "text-white/50"
                     }`}
                   >
                     {step}
@@ -546,7 +546,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                         ? "bg-gold" 
                         : stage === 0
                         ? "bg-white/15"
-                        : "bg-border"
+                        : "bg-white/10"
                     }`}
                   />
                 )}
