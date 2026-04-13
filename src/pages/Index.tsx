@@ -432,15 +432,15 @@ const Index = () => {
       {/* Disclaimers */}
       <section className="py-16 px-6" style={{ background: 'rgba(13,13,26,0.6)' }}>
         <div className="max-w-4xl mx-auto">
-          <h3 className="font-heading text-xl font-semibold text-center mb-8" style={{ color: '#F5F0E8' }}>A few important notes</h3>
+          <h3 className="font-heading text-2xl font-semibold text-center mb-8" style={{ color: '#F5F0E8' }}>A few important notes</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {disclaimers.map((d) => (
-              <div key={d.title} className="rounded-xl p-5" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div key={d.title} className="rounded-xl p-6" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle size={16} className="text-gold shrink-0" />
-                  <h4 className="font-heading text-sm font-semibold" style={{ color: '#F5F0E8' }}>{d.title}</h4>
+                  <AlertTriangle size={18} className="text-gold shrink-0" />
+                  <h4 className="font-heading text-base font-semibold" style={{ color: '#F5F0E8' }}>{d.title}</h4>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: 'rgba(245,240,232,0.6)' }}>{d.desc}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(245,240,232,0.6)' }}>{d.desc}</p>
               </div>
             ))}
           </div>
