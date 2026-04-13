@@ -1058,96 +1058,170 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
     3: "Finalizing your sheet music...",
   };
 
+  // Cymatics canvas animation
+  useEffect(() => {
+    const canvas = document.getElementById('cymatics-bg') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const parent = canvas.parentElement!;
+    canvas.width = parent.offsetWidth;
+    canvas.height = parent.offsetHeight;
+    const RES = 280;
+    const off = document.createElement('canvas');
+    off.width = RES; off.height = RES;
+    const oct = off.getContext('2d')!;
+    const img = oct.createImageData(RES, RES);
+    const d = img.data;
+    const MODES = [
+      [1,2],[2,3],[3,4],[4,5],[2,5],[3,5],[1,4],[5,6],
+      [4,7],[3,7],[2,7],[6,7],[5,8],[7,8],[3,8],[6,9],[4,9],[8,9]
+    ];
+    let t = 0, mi = 0;
+    function ch(x: number, y: number, m: number, n: number) {
+      return Math.cos(n*x*Math.PI)*Math.cos(m*y*Math.PI) - Math.cos(m*x*Math.PI)*Math.cos(n*y*Math.PI);
+    }
+    function eio(t: number) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
+    let animId: number;
+    function render() {
+      t += 0.0015;
+      if(t >= 1){ t = 0; mi = (mi+1) % MODES.length; }
+      const bl = eio(t);
+      const [ma,na] = MODES[mi], [mb,nb] = MODES[(mi+1) % MODES.length];
+      for(let py=0;py<RES;py++){
+        const ny=py/RES;
+        for(let px=0;px<RES;px++){
+          const nx=px/RES;
+          const v=ch(nx,ny,ma,na)*(1-bl)+ch(nx,ny,mb,nb)*bl;
+          const absV=Math.abs(v);
+          const i4=(py*RES+px)*4;
+          if(absV<0.075){
+            const br=Math.pow(1-absV/0.075,2.0);
+            const val=Math.round(br*255);
+            d[i4]=val;d[i4+1]=val;d[i4+2]=val;d[i4+3]=Math.round((0.45+br*0.55)*255);
+          } else {
+            d[i4]=0;d[i4+1]=0;d[i4+2]=0;d[i4+3]=255;
+          }
+        }
+      }
+      oct.putImageData(img,0,0);
+      ctx!.drawImage(off,0,0,canvas.width,canvas.height);
+      animId = requestAnimationFrame(render);
+    }
+    render();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
   return (
-    <div className="text-center py-12 animate-fade-in" style={{ background: '#05050F' }}>
-      <h2 className="font-heading text-3xl font-bold mb-3 text-[#F5F0E8]">
-        Transcribing your music...
-      </h2>
+    <div className="relative overflow-hidden animate-fade-in" style={{ minHeight: '100vh' }}>
+      {/* Cymatics canvas background */}
+      <canvas id="cymatics-bg" style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:0,background:'black'}} />
+      {/* Dark radial gradient overlay */}
+      <div style={{position:'absolute',top:0,left:0,right:0,bottom:0,zIndex:1,background:'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.8) 100%)'}} />
 
-      <div className="w-10 h-0.5 mx-auto mb-6 bg-[#D4AF37]" />
+      {/* Content */}
+      <div className="relative text-center py-12" style={{ zIndex: 2 }}>
+        <h2 className="font-heading text-3xl font-bold mb-3 text-[#F5F0E8]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.7)' }}>
+          Transcribing your music...
+        </h2>
 
-      <div className="mb-10">
-        <p className="text-base text-[rgba(245,240,232,0.6)]">
-          {stepMessages[procStep] || "Processing..."}
-        </p>
-        {estimatedTime && procStep < 3 && (
-          <div className="inline-flex items-center gap-1.5 mt-3 px-5 py-2 bg-teal/10 border border-teal/30 rounded-full">
-            <Clock size={14} className="text-teal" />
-            <span className="text-sm text-teal">
-              Estimated total time:
-              <span className="font-semibold"> {estimatedTime}</span>
-            </span>
-          </div>
-        )}
-      </div>
+        <div className="mx-auto mb-6" style={{ width: 44, height: 2, background: '#D4AF37' }} />
 
-      <div className="max-w-md mx-auto space-y-3">
-        {processingSteps.map((step, i) => {
-          const completed = procStep > i;
-          const active = procStep === i;
+        <div className="mb-10">
+          <p className="text-base text-[rgba(245,240,232,0.6)]">
+            {stepMessages[procStep] || "Processing..."}
+          </p>
+          {estimatedTime && procStep < 3 && (
+            <div
+              className="inline-flex items-center gap-1.5 mt-3 px-5 py-2 rounded-full"
+              style={{ background: 'rgba(0,0,0,0.75)', border: '2px solid rgba(78,205,196,0.5)' }}
+            >
+              <div className="w-2 h-2 rounded-full bg-[#4ECDC4] animate-pulse" />
+              <Clock size={14} className="text-[#4ECDC4]" />
+              <span className="text-sm text-[#4ECDC4]">
+                Estimated total time:
+                <span className="font-semibold"> {estimatedTime}</span>
+              </span>
+            </div>
+          )}
+        </div>
 
-          const cardClasses = active
-            ? "rounded-xl p-5 backdrop-blur-sm bg-[rgba(78,205,196,0.08)] border border-[rgba(78,205,196,0.3)] border-l-4 border-l-[#4ECDC4]"
-            : completed
-            ? "rounded-xl p-5 backdrop-blur-sm bg-[rgba(184,148,42,0.06)] border border-[rgba(184,148,42,0.2)] border-l-4 border-l-[#D4AF37]"
-            : "rounded-xl p-5 backdrop-blur-sm bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)]";
+        <div className="max-w-md mx-auto space-y-3 px-4">
+          {processingSteps.map((step, i) => {
+            const completed = procStep > i;
+            const active = procStep === i;
 
-          return (
-            <div key={step.label} className={cardClasses}>
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors duration-500 ${
-                    completed
-                      ? "bg-[#D4AF37] text-white"
-                      : active
-                      ? "bg-teal/20 text-teal"
-                      : "border border-[rgba(255,255,255,0.15)] text-[rgba(245,240,232,0.3)] bg-[rgba(13,13,26,0.5)]"
-                  }`}
-                >
-                  {completed
-                    ? <Check size={14} className="text-[#D4AF37]" />
-                    : active
-                    ? <Loader2 size={14} className="animate-spin" />
-                    : <span className="text-xs">{i + 1}</span>
-                  }
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`transition-colors duration-300 ${
-                        completed
-                          ? "text-[#D4AF37] text-sm font-medium"
-                          : active
-                          ? "text-[#F5F0E8] font-semibold text-base"
-                          : "text-[rgba(245,240,232,0.35)] text-sm"
-                      }`}
-                    >
-                      {step.label}
-                    </span>
-                    {active && (
-                      <span className="text-sm font-mono text-[#4ECDC4]">
-                        {formatTime(elapsed)}
-                      </span>
-                    )}
-                  </div>
-                  {active && step.duration > 0 && (
-                    <div className="mt-2 h-1.5 rounded-full overflow-hidden bg-[rgba(255,255,255,0.08)]">
-                      <div
-                        className="h-full rounded-full bg-[#4ECDC4] transition-all duration-1000"
-                        style={{ width: `${stepProgress}%` }}
-                      />
+            return (
+              <div
+                key={step.label}
+                style={{
+                  background: completed ? 'rgba(0,0,0,0.88)' : active ? 'rgba(0,0,0,0.88)' : 'rgba(0,0,0,0.75)',
+                  border: completed ? '3px solid rgba(212,175,55,0.7)' : active ? '3px solid rgba(78,205,196,0.7)' : '3px solid rgba(255,255,255,0.12)',
+                  borderLeft: completed ? '8px solid #D4AF37' : active ? '8px solid #4ECDC4' : '8px solid rgba(255,255,255,0.12)',
+                  borderRadius: '4px 14px 14px 4px',
+                  padding: '16px 20px',
+                  boxShadow: completed || active ? '0 4px 32px rgba(0,0,0,0.7)' : 'none',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  {/* Icon */}
+                  {completed ? (
+                    <div className="w-7 h-7 rounded-full bg-[#D4AF37] flex items-center justify-center shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                  ) : active ? (
+                    <div className="w-7 h-7 rounded-full border-2 border-[#4ECDC4] flex items-center justify-center shrink-0 animate-pulse">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#4ECDC4]" />
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7 rounded-full border border-[rgba(255,255,255,0.2)] flex items-center justify-center shrink-0">
+                      <span className="text-xs text-[rgba(245,240,232,0.3)]">{i + 1}</span>
                     </div>
                   )}
+
+                  <div className="flex-1 text-left">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`transition-colors duration-300 ${
+                          completed
+                            ? "text-[#D4AF37] text-sm font-medium"
+                            : active
+                            ? "text-[#F5F0E8] font-semibold text-base"
+                            : "text-[rgba(245,240,232,0.4)] text-sm"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                      {completed && (
+                        <span className="text-xs font-semibold tracking-wider uppercase text-[#D4AF37]">Done</span>
+                      )}
+                      {active && (
+                        <span className="text-sm font-mono text-[#4ECDC4]">
+                          {formatTime(elapsed)}
+                        </span>
+                      )}
+                    </div>
+                    {active && step.duration > 0 && (
+                      <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                        <div
+                          className="h-full rounded-full transition-all duration-1000"
+                          style={{ width: `${stepProgress}%`, background: 'linear-gradient(to right, #3BBDB4, #7EDDD8)' }}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      <p className="text-sm text-[rgba(245,240,232,0.35)] mt-8">
-        Total elapsed: {formatTime(elapsed)}
-      </p>
+        <p className="mt-8 text-xs uppercase tracking-widest text-[rgba(245,240,232,0.4)]">
+          Total elapsed: {formatTime(elapsed)}
+        </p>
+      </div>
     </div>
   );
 };
