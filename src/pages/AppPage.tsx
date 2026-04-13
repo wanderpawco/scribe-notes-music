@@ -429,6 +429,7 @@ const AppPage = () => {
 
       const newId = insertData.id;
       setTranscriptionId(newId);
+      console.log("transcriptionId set to:", newId);
 
       // C) Call edge function (fire and forget — it runs async)
       supabase.functions.invoke("start-transcription", {
