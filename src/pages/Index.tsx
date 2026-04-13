@@ -86,30 +86,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-3xl font-semibold text-ink text-center mb-12">How it works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            <div className="hidden md:block absolute top-12 left-[16.7%] right-[16.7%] h-px bg-border" />
-            {[
-              { icon: <Upload size={24} />, title: "Upload your audio", body: "Drop any MP3, WAV, FLAC, or M4A file. Up to 250MB supported.", step: 1 },
-              { icon: <Wand2 size={24} />, title: "Select your instruments", body: "Our AI detects what's playing and pre-selects instruments for you. Confirm or adjust.", step: 2 },
-              { icon: <Music size={24} />, title: "Get your sheet music", body: "Receive PDF sheet music, MIDI, and MusicXML. Edit, transpose, and export.", step: 3 },
-            ].map((s) => (
-              <div key={s.step} className="relative bg-surface border border-border rounded-xl p-6 shadow-card text-center">
-                <div className="w-10 h-10 rounded-full bg-gold-light text-gold flex items-center justify-center mx-auto mb-4 text-sm font-bold relative z-10">
-                  {s.step}
-                </div>
-                <div className="flex justify-center mb-3 text-gold">{s.icon}</div>
-                <h3 className="font-heading text-lg font-semibold text-ink mb-2">{s.title}</h3>
-                <p className="text-sm text-ink-soft">{s.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Features — Why ScribeNoter? */}
       <section className="py-20 px-6 bg-surface/50">
         <div className="max-w-5xl mx-auto text-center">
@@ -134,6 +110,30 @@ const Index = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-3xl font-semibold text-ink text-center mb-12">How it works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            <div className="hidden md:block absolute top-12 left-[16.7%] right-[16.7%] h-px bg-border" />
+            {[
+              { icon: <Upload size={24} />, title: "Upload your audio", body: "Drop any MP3, WAV, FLAC, or M4A file. Up to 250MB supported.", step: 1 },
+              { icon: <Wand2 size={24} />, title: "Select your instruments", body: "Our AI detects what's playing and pre-selects instruments for you. Confirm or adjust.", step: 2 },
+              { icon: <Music size={24} />, title: "Get your sheet music", body: "Receive PDF sheet music, MIDI, and MusicXML. Edit, transpose, and export.", step: 3 },
+            ].map((s) => (
+              <div key={s.step} className="relative bg-surface border border-border rounded-xl p-6 shadow-card text-center">
+                <div className="w-10 h-10 rounded-full bg-gold-light text-gold flex items-center justify-center mx-auto mb-4 text-sm font-bold relative z-10">
+                  {s.step}
+                </div>
+                <div className="flex justify-center mb-3 text-gold">{s.icon}</div>
+                <h3 className="font-heading text-lg font-semibold text-ink mb-2">{s.title}</h3>
+                <p className="text-sm text-ink-soft">{s.body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
