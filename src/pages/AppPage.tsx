@@ -437,6 +437,7 @@ const AppPage = () => {
       // D) Advance to Stage 2
       setUploading(false);
       setStage(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setProcessing(true);
       setProcStep(0);
     } catch (err: unknown) {
