@@ -964,44 +964,58 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
   };
 
   return (
-    <div className="text-center py-12 animate-fade-in">
-      <h2 className="font-heading text-2xl font-semibold text-ink mb-2">
+    <div className="text-center py-12 animate-fade-in" style={{ background: '#05050F' }}>
+      <h2 className="font-heading text-2xl font-bold mb-2" style={{ color: '#F5F0E8' }}>
         Transcribing your music...
       </h2>
 
+      <div className="w-16 h-0.5 mx-auto mb-6" style={{ background: 'rgba(184,148,42,0.5)' }} />
+
       <div className="mb-10">
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>
           {stepMessages[procStep] || "Processing..."}
         </p>
         {estimatedTime && procStep < 3 && (
-          <div className="inline-flex items-center gap-1.5 
-          mt-2 px-3 py-1.5 bg-teal/10 border border-teal/30 
-          rounded-full">
-            <Clock size={12} className="text-teal" />
-            <span className="text-xs text-teal">
-              Estimated total time: 
+          <div className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-teal/10 border border-teal/30 rounded-full">
+            <Clock size={14} className="text-teal" />
+            <span className="text-sm text-teal">
+              Estimated total time:
               <span className="font-semibold"> {estimatedTime}</span>
             </span>
           </div>
         )}
       </div>
 
-      <div className="max-w-md mx-auto space-y-0">
+      <div className="max-w-md mx-auto space-y-3">
         {processingSteps.map((step, i) => {
           const completed = procStep > i;
           const active = procStep === i;
+          const cardStyle = active
+            ? { background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(78,205,196,0.3)', borderLeft: '2px solid #4ECDC4' }
+            : completed
+            ? { background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(184,148,42,0.2)' }
+            : { background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)' };
+
           return (
-            <div key={step.label}>
-              <div className="flex items-center gap-3 py-3">
+            <div
+              key={step.label}
+              className="rounded-xl p-5 backdrop-blur-sm"
+              style={cardStyle}
+            >
+              <div className="flex items-center gap-3">
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center 
-                  shrink-0 transition-colors duration-500 ${
+                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors duration-500 ${
                     completed
                       ? "bg-teal text-white"
                       : active
                       ? "bg-teal/20 text-teal"
-                      : "bg-surface border border-border text-ink-muted"
+                      : "border border-[rgba(255,255,255,0.15)] text-[rgba(245,240,232,0.4)]"
                   }`}
+                  style={
+                    completed || active
+                      ? {}
+                      : { background: 'rgba(13,13,26,0.5)' }
+                  }
                 >
                   {completed
                     ? <Check size={14} />
@@ -1017,31 +1031,28 @@ const ProcessingView = ({ procStep, estimatedTime }: ProcessingViewProps) => {
                         completed
                           ? "text-teal"
                           : active
-                          ? "text-ink"
-                          : "text-ink-muted"
+                          ? "text-[#F5F0E8]"
+                          : "text-[rgba(245,240,232,0.5)]"
                       }`}
                     >
                       {step.label}
                     </span>
                     {active && (
-                      <span className="text-xs text-ink-muted font-mono">
+                      <span className="text-xs font-mono" style={{ color: 'rgba(245,240,232,0.4)' }}>
                         {formatTime(elapsed)}
                       </span>
                     )}
                   </div>
                   {active && step.duration > 0 && (
-                    <div className="mt-1.5 h-1.5 bg-border rounded-full overflow-hidden">
+                    <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                       <div
-                        className="h-full bg-teal rounded-full transition-all duration-1000"
-                        style={{ width: `${stepProgress}%` }}
+                        className="h-full rounded-full transition-all duration-1000"
+                        style={{ width: `${stepProgress}%`, background: '#4ECDC4' }}
                       />
                     </div>
                   )}
                 </div>
               </div>
-              {i < processingSteps.length - 1 && (
-                <div className="ml-3.5 w-px h-3 bg-border" />
-              )}
             </div>
           );
         })}
