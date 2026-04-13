@@ -143,7 +143,7 @@ const Index = () => {
       [3,10],[5,9],[8,9],[4,11],[7,10],[9,10],
     ];
     let ci = 0, morphT = 0, morphActive = false, holdCount = 0;
-    const HOLD = 180, MORPH_STEPS = 110;
+    const HOLD = 360, MORPH_STEPS = 220;
     const W = 400, H = 400;
     canvas.width = W;
     canvas.height = H;
