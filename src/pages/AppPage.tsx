@@ -257,7 +257,9 @@ const AppPage = () => {
 
   /* ── Stage 2: poll transcription status ── */
   useEffect(() => {
-    if (stage !== 2 || !processing || !transcriptionId) return;
+    if (stage !== 2 || !processing) return;
+
+    if (!transcriptionId) return;
 
     const pollTranscription = async () => {
       console.log("Polling transcriptionId:", transcriptionId, "| stage:", stage, "| processing:", processing);
