@@ -150,39 +150,79 @@ const Index = () => {
           </p>
 
           {/* Equalizer visualization */}
-          <div className="h-32 flex items-end justify-center gap-1.5 mb-8" aria-hidden="true">
+          <div className="h-40 flex items-end justify-center gap-2 mb-10" aria-hidden="true">
             <style>{`
               @keyframes eqBar1 {
                 0%, 100% { height: 16px; }
-                50% { height: 64px; }
-              }
-              @keyframes eqBar2 {
-                0%, 100% { height: 32px; }
-                50% { height: 96px; }
-              }
-              @keyframes eqBar3 {
-                0%, 100% { height: 24px; }
                 50% { height: 80px; }
               }
+              @keyframes eqBar2 {
+                0%, 100% { height: 16px; }
+                50% { height: 120px; }
+              }
+              @keyframes eqBar3 {
+                0%, 100% { height: 16px; }
+                50% { height: 60px; }
+              }
               @keyframes eqBar4 {
-                0%, 100% { height: 40px; }
-                50% { height: 112px; }
+                0%, 100% { height: 16px; }
+                50% { height: 140px; }
               }
               @keyframes eqBar5 {
                 0%, 100% { height: 16px; }
-                50% { height: 72px; }
+                50% { height: 70px; }
               }
               @keyframes eqBar6 {
-                0%, 100% { height: 32px; }
-                50% { height: 88px; }
+                0%, 100% { height: 16px; }
+                50% { height: 100px; }
+              }
+              @keyframes eqBar7 {
+                0%, 100% { height: 16px; }
+                50% { height: 50px; }
               }
             `}</style>
-            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar1 1.2s ease-in-out infinite' }} />
-            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar2 1.4s ease-in-out infinite 0.1s' }} />
-            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar3 1.1s ease-in-out infinite 0.2s' }} />
-            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar4 1.3s ease-in-out infinite 0.3s' }} />
-            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar5 1.5s ease-in-out infinite 0.4s' }} />
-            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar6 1.2s ease-in-out infinite 0.5s' }} />
+            {/* Bar 1 - Gold #B8942A */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#B8942A', 
+              boxShadow: '0 0 20px rgba(184, 148, 42, 0.5)',
+              animation: 'eqBar1 0.8s ease-in-out infinite 0s'
+            }} />
+            {/* Bar 2 - Teal #4ECDC4 */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#4ECDC4', 
+              boxShadow: '0 0 20px rgba(78, 205, 196, 0.5)',
+              animation: 'eqBar2 1.1s ease-in-out infinite 0.15s'
+            }} />
+            {/* Bar 3 - Light Gold #D4AF37 */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#D4AF37', 
+              boxShadow: '0 0 20px rgba(212, 175, 55, 0.5)',
+              animation: 'eqBar3 0.9s ease-in-out infinite 0.3s'
+            }} />
+            {/* Bar 4 - Gold #B8942A */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#B8942A', 
+              boxShadow: '0 0 20px rgba(184, 148, 42, 0.5)',
+              animation: 'eqBar4 1.3s ease-in-out infinite 0.1s'
+            }} />
+            {/* Bar 5 - Teal #4ECDC4 */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#4ECDC4', 
+              boxShadow: '0 0 20px rgba(78, 205, 196, 0.5)',
+              animation: 'eqBar5 0.7s ease-in-out infinite 0.4s'
+            }} />
+            {/* Bar 6 - Light Gold #D4AF37 */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#D4AF37', 
+              boxShadow: '0 0 20px rgba(212, 175, 55, 0.5)',
+              animation: 'eqBar6 1.0s ease-in-out infinite 0.2s'
+            }} />
+            {/* Bar 7 - Gold #B8942A */}
+            <div className="w-4 rounded-t-full" style={{ 
+              background: '#B8942A', 
+              boxShadow: '0 0 20px rgba(184, 148, 42, 0.5)',
+              animation: 'eqBar7 0.85s ease-in-out infinite 0.35s'
+            }} />
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
@@ -305,7 +345,7 @@ const Index = () => {
                     {group.label}
                   </span>
                   {group.badge && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-teal/10 text-teal">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-teal-500 text-white">
                       {group.badge}
                     </span>
                   )}
@@ -313,13 +353,22 @@ const Index = () => {
                 <div className="flex flex-wrap justify-center gap-3">
                   {group.instruments.map((inst) => {
                     const IconComponent = inst.icon;
+                    const theme = group.colorTheme;
                     return (
                       <div
                         key={inst.name}
-                        className="bg-surface border border-border rounded-xl p-5 flex flex-col items-center justify-center gap-4 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default min-h-[110px] min-w-[120px]"
+                        className={`${theme.bg} ${theme.border} border rounded-xl p-5 flex flex-col items-center justify-center gap-4 shadow-card hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default min-h-[110px] min-w-[120px] ${theme.hover} relative overflow-hidden group`}
                       >
-                        <IconComponent size={32} className="text-gold" />
-                        <span className="text-base font-semibold text-ink">{inst.name}</span>
+                        {/* Subtle gradient overlay on hover */}
+                        <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-200`} />
+                        {/* Gold shimmer effect for BRASS */}
+                        {theme.shimmer && (
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_ease-in-out]" />
+                          </div>
+                        )}
+                        <IconComponent size={32} className={`${theme.icon} relative z-10`} />
+                        <span className="text-base font-semibold text-ink relative z-10">{inst.name}</span>
                       </div>
                     );
                   })}
