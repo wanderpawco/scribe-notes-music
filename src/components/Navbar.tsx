@@ -19,7 +19,7 @@ const BetaBanner = () => {
   if (dismissed) return null;
 
   return (
-    <div className="bg-[#0f0f1a] text-gold text-base py-3 px-6 flex items-center justify-center relative">
+    <div className="text-gold text-base py-3 px-6 flex items-center justify-center relative" style={{ background: 'rgba(5,5,15,0.95)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
       <span className="text-center">
         <span className="text-lg">🎵</span> ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
         <Link to="/contact" className="underline hover:text-gold-light transition-colors">
@@ -95,11 +95,15 @@ const Navbar = () => {
         <BetaBanner />
         <nav
           className={`h-16 flex items-center transition-all duration-200 ${
-            scrolled ? "backdrop-blur-md bg-paper/80 shadow-card" : "bg-paper"
+            scrolled ? "backdrop-blur-md shadow-card" : ""
           }`}
+          style={{
+            background: scrolled ? 'rgba(5,5,15,0.9)' : 'rgba(5,5,15,0.8)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+          }}
         >
           <div className="grid grid-cols-3 items-center max-w-6xl mx-auto px-6 w-full">
-          <Link to="/" className="flex items-center gap-1.5 text-ink">
+          <Link to="/" className="flex items-center gap-1.5" style={{ color: '#F5F0E8' }}>
             <span className="text-5xl leading-none">𝄞</span>
             <span className="font-heading text-3xl font-bold">ScribeNoter</span>
           </Link>
@@ -110,7 +114,10 @@ const Navbar = () => {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-lg text-ink-soft hover:text-ink transition-colors duration-200"
+                  className="text-lg transition-colors duration-200"
+                  style={{ color: 'rgba(245,240,232,0.6)' }}
+                  onMouseEnter={e => (e.target as HTMLElement).style.color = '#F5F0E8'}
+                  onMouseLeave={e => (e.target as HTMLElement).style.color = 'rgba(245,240,232,0.6)'}
                 >
                   {link.label}
                 </a>
@@ -118,7 +125,10 @@ const Navbar = () => {
                 <Link
                   key={link.label}
                   to={link.href}
-                  className="text-lg text-ink-soft hover:text-ink transition-colors duration-200"
+                  className="text-lg transition-colors duration-200"
+                  style={{ color: 'rgba(245,240,232,0.6)' }}
+                  onMouseEnter={e => (e.target as HTMLElement).style.color = '#F5F0E8'}
+                  onMouseLeave={e => (e.target as HTMLElement).style.color = 'rgba(245,240,232,0.6)'}
                 >
                   {link.label}
                 </Link>
@@ -136,20 +146,26 @@ const Navbar = () => {
                     {userInitial}
                   </button>
                   {avatarMenuOpen && (
-                    <div className="absolute right-0 top-12 w-48 bg-surface border border-border rounded-xl shadow-lg py-1.5 z-50">
+                    <div className="absolute right-0 top-12 w-48 rounded-xl shadow-lg py-1.5 z-50" style={{ background: 'rgba(13,13,26,0.95)', border: '1px solid rgba(255,255,255,0.08)' }}>
                       <Link
                         to="/dashboard"
                         onClick={() => setAvatarMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink hover:bg-paper transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors"
+                        style={{ color: '#F5F0E8' }}
+                        onMouseEnter={e => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.05)'}
+                        onMouseLeave={e => (e.target as HTMLElement).style.background = 'transparent'}
                       >
-                        <LayoutDashboard size={15} className="text-ink-muted" />
+                        <LayoutDashboard size={15} style={{ color: 'rgba(245,240,232,0.4)' }} />
                         My Transcriptions
                       </Link>
                       <button
                         onClick={handleSignOut}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink hover:bg-paper transition-colors"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors"
+                        style={{ color: '#F5F0E8' }}
+                        onMouseEnter={e => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.05)'}
+                        onMouseLeave={e => (e.target as HTMLElement).style.background = 'transparent'}
                       >
-                        <LogOut size={15} className="text-ink-muted" />
+                        <LogOut size={15} style={{ color: 'rgba(245,240,232,0.4)' }} />
                         Sign Out
                       </button>
                     </div>
@@ -159,7 +175,10 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => setAuthOpen(true)}
-                  className="px-4 py-2 rounded-lg border border-border text-ink text-sm font-medium hover:bg-surface transition-all duration-200"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                  style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(245,240,232,0.8)' }}
+                  onMouseEnter={e => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.05)'}
+                  onMouseLeave={e => (e.target as HTMLElement).style.background = 'transparent'}
                 >
                   Sign In
                 </button>
@@ -174,7 +193,8 @@ const Navbar = () => {
           </div>
 
           <button
-            className="md:hidden text-ink"
+            className="md:hidden"
+            style={{ color: '#F5F0E8' }}
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -184,14 +204,15 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 pt-16 bg-paper md:hidden">
+        <div className="fixed inset-0 z-40 pt-16 md:hidden" style={{ background: '#05050F' }}>
           <div className="flex flex-col p-6 gap-4">
             {navLinks.map((link) =>
               link.href.startsWith("#") ? (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-lg text-ink-soft py-2"
+                  className="text-lg py-2"
+                  style={{ color: 'rgba(245,240,232,0.6)' }}
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
@@ -200,26 +221,29 @@ const Navbar = () => {
                 <Link
                   key={link.label}
                   to={link.href}
-                  className="text-lg text-ink-soft py-2"
+                  className="text-lg py-2"
+                  style={{ color: 'rgba(245,240,232,0.6)' }}
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
                 </Link>
               )
             )}
-            <hr className="border-border" />
+            <hr style={{ borderColor: 'rgba(255,255,255,0.08)' }} />
             {user ? (
               <>
                 <Link
                   to="/dashboard"
-                  className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium text-center"
+                  className="px-4 py-3 rounded-lg text-sm font-medium text-center"
+                  style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(245,240,232,0.8)' }}
                   onClick={() => setMobileOpen(false)}
                 >
                   My Transcriptions
                 </Link>
                 <button
                   onClick={() => { handleSignOut(); setMobileOpen(false); }}
-                  className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium"
+                  className="px-4 py-3 rounded-lg text-sm font-medium"
+                  style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(245,240,232,0.8)' }}
                 >
                   Sign Out
                 </button>
@@ -235,7 +259,8 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => { setAuthOpen(true); setMobileOpen(false); }}
-                  className="px-4 py-3 rounded-lg border border-border text-ink text-sm font-medium"
+                  className="px-4 py-3 rounded-lg text-sm font-medium"
+                  style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(245,240,232,0.8)' }}
                 >
                   Sign In
                 </button>

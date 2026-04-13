@@ -56,11 +56,15 @@ const PricingCards = () => {
       {tiers.map((tier) => (
         <div
           key={tier.name}
-          className={`relative rounded-xl p-6 flex flex-col bg-surface shadow-card transition-all duration-200 ${
-            tier.featured
-              ? "border-2 border-gold ring-1 ring-gold/20"
-              : "border border-border"
-          }`}
+          className="relative rounded-xl p-6 flex flex-col transition-all duration-200"
+          style={{
+            background: 'rgba(13,13,26,0.7)',
+            border: tier.featured
+              ? '2px solid rgba(184,148,42,0.4)'
+              : '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(8px)',
+            boxShadow: tier.featured ? '0 0 30px rgba(184,148,42,0.15)' : undefined,
+          }}
         >
           {tier.featured && (
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-semibold bg-gold text-white">
@@ -68,15 +72,15 @@ const PricingCards = () => {
             </span>
           )}
 
-          <h3 className="font-heading text-xl font-semibold text-ink">{tier.name}</h3>
+          <h3 className="font-heading text-xl font-semibold" style={{ color: '#F5F0E8' }}>{tier.name}</h3>
           <div className="mt-3 mb-5">
-            <span className="font-heading text-3xl font-bold text-ink">{tier.price}</span>
-            {tier.period && <span className="text-sm text-ink-soft">{tier.period}</span>}
+            <span className="font-heading text-3xl font-bold" style={{ color: '#F5F0E8' }}>{tier.price}</span>
+            {tier.period && <span className="text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>{tier.period}</span>}
           </div>
 
           <ul className="space-y-3 flex-1 mb-6">
             {tier.features.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-ink-soft">
+              <li key={f} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>
                 <Check size={16} className="text-teal mt-0.5 shrink-0" />
                 {f}
               </li>
@@ -88,8 +92,12 @@ const PricingCards = () => {
             className={`block text-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
               tier.featured
                 ? "bg-gold text-white hover:bg-gold-dark"
-                : "border border-border text-ink hover:bg-surface"
+                : ""
             }`}
+            style={!tier.featured ? {
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: 'rgba(245,240,232,0.8)',
+            } : undefined}
           >
             Get Started
           </Link>
