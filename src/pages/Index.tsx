@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Check, Upload, Wand2, Music, Mic2, Music2, Keyboard, FileText, Zap, Download, Shield, AlertTriangle, ArrowRight, Guitar, Drum, Mic, Sliders, History, Link as LinkIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import DemoModal from "@/components/DemoModal";
+
 import PricingCards from "@/components/PricingCards";
 
 const features = [
@@ -129,7 +129,7 @@ const disclaimers = [
 
 const Index = () => {
   const navigate = useNavigate();
-  const [demoOpen, setDemoOpen] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const handleYoutubeSubmit = () => {
@@ -254,13 +254,6 @@ const Index = () => {
             >
               Try It Free →
             </Link>
-            <button
-              onClick={() => setDemoOpen(true)}
-              className="px-6 py-3 rounded-lg font-medium transition-all duration-200"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(8px)' }}
-            >
-              Watch Demo
-            </button>
           </div>
 
           {/* YouTube URL input */}
@@ -468,7 +461,7 @@ const Index = () => {
       </section>
 
       <Footer />
-      <DemoModal open={demoOpen} onClose={() => setDemoOpen(false)} />
+      <Footer />
     </div>
   );
 };
