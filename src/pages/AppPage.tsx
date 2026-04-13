@@ -430,6 +430,7 @@ const AppPage = () => {
           transcription_id: newId,
           audio_url: audioUrl,
           selected_instruments: selected,
+          song_title: songTitle.trim() || audioFile.name.replace(/\.[^/.]+$/, ""),
         },
       }).catch(() => {});
 
