@@ -136,9 +136,11 @@ function estimateProcessingTime(
 
 const AppPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
