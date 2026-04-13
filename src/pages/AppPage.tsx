@@ -505,7 +505,7 @@ const AppPage = () => {
       <BetaBanner />
       <Navbar />
 
-      <main className={`flex-1 pt-32 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
+      <main className="flex-1 pt-32 pb-16 px-6">
         <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator — hidden on results screen */}
           {stage < 2 && (
@@ -732,7 +732,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
           >
             {/* File pill */}
             <div className="flex items-center justify-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border text-sm text-ink">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)', color: '#F5F0E8' }}>
                 <Music size={14} className="text-gold" />
                 <span className="truncate max-w-[200px]">{fileName}</span>
                 <button
@@ -746,17 +746,17 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
 
             {scanning ? (
               <div className="text-center py-16 animate-fade-in">
-                <p className="text-sm font-medium text-ink mb-4">Analyzing your audio...</p>
-                <div className="max-w-xs mx-auto h-2 bg-border rounded-full overflow-hidden">
+                <p className="text-sm font-medium mb-4" style={{ color: '#F5F0E8' }}>Analyzing your audio...</p>
+                <div className="max-w-xs mx-auto h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
                   <div className="h-full bg-teal rounded-full animate-scan-bar" />
                 </div>
               </div>
             ) : (
               <div className="animate-fade-in">
-                <h2 className="font-heading text-2xl font-semibold text-ink text-center mb-2">
+                <h2 className="font-heading text-2xl font-semibold text-center mb-2" style={{ color: '#F5F0E8' }}>
                   What do you want to transcribe?
                 </h2>
-                <p className="text-sm text-ink-soft text-center mb-8">
+                <p className="text-sm text-center mb-8" style={{ color: 'rgba(245,240,232,0.6)' }}>
                   Select an instrument to transcribe.
                 </p>
 
@@ -770,9 +770,10 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                         onClick={() => toggleInstrument(inst.name)}
                         className={`relative flex flex-col items-center justify-center gap-3 p-5 rounded-xl min-h-[100px] transition-all duration-200 ${
                           isSelected
-                            ? "bg-gold-light border-2 border-gold"
-                            : "bg-surface border border-border hover:border-ink-muted"
+                            ? "border-2 border-gold"
+                            : "hover:border-gold/30"
                         }`}
+                        style={{ background: isSelected ? 'rgba(184,148,42,0.15)' : 'rgba(13,13,26,0.7)', border: isSelected ? undefined : '1px solid rgba(255,255,255,0.08)' }}
                       >
                         {isSelected && (
                           <div className="absolute top-2 right-2">
@@ -782,14 +783,14 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                           </div>
                         )}
                         <Icon size={32} className="text-gold" />
-                        <span className="text-base font-semibold text-ink">{inst.name}</span>
+                        <span className="text-base font-semibold" style={{ color: '#F5F0E8' }}>{inst.name}</span>
                       </button>
                     );
                   })}
                 </div>
 
                 <div className="text-center mt-6">
-                  <p className="text-sm text-ink-soft">
+                  <p className="text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>
                     {selected.length === 0 ? "No instrument selected" : `${selected[0]} selected`}
                   </p>
                 {estimatedTime && (
@@ -807,7 +808,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                 </div>
 
                 <div className="mt-6">
-                  <label className="block text-sm font-medium text-ink mb-1.5">
+                  <label className="block text-sm font-medium mb-1.5" style={{ color: '#F5F0E8' }}>
                     Song Title
                   </label>
                   <input
@@ -818,7 +819,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-ink text-sm placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
                     maxLength={100}
                   />
-                  <p className="text-sm font-medium text-ink mt-1">
+                  <p className="text-sm font-medium mt-1" style={{ color: 'rgba(245,240,232,0.6)' }}>
                     This will appear as the title on your sheet music
                   </p>
                 </div>
@@ -831,7 +832,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     onChange={(e) => setRightsConfirmed(e.target.checked)}
                     className="mt-0.5 w-4 h-4 rounded border-border text-gold focus:ring-gold/50 focus:ring-2"
                   />
-                  <label htmlFor="rights-confirm" className="text-sm text-ink-soft leading-relaxed cursor-pointer">
+                  <label htmlFor="rights-confirm" className="text-sm leading-relaxed cursor-pointer" style={{ color: 'rgba(245,240,232,0.6)' }}>
                     I confirm that I own or have the rights to transcribe this audio recording.
                   </label>
                 </div>
