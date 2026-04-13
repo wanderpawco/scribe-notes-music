@@ -268,6 +268,8 @@ const AppPage = () => {
 
       if (error || !data) return;
 
+      console.log("Polling transcription ID:", transcriptionId, "status:", data.status);
+
       switch (data.status) {
         case "pending":
         case "separating":
