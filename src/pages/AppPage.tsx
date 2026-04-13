@@ -598,16 +598,16 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
 
               {/* Upload content — sits above waveform */}
               <div
-                className="relative z-10 flex flex-col items-center justify-center min-h-[360px] p-10"
+                className="relative z-10 flex flex-col items-center justify-center min-h-[320px] p-8"
               >
                 
                 {/* Upload icon */}
-                <div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mb-8 animate-glow-pulse">
+                <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mb-8 animate-glow-pulse">
                   <Upload size={36} className="text-gold" />
                 </div>
 
                 {/* Main heading — BIG and white */}
-                <h2 className="font-heading text-5xl md:text-6xl font-bold mb-4 text-center text-white animate-fade-up-delay-1">
+                <h2 className="font-heading text-3xl font-bold mb-4 text-center text-white animate-fade-up-delay-1">
                   Drop your audio file here
                 </h2>
 
