@@ -33,6 +33,7 @@ Deno.serve(async (req) => {
         instrument,
         job_id: jobId,
         song_title: song_title || "Transcription",
+        transcription_id: transcription_id,
       }),
     });
 
