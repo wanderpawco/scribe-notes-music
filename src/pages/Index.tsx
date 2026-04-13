@@ -91,7 +91,7 @@ const Index = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-36 pb-28 px-6 staff-lines">
+      <section className="pt-36 pb-12 px-6 staff-lines">
         <div className="max-w-3xl mx-auto text-center">
           <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold bg-gold-light text-gold mb-6">
             AI Music Transcription
@@ -107,16 +107,39 @@ const Index = () => {
           </p>
 
           {/* Equalizer visualization */}
-          <div className="flex items-end justify-center gap-2 mb-10 h-16" aria-hidden="true">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="w-2 rounded-full bg-gold animate-eq-bar"
-                style={{
-                  animationDelay: `${i * 0.15}s`,
-                }}
-              />
-            ))}
+          <div className="h-32 flex items-end justify-center gap-1.5 mb-8" aria-hidden="true">
+            <style>{`
+              @keyframes eqBar1 {
+                0%, 100% { height: 16px; }
+                50% { height: 64px; }
+              }
+              @keyframes eqBar2 {
+                0%, 100% { height: 32px; }
+                50% { height: 96px; }
+              }
+              @keyframes eqBar3 {
+                0%, 100% { height: 24px; }
+                50% { height: 80px; }
+              }
+              @keyframes eqBar4 {
+                0%, 100% { height: 40px; }
+                50% { height: 112px; }
+              }
+              @keyframes eqBar5 {
+                0%, 100% { height: 16px; }
+                50% { height: 72px; }
+              }
+              @keyframes eqBar6 {
+                0%, 100% { height: 32px; }
+                50% { height: 88px; }
+              }
+            `}</style>
+            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar1 1.2s ease-in-out infinite' }} />
+            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar2 1.4s ease-in-out infinite 0.1s' }} />
+            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar3 1.1s ease-in-out infinite 0.2s' }} />
+            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar4 1.3s ease-in-out infinite 0.3s' }} />
+            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar5 1.5s ease-in-out infinite 0.4s' }} />
+            <div className="w-3 rounded-t bg-gold opacity-80" style={{ animation: 'eqBar6 1.2s ease-in-out infinite 0.5s' }} />
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
@@ -164,7 +187,7 @@ const Index = () => {
       </section>
 
       {/* Features — Why ScribeNoter? */}
-      <section className="py-20 px-6 bg-surface/50">
+      <section className="py-16 px-6 bg-surface/50">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="font-heading text-3xl font-semibold text-ink mb-3">Why ScribeNoter?</h2>
           <p className="text-ink-soft mb-12 max-w-lg mx-auto">
