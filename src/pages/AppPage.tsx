@@ -816,7 +816,8 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     value={songTitle}
                     onChange={(e) => setSongTitle(e.target.value)}
                     placeholder="e.g. Stairway to Heaven"
-                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-ink text-sm placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
+                    className="w-full px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
+                    style={{ background: 'rgba(5,5,15,0.8)', border: '1px solid rgba(255,255,255,0.1)', color: '#F5F0E8' }}
                     maxLength={100}
                   />
                   <p className="text-sm font-medium mt-1" style={{ color: 'rgba(245,240,232,0.6)' }}>
