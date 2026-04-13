@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Check, Upload, Wand2, Music, Mic2, Music2, Keyboard, FileText, Zap, Download, Shield, AlertTriangle, ArrowRight, Guitar, Drum } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -129,133 +129,145 @@ const Index = () => {
   const [demoOpen, setDemoOpen] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
+  useEffect(() => {
+    const canvas = document.getElementById('chladni-hero') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const MODES = [
+      [1,2],[2,3],[3,4],[4,5],[5,6],[6,7],
+      [1,3],[2,5],[3,7],[1,4],[3,5],[5,7],
+      [2,7],[4,7],[6,7],[1,6],[3,8],[5,8],
+      [7,8],[2,9],[4,9],[6,9],[1,8],[7,9],
+      [3,10],[5,9],[8,9],[4,11],[7,10],[9,10],
+    ];
+    let ci = 0, morphT = 0, morphActive = false, holdCount = 0;
+    const HOLD = 90, MORPH_STEPS = 55;
+    const W = 400, H = 400;
+    canvas.width = W;
+    canvas.height = H;
+
+    function chladni(x: number, y: number, m: number, n: number) {
+      return Math.cos(n * x * Math.PI) * Math.cos(m * y * Math.PI)
+        - Math.cos(m * x * Math.PI) * Math.cos(n * y * Math.PI);
+    }
+
+    function eio(t: number) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+
+    const buf = new Uint8ClampedArray(W * H * 4);
+
+    function renderField(blend: number) {
+      const [ma, na] = MODES[ci];
+      const [mb, nb] = MODES[(ci + 1) % MODES.length];
+      const t = eio(Math.min(blend, 1));
+      for (let py = 0; py < H; py++) {
+        const ny = py / H;
+        for (let px2 = 0; px2 < W; px2++) {
+          const nx = px2 / W;
+          const va = chladni(nx, ny, ma, na);
+          const vb = chladni(nx, ny, mb, nb);
+          const v = va * (1 - t) + vb * t;
+          const absV = Math.abs(v);
+          const i4 = (py * W + px2) * 4;
+          if (absV < 0.08) {
+            const bright = Math.pow(1 - absV / 0.08, 1.8);
+            const val = Math.round(bright * 255);
+            buf[i4] = val; buf[i4 + 1] = val; buf[i4 + 2] = val;
+            buf[i4 + 3] = Math.round((0.4 + bright * 0.6) * 255);
+          } else {
+            buf[i4] = 0; buf[i4 + 1] = 0; buf[i4 + 2] = 0; buf[i4 + 3] = 255;
+          }
+        }
+      }
+      ctx!.putImageData(new ImageData(buf, W, H), 0, 0);
+    }
+
+    let animId: number;
+    function loop() {
+      if (!morphActive) {
+        holdCount++;
+        if (holdCount === 1) renderField(0);
+        if (holdCount >= HOLD) { holdCount = 0; morphActive = true; morphT = 0; }
+      } else {
+        morphT += 1 / MORPH_STEPS;
+        renderField(morphT);
+        if (morphT >= 1) {
+          ci = (ci + 1) % MODES.length;
+          morphActive = false; holdCount = 0;
+        }
+      }
+      animId = requestAnimationFrame(loop);
+    }
+    loop();
+
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-36 pb-12 px-6 staff-lines">
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold bg-gold-light text-gold mb-6">
+      <section className="relative" style={{ minHeight: '100vh' }}>
+        {/* Chladni canvas */}
+        <canvas id="chladni-hero" className="absolute inset-0 w-full h-full" style={{ zIndex: 0, background: '#000' }} />
+        {/* Dark overlay */}
+        <div className="absolute inset-0" style={{ zIndex: 1, background: 'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 100%)' }} />
+        {/* Hero content */}
+        <div className="relative flex flex-col items-center justify-center px-6 text-center" style={{ zIndex: 2, minHeight: '100vh' }}>
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold mb-8" style={{ background: 'rgba(0,0,0,0.82)', border: '1px solid #B8942A', color: '#D4AF37' }}>
             AI Music Transcription
           </span>
-          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-semibold text-ink leading-tight mb-5">
-            Every song deserves its sheet music.
-          </h1>
-          <p className="text-lg text-ink-soft max-w-xl mx-auto mb-2">
-            Upload any audio, select your instruments, and receive sheet music, MIDI, and MusicXML in minutes.
-          </p>
-          <p className="text-base text-ink-muted max-w-md mx-auto mb-10">
-            From brass to bass — every instrument, every part.
-          </p>
 
-          {/* Equalizer visualization */}
-          <div className="h-40 flex items-end justify-center gap-2 mb-10" aria-hidden="true">
-            <style>{`
-              @keyframes eqBar1 {
-                0%, 100% { height: 16px; }
-                50% { height: 80px; }
-              }
-              @keyframes eqBar2 {
-                0%, 100% { height: 16px; }
-                50% { height: 120px; }
-              }
-              @keyframes eqBar3 {
-                0%, 100% { height: 16px; }
-                50% { height: 60px; }
-              }
-              @keyframes eqBar4 {
-                0%, 100% { height: 16px; }
-                50% { height: 140px; }
-              }
-              @keyframes eqBar5 {
-                0%, 100% { height: 16px; }
-                50% { height: 70px; }
-              }
-              @keyframes eqBar6 {
-                0%, 100% { height: 16px; }
-                50% { height: 100px; }
-              }
-              @keyframes eqBar7 {
-                0%, 100% { height: 16px; }
-                50% { height: 50px; }
-              }
-              @keyframes shimmer {
-                0% { transform: translateX(-100%); }
-                100% { transform: translateX(100%); }
-              }
-            `}</style>
-            {/* Bar 1 - Gold #B8942A */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#B8942A', 
-              boxShadow: '0 0 20px rgba(184, 148, 42, 0.5)',
-              animation: 'eqBar1 0.8s ease-in-out infinite 0s'
-            }} />
-            {/* Bar 2 - Teal #4ECDC4 */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#4ECDC4', 
-              boxShadow: '0 0 20px rgba(78, 205, 196, 0.5)',
-              animation: 'eqBar2 1.1s ease-in-out infinite 0.15s'
-            }} />
-            {/* Bar 3 - Light Gold #D4AF37 */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#D4AF37', 
-              boxShadow: '0 0 20px rgba(212, 175, 55, 0.5)',
-              animation: 'eqBar3 0.9s ease-in-out infinite 0.3s'
-            }} />
-            {/* Bar 4 - Gold #B8942A */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#B8942A', 
-              boxShadow: '0 0 20px rgba(184, 148, 42, 0.5)',
-              animation: 'eqBar4 1.3s ease-in-out infinite 0.1s'
-            }} />
-            {/* Bar 5 - Teal #4ECDC4 */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#4ECDC4', 
-              boxShadow: '0 0 20px rgba(78, 205, 196, 0.5)',
-              animation: 'eqBar5 0.7s ease-in-out infinite 0.4s'
-            }} />
-            {/* Bar 6 - Light Gold #D4AF37 */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#D4AF37', 
-              boxShadow: '0 0 20px rgba(212, 175, 55, 0.5)',
-              animation: 'eqBar6 1.0s ease-in-out infinite 0.2s'
-            }} />
-            {/* Bar 7 - Gold #B8942A */}
-            <div className="w-4 rounded-t-full" style={{ 
-              background: '#B8942A', 
-              boxShadow: '0 0 20px rgba(184, 148, 42, 0.5)',
-              animation: 'eqBar7 0.85s ease-in-out infinite 0.35s'
-            }} />
+          {/* Frosted glass card */}
+          <div className="mb-8 max-w-2xl w-full" style={{ background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(184,148,42,0.28)', borderRadius: '16px', padding: '32px 40px' }}>
+            <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-semibold leading-tight mb-1" style={{ color: '#F5F0E8' }}>
+              Every song deserves
+            </h1>
+            <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-semibold leading-tight mb-5" style={{ color: '#D4AF37' }}>
+              its sheet music.
+            </h1>
+            <p className="text-lg max-w-xl mx-auto mb-2" style={{ color: 'rgba(245,240,232,0.55)' }}>
+              Upload any audio, select your instruments, and receive sheet music, MIDI, and MusicXML in minutes.
+            </p>
+            <p className="text-base max-w-md mx-auto" style={{ color: '#4ECDC4' }}>
+              From brass to bass — every instrument, every part.
+            </p>
           </div>
 
+          {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
             <Link
               to="/app"
-              className="px-6 py-3 rounded-lg bg-gold text-white font-medium hover:bg-gold-dark transition-all duration-200"
+              className="px-6 py-3 rounded-lg font-medium transition-all duration-200"
+              style={{ background: 'linear-gradient(135deg, #B8942A, #D4AF37)', color: '#fff', boxShadow: '0 0 24px rgba(212,175,55,0.4)' }}
             >
               Try It Free →
             </Link>
             <button
               onClick={() => setDemoOpen(true)}
-              className="px-6 py-3 rounded-lg border border-border text-ink font-medium hover:bg-surface transition-all duration-200"
+              className="px-6 py-3 rounded-lg font-medium transition-all duration-200"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(8px)' }}
             >
               Watch Demo
             </button>
           </div>
 
           {/* YouTube URL input */}
-          <div className="max-w-lg mx-auto mb-8">
-            <div className="flex rounded-lg border border-border overflow-hidden bg-surface focus-within:ring-2 focus-within:ring-gold/40 transition-all">
+          <div className="max-w-lg w-full mx-auto mb-8">
+            <div className="flex rounded-lg overflow-hidden transition-all" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
               <input
                 type="url"
                 value={youtubeUrl}
                 onChange={(e) => setYoutubeUrl(e.target.value)}
                 placeholder="Or paste a YouTube link..."
-                className="flex-1 px-4 py-3 bg-transparent text-ink placeholder:text-ink-muted text-sm outline-none"
+                className="flex-1 px-4 py-3 bg-transparent text-sm outline-none"
+                style={{ color: '#F5F0E8', caretColor: '#D4AF37' }}
               />
               <button
-                className="px-4 bg-gold text-white hover:bg-gold-dark transition-colors flex items-center justify-center"
+                className="px-4 flex items-center justify-center transition-colors"
+                style={{ background: '#B8942A', color: '#fff' }}
                 aria-label="Submit YouTube link"
               >
                 <ArrowRight size={18} />
@@ -263,11 +275,17 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-ink-soft">
-            {["22 instruments supported", "MP3, WAV, FLAC, M4A", "Results in minutes"].map((t) => (
-              <span key={t} className="flex items-center gap-1.5">
-                <Check size={14} className="text-teal" /> {t}
-              </span>
+          {/* Stat cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl w-full mx-auto">
+            {[
+              { label: "22 Instruments", color: '#D4AF37', borderColor: 'rgba(212,175,55,0.3)' },
+              { label: "PDF · MIDI · MusicXML", color: '#4ECDC4', borderColor: 'rgba(78,205,196,0.3)' },
+              { label: "Brass & Winds", color: '#D4AF37', borderColor: 'rgba(212,175,55,0.3)' },
+              { label: "Free", color: '#4ECDC4', borderColor: 'rgba(78,205,196,0.3)' },
+            ].map((s) => (
+              <div key={s.label} className="rounded-lg px-4 py-3 text-center text-sm font-semibold" style={{ background: 'rgba(0,0,0,0.6)', border: `1px solid ${s.borderColor}`, color: s.color, backdropFilter: 'blur(8px)' }}>
+                {s.label}
+              </div>
             ))}
           </div>
         </div>
