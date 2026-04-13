@@ -56,12 +56,14 @@ const PricingCards = () => {
       {tiers.map((tier) => (
         <div
           key={tier.name}
-          className="relative rounded-xl p-6 flex flex-col transition-all duration-200"
+          className="relative p-6 flex flex-col transition-all duration-200"
           style={{
             background: 'rgba(13,13,26,0.7)',
             border: tier.featured
               ? '2px solid rgba(184,148,42,0.4)'
               : '1px solid rgba(255,255,255,0.08)',
+            borderLeft: tier.name === 'Starter' ? '6px solid rgba(255,255,255,0.15)' : tier.name === 'Pro' ? '6px solid #D4AF37' : '6px solid #4ECDC4',
+            borderRadius: '0 12px 12px 0',
             backdropFilter: 'blur(8px)',
             boxShadow: tier.featured ? '0 0 30px rgba(184,148,42,0.15)' : undefined,
           }}
