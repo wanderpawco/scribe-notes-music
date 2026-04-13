@@ -904,7 +904,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                 </div>
 
                 <div className="mt-6">
-                  <label className="block text-sm font-medium mb-1.5" style={{ color: '#F5F0E8' }}>
+                  <label className="block text-[#D4AF37] font-semibold text-sm tracking-wide mb-2">
                     Song Title
                   </label>
                   <input
@@ -912,11 +912,10 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     value={songTitle}
                     onChange={(e) => setSongTitle(e.target.value)}
                     placeholder="e.g. Stairway to Heaven"
-                    className="w-full px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#D4AF37] transition-all border-2 border-[rgba(184,148,42,0.4)]"
-                    style={{ background: 'rgba(5,5,15,0.8)', color: '#F5F0E8' }}
+                    className="w-full px-4 py-3 rounded-xl text-sm transition-all border-2 bg-[rgba(212,175,55,0.08)] border-[rgba(212,175,55,0.5)] text-[#F5F0E8] placeholder:text-[rgba(245,240,232,0.35)] focus:border-[#D4AF37] focus:bg-[rgba(212,175,55,0.12)] focus:outline-none"
                     maxLength={100}
                   />
-                  <p className="text-sm font-medium mt-1" style={{ color: 'rgba(245,240,232,0.6)' }}>
+                  <p className="text-xs mt-2 text-[rgba(245,240,232,0.45)]">
                     This will appear as the title on your sheet music
                   </p>
                 </div>
@@ -929,7 +928,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     onChange={(e) => setRightsConfirmed(e.target.checked)}
                     className="mt-0.5 w-4 h-4 rounded border-border text-gold focus:ring-gold/50 focus:ring-2"
                   />
-                  <label htmlFor="rights-confirm" className="text-sm leading-relaxed cursor-pointer" style={{ color: 'rgba(245,240,232,0.6)' }}>
+                  <label htmlFor="rights-confirm" className="text-sm leading-relaxed cursor-pointer text-[rgba(245,240,232,0.7)]">
                     I confirm that I own or have the rights to transcribe this audio recording.
                   </label>
                 </div>
@@ -943,12 +942,12 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                 <button
                   onClick={handleTranscribe}
                   disabled={selected.length === 0 || songTitle.trim() === '' || !rightsConfirmed || uploading}
-                  className={`w-full mt-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+                  className={`w-full mt-4 py-4 rounded-xl text-base font-bold transition-all duration-200 flex items-center justify-center gap-2 ${
                     uploading
                       ? "bg-gold-dark text-white cursor-wait"
                       : selected.length > 0 && songTitle.trim() !== '' && rightsConfirmed
-                      ? "bg-gold text-white hover:bg-gold-dark"
-                      : "bg-[rgba(184,148,42,0.15)] text-[rgba(245,240,232,0.4)] border border-[rgba(184,148,42,0.2)] cursor-not-allowed"
+                      ? "bg-gradient-to-r from-[#9A7020] to-[#D4AF37] text-[#05050F] border-none cursor-pointer hover:opacity-90 shadow-[0_0_24px_rgba(184,148,42,0.35)]"
+                      : "bg-[rgba(212,175,55,0.12)] border-2 border-[rgba(212,175,55,0.25)] text-[rgba(245,240,232,0.35)] cursor-not-allowed"
                   }`}
                 >
                   {uploading ? (
