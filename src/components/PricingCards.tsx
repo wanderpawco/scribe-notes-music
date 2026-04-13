@@ -62,7 +62,7 @@ const PricingCards = () => {
             border: tier.featured
               ? '2px solid rgba(184,148,42,0.4)'
               : '1px solid rgba(255,255,255,0.08)',
-            borderLeft: tier.name === 'Starter' ? '6px solid rgba(255,255,255,0.15)' : tier.name === 'Pro' ? '6px solid #D4AF37' : '6px solid #4ECDC4',
+            borderLeft: tier.name === 'Starter' ? '6px solid rgba(184,148,42,0.45)' : tier.name === 'Pro' ? '6px solid #D4AF37' : '6px solid #4ECDC4',
             borderRadius: '0 12px 12px 0',
             backdropFilter: 'blur(8px)',
             boxShadow: tier.featured ? '0 0 30px rgba(184,148,42,0.15)' : undefined,

@@ -319,7 +319,7 @@ const Index = () => {
                   style={{
                     background: 'rgba(13,13,26,0.7)',
                     border: f.highlight ? '2px solid rgba(184,148,42,0.4)' : '1px solid rgba(255,255,255,0.08)',
-                    borderLeft: f.highlight ? '6px solid #D4AF37' : '4px solid rgba(184,148,42,0.4)',
+                    borderLeft: f.highlight ? '6px solid #D4AF37' : '5px solid rgba(184,148,42,0.35)',
                     borderRadius: '0 12px 12px 0',
                     backdropFilter: 'blur(8px)',
                   }}
@@ -351,7 +351,7 @@ const Index = () => {
               { icon: <Wand2 size={24} />, title: "Select your instruments", body: "Our AI detects what's playing and pre-selects instruments for you. Confirm or adjust.", step: 2 },
               { icon: <Music size={24} />, title: "Get your sheet music", body: "Receive PDF sheet music, MIDI, and MusicXML. Edit, transpose, and export.", step: 3 },
             ].map((s) => (
-              <div key={s.step} className="relative p-6 text-center" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderLeft: s.step === 1 ? '5px solid rgba(184,148,42,0.4)' : s.step === 2 ? '5px solid rgba(78,205,196,0.4)' : '5px solid rgba(184,148,42,0.6)', borderRadius: '0 12px 12px 0' }}>
+              <div key={s.step} className="relative p-6 text-center" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderLeft: s.step === 1 ? '6px solid rgba(184,148,42,0.5)' : s.step === 2 ? '6px solid rgba(78,205,196,0.5)' : '6px solid rgba(184,148,42,0.7)', borderRadius: '0 12px 12px 0' }}>
                 <div className="w-10 h-10 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-4 text-sm font-bold relative z-10">
                   {s.step}
                 </div>
@@ -446,7 +446,7 @@ const Index = () => {
           <h3 className="font-heading text-2xl font-semibold text-center mb-8" style={{ color: '#F5F0E8' }}>A few important notes</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {disclaimers.map((d) => (
-              <div key={d.title} className="p-6" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderLeft: '4px solid rgba(184,148,42,0.25)', borderRadius: '0 12px 12px 0' }}>
+              <div key={d.title} className="p-6" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderLeft: '5px solid rgba(184,148,42,0.3)', borderRadius: '0 12px 12px 0' }}>
                 <div className="flex items-center gap-2 mb-3">
                   <AlertTriangle size={18} className="text-gold shrink-0" />
                   <h4 className="font-heading text-base font-semibold" style={{ color: '#F5F0E8' }}>{d.title}</h4>

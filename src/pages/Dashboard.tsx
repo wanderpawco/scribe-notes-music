@@ -109,7 +109,8 @@ const Dashboard = () => {
                       style={{
                         background: 'rgba(13,13,26,0.5)',
                         borderBottom: '1px solid rgba(255,255,255,0.06)',
-                        borderLeft: t.status === 'completed' ? '4px solid rgba(184,148,42,0.4)' : t.status === 'failed' ? '4px solid rgba(220,50,50,0.4)' : ['pending','separating','transcribing'].includes(t.status) ? '4px solid rgba(78,205,196,0.5)' : '4px solid rgba(78,205,196,0.3)',
+                        borderLeft: t.status === 'completed' ? '5px solid rgba(78,205,196,0.4)' : t.status === 'failed' ? '5px solid rgba(220,50,50,0.35)' : ['pending','separating','transcribing'].includes(t.status) ? '5px solid rgba(184,148,42,0.3)' : '5px solid rgba(78,205,196,0.3)',
+                        borderRadius: '0 12px 12px 0',
                       }}
                       onMouseEnter={e => (e.currentTarget.style.background = 'rgba(20,20,35,0.7)')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'rgba(13,13,26,0.5)')}
