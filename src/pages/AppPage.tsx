@@ -1346,10 +1346,10 @@ const handleDownload = (
               <button
                 key={name}
                 onClick={() => setActiveInstrument(i)}
-                className="px-5 py-2 text-[14px] font-semibold whitespace-nowrap transition-all rounded-full"
+                className="px-5 py-2 text-[14px] font-semibold whitespace-nowrap transition-all"
                 style={i === activeInstrument
-                  ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#0f0f1a', border: '1px solid #c8a96e', minHeight: '40px' }
-                  : { background: '#ffffff', color: '#0f0f1a', border: '1px solid rgba(200,169,110,0.8)', minHeight: '40px' }
+                  ? { background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#0f0f1a', border: '1px solid #c8a96e', borderLeft: '3px solid #D4AF37', borderRadius: '0 20px 20px 0', minHeight: '40px' }
+                  : { background: '#ffffff', color: '#0f0f1a', border: '1px solid rgba(200,169,110,0.8)', borderRadius: '20px', minHeight: '40px' }
                 }
               >
                 {name}
@@ -1418,8 +1418,8 @@ const handleDownload = (
             {outputs.some(o => o.format === "midi") ? (
               <button
                 onClick={() => outputs.filter(o => o.format === "midi").forEach(o => handleDownload(o))}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-110"
-                style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
+                className="inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold transition-all hover:brightness-110"
+                style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px', borderLeft: '3px solid rgba(184,148,42,0.3)', borderRadius: '0 8px 8px 0' }}
               >
                 <Music size={14} />
                 MIDI File
@@ -1440,8 +1440,8 @@ const handleDownload = (
             {outputs.some(o => o.format === "musicxml") ? (
               <button
                 onClick={() => outputs.filter(o => o.format === "musicxml").forEach(o => handleDownload(o))}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold transition-all hover:brightness-110"
-                style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px' }}
+                className="inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold transition-all hover:brightness-110"
+                style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c98e 50%, #c8a96e 100%)', color: '#080810', height: '40px', borderLeft: '3px solid rgba(184,148,42,0.3)', borderRadius: '0 8px 8px 0' }}
               >
                 <FileCode size={14} />
                 MusicXML
