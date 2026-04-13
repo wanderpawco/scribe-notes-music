@@ -501,7 +501,7 @@ const AppPage = () => {
   const activeStep = stage === 0 ? 0 : stage === 1 ? 1 : 2;
 
   return (
-    <div className="min-h-screen bg-paper flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#05050F' }}>
       <BetaBanner />
       <Navbar />
 
