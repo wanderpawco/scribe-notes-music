@@ -217,7 +217,7 @@ const Index = () => {
         {/* Dark overlay */}
         <div className="absolute inset-0" style={{ zIndex: 1, background: 'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 100%)' }} />
         {/* Hero content */}
-        <div className="relative flex flex-col items-center justify-center px-6 text-center" style={{ zIndex: 2, minHeight: '100vh' }}>
+        <div className="relative flex flex-col items-center justify-center px-6 text-center" style={{ zIndex: 2, minHeight: '100vh', paddingTop: '140px' }}>
           <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold mb-8" style={{ background: 'rgba(0,0,0,0.82)', border: '1px solid #B8942A', color: '#D4AF37' }}>
             AI Music Transcription
           </span>
@@ -306,7 +306,7 @@ const Index = () => {
               return (
                 <div
                   key={f.title}
-                  className="rounded-xl p-7 transition-all duration-300"
+                  className={`rounded-xl p-7 transition-all duration-300 border-t-2 ${f.highlight ? 'border-t-[rgba(184,148,42,0.5)] hover:border-[rgba(184,148,42,0.35)]' : 'border-t-[rgba(184,148,42,0.15)] hover:border-[rgba(184,148,42,0.25)]'}`}
                   style={{
                     background: 'rgba(13,13,26,0.7)',
                     border: f.highlight ? '2px solid rgba(184,148,42,0.4)' : '1px solid rgba(255,255,255,0.08)',
