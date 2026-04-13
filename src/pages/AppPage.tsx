@@ -260,6 +260,8 @@ const AppPage = () => {
     if (stage !== 2 || !processing || !transcriptionId) return;
 
     const pollTranscription = async () => {
+      console.log("Polling transcriptionId:", transcriptionId, "| stage:", stage, "| processing:", processing);
+
       const { data, error } = await supabase
         .from("transcriptions")
         .select("status, error_message")
@@ -267,6 +269,8 @@ const AppPage = () => {
         .single();
 
       if (error || !data) return;
+
+      console.log("Polling transcription ID:", transcriptionId, "status:", data.status);
 
       switch (data.status) {
         case "pending":
