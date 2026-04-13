@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard, Piano, Wind,
   FileText, FileCode, Lock, ChevronDown, RefreshCw,
-  Loader2, Clock,
+  Loader2, Clock, Link as LinkIcon, ArrowRight,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
