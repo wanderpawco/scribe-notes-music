@@ -7,11 +7,13 @@ import DemoModal from "@/components/DemoModal";
 import PricingCards from "@/components/PricingCards";
 
 const features = [
-  { icon: Music2, title: "Brass & Woodwinds Included", desc: "Most transcription tools only handle piano and guitar. ScribeNoter is one of the only tools that transcribes trumpet, trombone, saxophone, flute, clarinet, and all other brass and woodwind instruments with instrument-specific AI models.", highlight: true },
-  { icon: FileText, title: "Real Sheet Music Output", desc: "Get print-ready PDF sheet music with proper notation, correct clef, and accurate rhythm — not just a piano roll. Download in PDF, MIDI, and MusicXML formats compatible with Sibelius, Finale, and MuseScore.", highlight: false },
-  { icon: Mic2, title: "Vocals, Bass & More", desc: "Transcribe lead vocals, backing vocals, bass lines, piano, organ, and strings — each processed with a dedicated AI model trained specifically for that instrument.", highlight: false },
-  { icon: Zap, title: "Results in Minutes", desc: "Upload your audio, select your instrument, and receive your sheet music in minutes — not hours. No manual note entry, no expensive software, no music theory knowledge required.", highlight: false },
-  { icon: Download, title: "Multiple Export Formats", desc: "Download your transcription as PDF sheet music for printing, MIDI for your DAW, or MusicXML to import into any notation software. Pro and Studio plans include Guitar Pro export.", highlight: false },
+  { icon: Music2, title: "Brass & Woodwinds Included", desc: "Most transcription tools only handle piano and guitar. ScribeNoter is one of the only tools that transcribes trumpet, trombone, saxophone, flute, clarinet, and every brass and woodwind instrument with dedicated AI models.", highlight: true },
+  { icon: Mic, title: "Record Live or Upload", desc: "Upload any audio file up to 500MB — or record directly in your browser with one click. No extra software needed. Your live recording feeds straight into the transcription pipeline.", highlight: false },
+  { icon: Link, title: "Paste a YouTube Link", desc: "No audio file? No problem. Paste any YouTube URL and ScribeNoter will extract the audio and transcribe it automatically. Perfect for transcribing performances and covers.", highlight: false },
+  { icon: FileText, title: "Real Sheet Music + Guitar TAB", desc: "Get print-ready PDF sheet music with proper notation, correct clef, and accurate rhythm. Guitar transcriptions automatically include TAB notation. Export as PDF, MIDI, MusicXML, or Guitar Pro.", highlight: false },
+  { icon: Sliders, title: "Transpose to Any Key", desc: "After transcription, change the key of your sheet music instantly. Perfect for transposing parts for Bb and Eb instruments like trumpet, saxophone, and clarinet.", highlight: false },
+  { icon: History, title: "Full Transcription History", desc: "Every transcription is saved to your personal dashboard. Revisit, re-download, and share any past transcription at any time — your music library, always accessible.", highlight: false },
+  { icon: Download, title: "Multiple Export Formats", desc: "Download as PDF sheet music for printing, MIDI for your DAW, or MusicXML to import into Sibelius, Finale, or MuseScore. Pro and Studio plans include Guitar Pro GP5 export.", highlight: false },
   { icon: Shield, title: "Your Audio Stays Private", desc: "Your recordings are stored securely in your private account and are never shared or used to train AI models. Audio files are automatically deleted from our transcription processor within 14 days.", highlight: false },
 ];
 
