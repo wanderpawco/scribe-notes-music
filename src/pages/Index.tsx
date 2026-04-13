@@ -1,24 +1,46 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Upload, Wand2, Music, Mic2, Music2, Guitar, Keyboard } from "lucide-react";
+import { Check, Upload, Wand2, Music, Mic2, Music2, Keyboard, FileText, Zap, Download, Shield, AlertTriangle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DemoModal from "@/components/DemoModal";
 import PricingCards from "@/components/PricingCards";
 
 const instruments = [
-  { icon: Mic2, name: "Vocals" },
   { icon: Mic2, name: "Lead Vocals" },
   { icon: Mic2, name: "Backing Vocals" },
-  { icon: Music2, name: "Drums" },
   { icon: Music, name: "Bass" },
-  { icon: Guitar, name: "Electric Guitar" },
-  { icon: Guitar, name: "Acoustic Guitar" },
-  { icon: Music, name: "Piano" },
+  { icon: Keyboard, name: "Piano" },
   { icon: Keyboard, name: "Organ" },
   { icon: Music, name: "Strings" },
-  { icon: Music2, name: "Brass" },
-  { icon: Music, name: "Woodwinds" },
+  { icon: Music2, name: "Trumpet" },
+  { icon: Music2, name: "French Horn" },
+  { icon: Music2, name: "Trombone" },
+  { icon: Music2, name: "Tuba" },
+  { icon: Music2, name: "Flugelhorn" },
+  { icon: Music2, name: "Baritone/Euphonium" },
+  { icon: Music, name: "Flute" },
+  { icon: Music, name: "Oboe" },
+  { icon: Music, name: "Clarinet" },
+  { icon: Music, name: "Alto Saxophone" },
+  { icon: Music, name: "Tenor Saxophone" },
+  { icon: Music, name: "Soprano Saxophone" },
+  { icon: Music, name: "Bassoon" },
+];
+
+const features = [
+  { icon: Music2, title: "Brass & Woodwinds Included", desc: "Most transcription tools only handle piano and guitar. ScribeNoter is one of the only tools that transcribes trumpet, trombone, saxophone, flute, clarinet, and all other brass and woodwind instruments with instrument-specific AI models." },
+  { icon: FileText, title: "Real Sheet Music Output", desc: "Get print-ready PDF sheet music with proper notation, correct clef, and accurate rhythm — not just a piano roll. Download in PDF, MIDI, and MusicXML formats compatible with Sibelius, Finale, and MuseScore." },
+  { icon: Mic2, title: "Vocals, Bass & More", desc: "Transcribe lead vocals, backing vocals, bass lines, piano, organ, and strings — each processed with a dedicated AI model trained specifically for that instrument." },
+  { icon: Zap, title: "Results in Minutes", desc: "Upload your audio, select your instrument, and receive your sheet music in minutes — not hours. No manual note entry, no expensive software, no music theory knowledge required." },
+  { icon: Download, title: "Multiple Export Formats", desc: "Download your transcription as PDF sheet music for printing, MIDI for your DAW, or MusicXML to import into any notation software. Pro and Studio plans include Guitar Pro export." },
+  { icon: Shield, title: "Your Audio Stays Private", desc: "Your recordings are stored securely in your private account and are never shared or used to train AI models. Audio files are automatically deleted from our transcription processor within 14 days." },
+];
+
+const disclaimers = [
+  { title: "Transcription Accuracy", desc: "AI transcription is not perfect. Results depend on recording quality, mix clarity, and instrument isolation. Complex polyphonic recordings or heavily produced tracks may produce less accurate results. We recommend uploading clean, isolated recordings for best results." },
+  { title: "Copyrighted Music", desc: "ScribeNoter is designed for transcribing music you own or have rights to — such as your own recordings, original compositions, or audio you have explicit permission to transcribe. Transcribing commercially released copyrighted music without authorization may violate copyright law. You confirm your rights at upload." },
+  { title: "Beta Quality", desc: "ScribeNoter is currently in beta. Transcription quality is actively improving as we refine our AI models. If you encounter poor results, please send us feedback — it directly helps us improve." },
 ];
 
 const Index = () => {
@@ -69,7 +91,6 @@ const Index = () => {
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-3xl font-semibold text-ink text-center mb-12">How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Connector line (desktop only) */}
             <div className="hidden md:block absolute top-12 left-[16.7%] right-[16.7%] h-px bg-border" />
             {[
               { icon: <Upload size={24} />, title: "Upload your audio", body: "Drop any MP3, WAV, FLAC, or M4A file. Up to 250MB supported.", step: 1 },
@@ -89,8 +110,36 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Features — Why ScribeNoter? */}
+      <section className="py-20 px-6 bg-surface/50">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="font-heading text-3xl font-semibold text-ink mb-3">Why ScribeNoter?</h2>
+          <p className="text-ink-soft mb-12 max-w-lg mx-auto">
+            Professional-grade music transcription for every musician.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            {features.map((f) => {
+              const Icon = f.icon;
+              return (
+                <div key={f.title} className="bg-surface border border-border rounded-xl p-6 shadow-card">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-gold-light flex items-center justify-center shrink-0">
+                      <Icon size={20} className="text-gold" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading text-base font-semibold text-ink mb-1.5">{f.title}</h3>
+                      <p className="text-sm text-ink-soft leading-relaxed">{f.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Instruments */}
-      <section id="instruments" className="py-20 px-6 bg-surface/50">
+      <section id="instruments" className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-heading text-3xl font-semibold text-ink mb-3">Every instrument. Every part.</h2>
           <p className="text-ink-soft mb-10 max-w-lg mx-auto">
@@ -109,6 +158,24 @@ const Index = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Disclaimers */}
+      <section className="py-16 px-6 bg-surface/50">
+        <div className="max-w-4xl mx-auto">
+          <h3 className="font-heading text-xl font-semibold text-ink text-center mb-8">A few important notes</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {disclaimers.map((d) => (
+              <div key={d.title} className="bg-surface border border-border rounded-xl p-5 shadow-card">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle size={16} className="text-gold shrink-0" />
+                  <h4 className="font-heading text-sm font-semibold text-ink">{d.title}</h4>
+                </div>
+                <p className="text-xs text-ink-soft leading-relaxed">{d.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
