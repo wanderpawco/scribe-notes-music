@@ -1,40 +1,79 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Upload, Wand2, Music, Mic2, Music2, Keyboard, FileText, Zap, Download, Shield, AlertTriangle } from "lucide-react";
+import { Check, Upload, Wand2, Music, Mic2, Music2, Keyboard, FileText, Zap, Download, Shield, AlertTriangle, ArrowRight, Guitar, Drum } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DemoModal from "@/components/DemoModal";
 import PricingCards from "@/components/PricingCards";
 
-const instruments = [
-  { icon: Mic2, name: "Lead Vocals" },
-  { icon: Mic2, name: "Backing Vocals" },
-  { icon: Music, name: "Bass" },
-  { icon: Keyboard, name: "Piano" },
-  { icon: Keyboard, name: "Organ" },
-  { icon: Music, name: "Strings" },
-  { icon: Music2, name: "Trumpet" },
-  { icon: Music2, name: "French Horn" },
-  { icon: Music2, name: "Trombone" },
-  { icon: Music2, name: "Tuba" },
-  { icon: Music2, name: "Flugelhorn" },
-  { icon: Music2, name: "Baritone/Euphonium" },
-  { icon: Music, name: "Flute" },
-  { icon: Music, name: "Oboe" },
-  { icon: Music, name: "Clarinet" },
-  { icon: Music, name: "Alto Saxophone" },
-  { icon: Music, name: "Tenor Saxophone" },
-  { icon: Music, name: "Soprano Saxophone" },
-  { icon: Music, name: "Bassoon" },
+const features = [
+  { icon: Music2, title: "Brass & Woodwinds Included", desc: "Most transcription tools only handle piano and guitar. ScribeNoter is one of the only tools that transcribes trumpet, trombone, saxophone, flute, clarinet, and all other brass and woodwind instruments with instrument-specific AI models.", highlight: true },
+  { icon: FileText, title: "Real Sheet Music Output", desc: "Get print-ready PDF sheet music with proper notation, correct clef, and accurate rhythm — not just a piano roll. Download in PDF, MIDI, and MusicXML formats compatible with Sibelius, Finale, and MuseScore.", highlight: false },
+  { icon: Mic2, title: "Vocals, Bass & More", desc: "Transcribe lead vocals, backing vocals, bass lines, piano, organ, and strings — each processed with a dedicated AI model trained specifically for that instrument.", highlight: false },
+  { icon: Zap, title: "Results in Minutes", desc: "Upload your audio, select your instrument, and receive your sheet music in minutes — not hours. No manual note entry, no expensive software, no music theory knowledge required.", highlight: false },
+  { icon: Download, title: "Multiple Export Formats", desc: "Download your transcription as PDF sheet music for printing, MIDI for your DAW, or MusicXML to import into any notation software. Pro and Studio plans include Guitar Pro export.", highlight: false },
+  { icon: Shield, title: "Your Audio Stays Private", desc: "Your recordings are stored securely in your private account and are never shared or used to train AI models. Audio files are automatically deleted from our transcription processor within 14 days.", highlight: false },
 ];
 
-const features = [
-  { icon: Music2, title: "Brass & Woodwinds Included", desc: "Most transcription tools only handle piano and guitar. ScribeNoter is one of the only tools that transcribes trumpet, trombone, saxophone, flute, clarinet, and all other brass and woodwind instruments with instrument-specific AI models." },
-  { icon: FileText, title: "Real Sheet Music Output", desc: "Get print-ready PDF sheet music with proper notation, correct clef, and accurate rhythm — not just a piano roll. Download in PDF, MIDI, and MusicXML formats compatible with Sibelius, Finale, and MuseScore." },
-  { icon: Mic2, title: "Vocals, Bass & More", desc: "Transcribe lead vocals, backing vocals, bass lines, piano, organ, and strings — each processed with a dedicated AI model trained specifically for that instrument." },
-  { icon: Zap, title: "Results in Minutes", desc: "Upload your audio, select your instrument, and receive your sheet music in minutes — not hours. No manual note entry, no expensive software, no music theory knowledge required." },
-  { icon: Download, title: "Multiple Export Formats", desc: "Download your transcription as PDF sheet music for printing, MIDI for your DAW, or MusicXML to import into any notation software. Pro and Studio plans include Guitar Pro export." },
-  { icon: Shield, title: "Your Audio Stays Private", desc: "Your recordings are stored securely in your private account and are never shared or used to train AI models. Audio files are automatically deleted from our transcription processor within 14 days." },
+const instrumentGroups = [
+  {
+    label: "VOCALS",
+    badge: null,
+    instruments: [
+      { icon: Mic2, name: "Lead Vocals" },
+      { icon: Mic2, name: "Backing Vocals" },
+    ],
+  },
+  {
+    label: "STRINGS & KEYS",
+    badge: null,
+    instruments: [
+      { icon: Music, name: "Bass" },
+      { icon: Keyboard, name: "Piano" },
+      { icon: Keyboard, name: "Organ" },
+      { icon: Music, name: "Strings" },
+    ],
+  },
+  {
+    label: "GUITAR",
+    badge: null,
+    instruments: [
+      { icon: Guitar, name: "Electric Guitar" },
+      { icon: Guitar, name: "Acoustic Guitar" },
+    ],
+  },
+  {
+    label: "BRASS",
+    badge: "Unique to ScribeNoter ✓",
+    instruments: [
+      { icon: Music2, name: "Trumpet" },
+      { icon: Music2, name: "French Horn" },
+      { icon: Music2, name: "Trombone" },
+      { icon: Music2, name: "Tuba" },
+      { icon: Music2, name: "Flugelhorn" },
+      { icon: Music2, name: "Baritone/Euphonium" },
+    ],
+  },
+  {
+    label: "WOODWINDS",
+    badge: "Unique to ScribeNoter ✓",
+    instruments: [
+      { icon: Music, name: "Flute" },
+      { icon: Music, name: "Oboe" },
+      { icon: Music, name: "Clarinet" },
+      { icon: Music, name: "Alto Saxophone" },
+      { icon: Music, name: "Tenor Saxophone" },
+      { icon: Music, name: "Soprano Saxophone" },
+      { icon: Music, name: "Bassoon" },
+    ],
+  },
+  {
+    label: "PERCUSSION",
+    badge: null,
+    instruments: [
+      { icon: Music2, name: "Drums" },
+    ],
+  },
 ];
 
 const disclaimers = [
@@ -45,24 +84,42 @@ const disclaimers = [
 
 const Index = () => {
   const [demoOpen, setDemoOpen] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 staff-lines">
+      <section className="pt-36 pb-28 px-6 staff-lines">
         <div className="max-w-3xl mx-auto text-center">
           <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold bg-gold-light text-gold mb-6">
             AI Music Transcription
           </span>
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-semibold text-ink leading-tight mb-5">
+          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-semibold text-ink leading-tight mb-5">
             Every song deserves its sheet music.
           </h1>
-          <p className="text-lg text-ink-soft max-w-xl mx-auto mb-8">
+          <p className="text-lg text-ink-soft max-w-xl mx-auto mb-2">
             Upload any audio, select your instruments, and receive sheet music, MIDI, and MusicXML in minutes.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+          <p className="text-base text-ink-muted max-w-md mx-auto mb-10">
+            From brass to bass — every instrument, every part.
+          </p>
+
+          {/* Equalizer visualization */}
+          <div className="flex items-end justify-center gap-2 mb-10 h-16" aria-hidden="true">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="w-2 rounded-full bg-gold animate-eq-bar"
+                style={{
+                  animationDelay: `${i * 0.15}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
             <Link
               to="/app"
               className="px-6 py-3 rounded-lg bg-gold text-white font-medium hover:bg-gold-dark transition-all duration-200"
@@ -76,8 +133,28 @@ const Index = () => {
               Watch Demo
             </button>
           </div>
+
+          {/* YouTube URL input */}
+          <div className="max-w-lg mx-auto mb-8">
+            <div className="flex rounded-lg border border-border overflow-hidden bg-surface focus-within:ring-2 focus-within:ring-gold/40 transition-all">
+              <input
+                type="url"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                placeholder="Or paste a YouTube link..."
+                className="flex-1 px-4 py-3 bg-transparent text-ink placeholder:text-ink-muted text-sm outline-none"
+              />
+              <button
+                className="px-4 bg-gold text-white hover:bg-gold-dark transition-colors flex items-center justify-center"
+                aria-label="Submit YouTube link"
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-ink-soft">
-            {["No account needed", "MP3, WAV, FLAC, M4A", "Results in minutes"].map((t) => (
+            {["22 instruments supported", "MP3, WAV, FLAC, M4A", "Results in minutes"].map((t) => (
               <span key={t} className="flex items-center gap-1.5">
                 <Check size={14} className="text-teal" /> {t}
               </span>
@@ -97,13 +174,22 @@ const Index = () => {
             {features.map((f) => {
               const Icon = f.icon;
               return (
-                <div key={f.title} className="bg-surface border border-border rounded-xl p-6 shadow-card">
+                <div
+                  key={f.title}
+                  className={`rounded-xl p-7 shadow-card transition-all duration-300 hover:shadow-[0_4px_24px_hsl(var(--gold)/0.18)] ${
+                    f.highlight
+                      ? "border-2 border-gold bg-[hsl(var(--ink)/0.03)]"
+                      : "border border-border bg-surface"
+                  }`}
+                >
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-gold-light flex items-center justify-center shrink-0">
-                      <Icon size={20} className="text-gold" />
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
+                      f.highlight ? "bg-gold/15" : "bg-gold-light"
+                    }`}>
+                      <Icon size={22} className="text-gold" />
                     </div>
                     <div>
-                      <h3 className="font-heading text-base font-semibold text-ink mb-1.5">{f.title}</h3>
+                      <h3 className="font-heading text-lg font-semibold text-ink mb-2">{f.title}</h3>
                       <p className="text-sm text-ink-soft leading-relaxed">{f.desc}</p>
                     </div>
                   </div>
@@ -139,25 +225,67 @@ const Index = () => {
       </section>
 
       {/* Instruments */}
-      <section id="instruments" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      <section id="instruments" className="py-20 px-6 bg-surface/50">
+        <div className="max-w-5xl mx-auto text-center">
           <h2 className="font-heading text-3xl font-semibold text-ink mb-3">Every instrument. Every part.</h2>
-          <p className="text-ink-soft mb-10 max-w-lg mx-auto">
+          <p className="text-ink-soft mb-12 max-w-lg mx-auto">
             From full bands to solo performances — ScribeNoter handles the complete musical spectrum.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {instruments.map((inst) => {
-              const IconComponent = inst.icon;
-              return (
-                <div
-                  key={inst.name}
-                  className="bg-surface border border-border rounded-xl p-4 flex flex-col items-center justify-center gap-3 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default min-h-[80px]"
-                >
-                  <IconComponent size={24} className="text-gold" />
-                  <span className="text-sm font-medium text-ink">{inst.name}</span>
+          <div className="space-y-10">
+            {instrumentGroups.map((group) => (
+              <div key={group.label}>
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <span className="text-xs font-bold tracking-widest text-gold uppercase">
+                    {group.label}
+                  </span>
+                  {group.badge && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-teal/10 text-teal">
+                      {group.badge}
+                    </span>
+                  )}
                 </div>
-              );
-            })}
+                <div className="flex flex-wrap justify-center gap-3">
+                  {group.instruments.map((inst) => {
+                    const IconComponent = inst.icon;
+                    return (
+                      <div
+                        key={inst.name}
+                        className="bg-surface border border-border rounded-xl p-4 flex flex-col items-center justify-center gap-3 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default min-h-[80px] min-w-[120px]"
+                      >
+                        <IconComponent size={24} className="text-gold" />
+                        <span className="text-sm font-medium text-ink">{inst.name}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 px-6" style={{ background: "#080810" }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white mb-4">
+            Ready to hear your music on paper?
+          </h2>
+          <p className="text-white/60 text-lg mb-10 max-w-lg mx-auto">
+            Join musicians worldwide using AI to transcribe audio into professional sheet music.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/app"
+              className="px-8 py-3.5 rounded-lg bg-gold text-white font-medium hover:bg-gold-dark transition-all duration-200 text-base"
+            >
+              Start Transcribing — It's Free →
+            </Link>
+            <Link
+              to="/pricing"
+              className="px-8 py-3.5 rounded-lg border border-white/20 text-white/80 font-medium hover:bg-white/5 transition-all duration-200 text-base"
+            >
+              View Pricing
+            </Link>
           </div>
         </div>
       </section>
