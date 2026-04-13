@@ -256,8 +256,14 @@ const Index = () => {
           </div>
 
           {/* YouTube URL input */}
+          <div className="text-center mb-3">
+            <span className="text-sm" style={{ color: 'rgba(245,240,232,0.5)' }}>or</span>
+          </div>
           <div className="max-w-lg w-full mx-auto mb-8">
-            <div className="flex rounded-lg overflow-hidden transition-all focus-within:border-gold" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <div 
+              className="flex rounded-lg overflow-hidden border-2 transition-all focus-within:border-[#D4AF37]" 
+              style={{ background: '#0D0D1A', borderColor: 'rgba(184,148,42,0.6)' }}
+            >
               <input
                 type="url"
                 value={youtubeUrl}
@@ -278,18 +284,31 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Stat cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl w-full mx-auto">
+          {/* Badge pills */}
+          <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
             {[
-              { label: "22 Instruments", color: '#D4AF37', borderColor: 'rgba(212,175,55,0.3)' },
-              { label: "PDF · MIDI · MusicXML", color: '#4ECDC4', borderColor: 'rgba(78,205,196,0.3)' },
-              { label: "Brass & Winds", color: '#D4AF37', borderColor: 'rgba(212,175,55,0.3)' },
-              { label: "Free", color: '#4ECDC4', borderColor: 'rgba(78,205,196,0.3)' },
-            ].map((s) => (
-              <div key={s.label} className="rounded-lg px-4 py-3 text-center text-sm font-semibold" style={{ background: 'rgba(0,0,0,0.6)', border: `1px solid ${s.borderColor}`, color: s.color, backdropFilter: 'blur(8px)' }}>
-                {s.label}
-              </div>
-            ))}
+              { icon: Music2, label: "22 Unique Instruments" },
+              { icon: FileText, label: "PDF · MIDI · MusicXML" },
+              { icon: Mic, label: "Record Live Audio" },
+              { icon: Sliders, label: "Transpose Keys" },
+            ].map((badge) => {
+              const Icon = badge.icon;
+              return (
+                <div 
+                  key={badge.label}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full"
+                  style={{ 
+                    background: 'rgba(13,13,26,0.85)', 
+                    border: '1px solid rgba(184,148,42,0.25)',
+                    borderLeft: '3px solid rgba(184,148,42,0.5)',
+                    color: 'rgba(245,240,232,0.8)'
+                  }}
+                >
+                  <Icon size={14} style={{ color: '#D4AF37' }} />
+                  <span>{badge.label}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
