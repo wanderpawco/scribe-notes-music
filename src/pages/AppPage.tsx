@@ -506,7 +506,7 @@ const AppPage = () => {
       <Navbar />
 
       <main className={`flex-1 pt-32 pb-16 px-6 ${stage === 0 ? "bg-[#080810]" : ""}`}>
-        <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`} style={{ background: '#05050F' }}>
+        <div className={`mx-auto ${stage === 2 && !processing ? "max-w-[1400px]" : "max-w-[800px]"}`}>
           {/* Step indicator — hidden on results screen */}
           {stage < 2 && (
           <div className="flex items-center justify-center gap-0 mb-12">
