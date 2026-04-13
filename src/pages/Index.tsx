@@ -258,7 +258,7 @@ const Index = () => {
             {instrumentGroups.map((group) => (
               <div key={group.label}>
                 <div className="flex items-center justify-center gap-3 mb-4">
-                  <span className="text-xs font-bold tracking-widest text-gold uppercase">
+                  <span className="text-sm font-bold tracking-widest text-gold uppercase">
                     {group.label}
                   </span>
                   {group.badge && (
@@ -273,10 +273,10 @@ const Index = () => {
                     return (
                       <div
                         key={inst.name}
-                        className="bg-surface border border-border rounded-xl p-4 flex flex-col items-center justify-center gap-3 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default min-h-[80px] min-w-[120px]"
+                        className="bg-surface border border-border rounded-xl p-5 flex flex-col items-center justify-center gap-4 shadow-card hover:border-gold hover:scale-105 transition-all duration-200 cursor-default min-h-[110px] min-w-[120px]"
                       >
-                        <IconComponent size={24} className="text-gold" />
-                        <span className="text-sm font-medium text-ink">{inst.name}</span>
+                        <IconComponent size={32} className="text-gold" />
+                        <span className="text-base font-semibold text-ink">{inst.name}</span>
                       </div>
                     );
                   })}
