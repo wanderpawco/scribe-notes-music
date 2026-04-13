@@ -262,7 +262,7 @@ const AppPage = () => {
     const pollTranscription = async () => {
       const { data, error } = await supabase
         .from("transcriptions")
-        .select("status, error_message, music_ai_job_id, basic_pitch_job_ids")
+        .select("status, error_message")
         .eq("id", transcriptionId)
         .single();
 
@@ -270,23 +270,14 @@ const AppPage = () => {
 
       switch (data.status) {
         case "pending":
-          setProcStep(0);
-          break;
         case "separating":
           setProcStep(0);
-          if (data.music_ai_job_id) {
-            supabase.functions.invoke("poll-music-ai", {
-              body: { transcription_id: transcriptionId },
-            }).catch(() => {});
-          }
           break;
         case "transcribing":
           setProcStep(1);
-          if (data.basic_pitch_job_ids) {
-            supabase.functions.invoke("poll-basic-pitch", {
-              body: { transcription_id: transcriptionId },
-            }).catch(() => {});
-          }
+          break;
+        case "generating":
+          setProcStep(2);
           break;
         case "completed":
           setProcStep(3);
