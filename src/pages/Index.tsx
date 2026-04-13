@@ -300,7 +300,7 @@ const Index = () => {
           <p className="mb-12 max-w-lg mx-auto" style={{ color: 'rgba(245,240,232,0.6)' }}>
             Professional-grade music transcription for every musician.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-left">
             {features.map((f) => {
               const Icon = f.icon;
               return (
