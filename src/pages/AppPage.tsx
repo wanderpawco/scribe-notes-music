@@ -839,7 +839,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                 </div>
 
                 {transcriptionError && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                  <div className="mt-4 p-3 rounded-lg text-sm" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#fca5a5' }}>
                     {transcriptionError}
                   </div>
                 )}
