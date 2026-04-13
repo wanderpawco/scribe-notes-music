@@ -129,6 +129,81 @@ const Index = () => {
   const [demoOpen, setDemoOpen] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
+  useEffect(() => {
+    const canvas = document.getElementById('chladni-hero') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const MODES = [
+      [1,2],[2,3],[3,4],[4,5],[5,6],[6,7],
+      [1,3],[2,5],[3,7],[1,4],[3,5],[5,7],
+      [2,7],[4,7],[6,7],[1,6],[3,8],[5,8],
+      [7,8],[2,9],[4,9],[6,9],[1,8],[7,9],
+      [3,10],[5,9],[8,9],[4,11],[7,10],[9,10],
+    ];
+    let ci = 0, morphT = 0, morphActive = false, holdCount = 0;
+    const HOLD = 90, MORPH_STEPS = 55;
+    const W = 400, H = 400;
+    canvas.width = W;
+    canvas.height = H;
+
+    function chladni(x: number, y: number, m: number, n: number) {
+      return Math.cos(n * x * Math.PI) * Math.cos(m * y * Math.PI)
+        - Math.cos(m * x * Math.PI) * Math.cos(n * y * Math.PI);
+    }
+
+    function eio(t: number) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+
+    const buf = new Uint8ClampedArray(W * H * 4);
+
+    function renderField(blend: number) {
+      const [ma, na] = MODES[ci];
+      const [mb, nb] = MODES[(ci + 1) % MODES.length];
+      const t = eio(Math.min(blend, 1));
+      for (let py = 0; py < H; py++) {
+        const ny = py / H;
+        for (let px2 = 0; px2 < W; px2++) {
+          const nx = px2 / W;
+          const va = chladni(nx, ny, ma, na);
+          const vb = chladni(nx, ny, mb, nb);
+          const v = va * (1 - t) + vb * t;
+          const absV = Math.abs(v);
+          const i4 = (py * W + px2) * 4;
+          if (absV < 0.08) {
+            const bright = Math.pow(1 - absV / 0.08, 1.8);
+            const val = Math.round(bright * 255);
+            buf[i4] = val; buf[i4 + 1] = val; buf[i4 + 2] = val;
+            buf[i4 + 3] = Math.round((0.4 + bright * 0.6) * 255);
+          } else {
+            buf[i4] = 0; buf[i4 + 1] = 0; buf[i4 + 2] = 0; buf[i4 + 3] = 255;
+          }
+        }
+      }
+      ctx!.putImageData(new ImageData(buf, W, H), 0, 0);
+    }
+
+    let animId: number;
+    function loop() {
+      if (!morphActive) {
+        holdCount++;
+        if (holdCount === 1) renderField(0);
+        if (holdCount >= HOLD) { holdCount = 0; morphActive = true; morphT = 0; }
+      } else {
+        morphT += 1 / MORPH_STEPS;
+        renderField(morphT);
+        if (morphT >= 1) {
+          ci = (ci + 1) % MODES.length;
+          morphActive = false; holdCount = 0;
+        }
+      }
+      animId = requestAnimationFrame(loop);
+    }
+    loop();
+
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />
