@@ -186,6 +186,39 @@ const AppPage = () => {
     setSelected([]);
   }, []);
 
+  const handleYoutubeSubmit = useCallback(() => {
+    const url = youtubeUrl.trim();
+    if (!url) return;
+    // Create a placeholder file so the pipeline can proceed
+    const placeholder = new File(
+      [new Blob(["url-source"], { type: "text/plain" })],
+      `youtube-import.mp3`,
+      { type: "audio/mpeg" }
+    );
+    setFileName(url);
+    setAudioFile(placeholder);
+    setStage(1);
+    setScanning(true);
+    setSelected([]);
+  }, [youtubeUrl]);
+
+  /* ── Auto-populate from ?url= query param ── */
+  useEffect(() => {
+    const urlParam = searchParams.get("url");
+    if (urlParam && stage === 0) {
+      setYoutubeUrl(urlParam);
+    }
+  }, [searchParams, stage]);
+
+  useEffect(() => {
+    const urlParam = searchParams.get("url");
+    if (urlParam && youtubeUrl === urlParam && stage === 0) {
+      // Small delay to allow state to settle
+      const t = setTimeout(() => handleYoutubeSubmit(), 300);
+      return () => clearTimeout(t);
+    }
+  }, [youtubeUrl, searchParams, stage, handleYoutubeSubmit]);
+
   const onFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (f) handleFile(f);
