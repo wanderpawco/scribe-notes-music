@@ -479,7 +479,6 @@ const Index = () => {
       </section>
 
       <Footer />
-      <Footer />
     </div>
   );
 };
