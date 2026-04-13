@@ -847,7 +847,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                     let familyBg = "rgba(168,85,247,0.08)";
                     let familyBorder = "rgba(168,85,247,0.2)";
                     let familyIcon = "text-purple-400";
-                    if (vocals.includes(inst.name)) { familyBg = "rgba(244,63,94,0.05)"; familyBorder = "rgba(244,63,94,0.12)"; familyIcon = "text-rose-400"; }
+                    if (vocals.includes(inst.name)) { familyBg = "rgba(244,63,94,0.03)"; familyBorder = "rgba(244,63,94,0.08)"; familyIcon = "text-rose-400"; }
                     else if (strings.includes(inst.name)) { familyBg = "rgba(184,148,42,0.08)"; familyBorder = "rgba(184,148,42,0.2)"; familyIcon = "text-amber-400"; }
                     else if (guitars.includes(inst.name)) { familyBg = "rgba(249,115,22,0.08)"; familyBorder = "rgba(249,115,22,0.2)"; familyIcon = "text-orange-400"; }
                     else if (brass.includes(inst.name)) { familyBg = "rgba(234,179,8,0.08)"; familyBorder = "rgba(234,179,8,0.25)"; familyIcon = "text-yellow-500"; }
