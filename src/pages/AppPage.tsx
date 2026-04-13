@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Music, Mic, Upload, X, Check, Mic2, Music2, Guitar, Keyboard, Piano, Wind,
   FileText, FileCode, Lock, ChevronDown, RefreshCw,
-  Loader2, Clock,
+  Loader2, Clock, Link as LinkIcon, ArrowRight,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -136,9 +136,11 @@ function estimateProcessingTime(
 
 const AppPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [stage, setStage] = useState(0);
   const [fileName, setFileName] = useState("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -183,6 +185,39 @@ const AppPage = () => {
     setScanning(true);
     setSelected([]);
   }, []);
+
+  const handleYoutubeSubmit = useCallback(() => {
+    const url = youtubeUrl.trim();
+    if (!url) return;
+    // Create a placeholder file so the pipeline can proceed
+    const placeholder = new File(
+      [new Blob(["url-source"], { type: "text/plain" })],
+      `youtube-import.mp3`,
+      { type: "audio/mpeg" }
+    );
+    setFileName(url);
+    setAudioFile(placeholder);
+    setStage(1);
+    setScanning(true);
+    setSelected([]);
+  }, [youtubeUrl]);
+
+  /* ── Auto-populate from ?url= query param ── */
+  useEffect(() => {
+    const urlParam = searchParams.get("url");
+    if (urlParam && stage === 0) {
+      setYoutubeUrl(urlParam);
+    }
+  }, [searchParams, stage]);
+
+  useEffect(() => {
+    const urlParam = searchParams.get("url");
+    if (urlParam && youtubeUrl === urlParam && stage === 0) {
+      // Small delay to allow state to settle
+      const t = setTimeout(() => handleYoutubeSubmit(), 300);
+      return () => clearTimeout(t);
+    }
+  }, [youtubeUrl, searchParams, stage, handleYoutubeSubmit]);
 
   const onFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -477,6 +512,7 @@ const AppPage = () => {
     setStage(0);
     setFileName("");
     setAudioFile(null);
+    setYoutubeUrl("");
     setSelected([]);
     setEstimatedTime(null);
     setSongTitle("");
@@ -698,6 +734,45 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
                 </button>
               </div>
             )}
+
+            {/* ── DIVIDER 2 ── */}
+            <div className="flex items-center gap-4 my-8">
+              <div className="flex-1 h-px bg-white/15" />
+              <span className="text-base text-white/60 font-medium">or</span>
+              <div className="flex-1 h-px bg-white/15" />
+            </div>
+
+            {/* ── YOUTUBE / URL INPUT ── */}
+            <div className="max-w-2xl w-full mx-auto">
+              <div
+                className="flex items-center rounded-xl overflow-hidden transition-all focus-within:border-gold"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                }}
+              >
+                <div className="pl-4 pr-2 flex items-center justify-center">
+                  <LinkIcon size={20} className="text-white/40" />
+                </div>
+                <input
+                  type="url"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleYoutubeSubmit(); }}
+                  placeholder="Paste a YouTube, TikTok or Instagram link..."
+                  className="flex-1 px-3 py-4 bg-transparent text-sm outline-none"
+                  style={{ color: '#F5F0E8', caretColor: '#D4AF37' }}
+                />
+                <button
+                  onClick={handleYoutubeSubmit}
+                  className="px-5 h-full flex items-center justify-center transition-colors hover:opacity-90"
+                  style={{ background: '#B8942A', color: '#fff', alignSelf: 'stretch', padding: '16px 20px' }}
+                  aria-label="Submit link"
+                >
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </div>
 
             {/* ── FORMAT BADGES ── */}
             <div className="flex flex-col items-center mt-8 animate-fade-up-delay-3">

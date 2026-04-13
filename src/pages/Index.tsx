@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Check, Upload, Wand2, Music, Mic2, Music2, Keyboard, FileText, Zap, Download, Shield, AlertTriangle, ArrowRight, Guitar, Drum, Mic, Sliders, History, Link as LinkIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -128,8 +128,15 @@ const disclaimers = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [demoOpen, setDemoOpen] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState("");
+
+  const handleYoutubeSubmit = () => {
+    const url = youtubeUrl.trim();
+    if (!url) return;
+    navigate(`/app?url=${encodeURIComponent(url)}`);
+  };
 
   useEffect(() => {
     const canvas = document.getElementById('chladni-hero') as HTMLCanvasElement;
@@ -258,19 +265,21 @@ const Index = () => {
 
           {/* YouTube URL input */}
           <div className="max-w-lg w-full mx-auto mb-8">
-            <div className="flex rounded-lg overflow-hidden transition-all" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <div className="flex rounded-lg overflow-hidden transition-all focus-within:border-gold" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
               <input
                 type="url"
                 value={youtubeUrl}
                 onChange={(e) => setYoutubeUrl(e.target.value)}
-                placeholder="Or paste a YouTube link..."
+                onKeyDown={(e) => { if (e.key === 'Enter') handleYoutubeSubmit(); }}
+                placeholder="Paste a YouTube, TikTok or Instagram link..."
                 className="flex-1 px-4 py-3 bg-transparent text-sm outline-none"
                 style={{ color: '#F5F0E8', caretColor: '#D4AF37' }}
               />
               <button
+                onClick={handleYoutubeSubmit}
                 className="px-4 flex items-center justify-center transition-colors"
                 style={{ background: '#B8942A', color: '#fff' }}
-                aria-label="Submit YouTube link"
+                aria-label="Submit link"
               >
                 <ArrowRight size={18} />
               </button>
