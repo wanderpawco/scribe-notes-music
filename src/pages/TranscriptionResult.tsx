@@ -141,7 +141,7 @@ const TranscriptionResult = () => {
   };
 
   return (
-    <div className="min-h-screen bg-paper flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#05050F' }}>
       <Navbar />
       <main className="flex-1 pt-20 pb-4 px-6">
         <div className="max-w-5xl mx-auto">
@@ -149,7 +149,8 @@ const TranscriptionResult = () => {
             {/* Back link */}
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-ink-muted hover:text-ink transition-colors"
+              className="inline-flex items-center gap-2 text-sm transition-colors hover:text-gold"
+              style={{ color: 'rgba(245,240,232,0.4)' }}
             >
               <ArrowLeft size={16} />
               Back to My Transcriptions
@@ -172,7 +173,7 @@ const TranscriptionResult = () => {
           ) : error === "__processing__" ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <Loader2 size={48} className="animate-spin text-gold mb-4" />
-              <p className="text-ink font-medium mb-2">Your transcription is still processing — check back soon.</p>
+              <p className="font-medium mb-2" style={{ color: '#F5F0E8' }}>Your transcription is still processing — check back soon.</p>
               <Link
                 to="/dashboard"
                 className="text-gold hover:text-gold-dark text-sm font-medium mt-4"
@@ -182,8 +183,8 @@ const TranscriptionResult = () => {
             </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <Music size={48} className="text-ink-muted mb-4" />
-              <p className="text-ink mb-2">{error}</p>
+              <Music size={48} className="mb-4" style={{ color: 'rgba(245,240,232,0.3)' }} />
+              <p className="mb-2" style={{ color: '#F5F0E8' }}>{error}</p>
               <Link
                 to="/dashboard"
                 className="text-gold hover:text-gold-dark text-sm font-medium mt-4"
@@ -195,8 +196,8 @@ const TranscriptionResult = () => {
             <div className="space-y-4">
               {/* ── HEADING ── */}
               <div className="mb-4">
-                <h2 className="font-heading text-[2rem] font-bold text-ink">{displayName}</h2>
-                <p className="text-[14px] text-ink-muted mt-1">
+                <h2 className="font-heading text-[2rem] font-bold" style={{ color: '#F5F0E8' }}>{displayName}</h2>
+                <p className="text-[14px] mt-1" style={{ color: 'rgba(245,240,232,0.4)' }}>
                   {activeInstrumentName}  •  {selectedKey}  •  {bpm} BPM
                 </p>
               </div>
@@ -333,12 +334,12 @@ const TranscriptionResult = () => {
                 </div>
               </div>
 
-              {/* Sheet music */}
-              <div id="osmd-render-container" className="bg-paper rounded-2xl overflow-hidden">
+              {/* Sheet music — white background for OSMD */}
+              <div id="osmd-render-container" className="rounded-2xl overflow-hidden" style={{ background: '#ffffff' }}>
                 {activeMusicXml ? (
                   <SheetMusicRenderer musicXmlBase64={activeMusicXml} instrument={activeInstrumentName} transposeSemitones={getTransposeSemitones("C Major", appliedKey)} />
                 ) : (
-                  <div className="flex items-center justify-center py-20 text-ink-muted">
+                  <div className="flex items-center justify-center py-20" style={{ color: 'rgba(245,240,232,0.3)' }}>
                     <Music size={48} className="opacity-50" />
                   </div>
                 )}
