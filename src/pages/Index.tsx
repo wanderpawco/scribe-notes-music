@@ -130,7 +130,6 @@ const disclaimers = [
 const Index = () => {
   const navigate = useNavigate();
   const [youtubeUrl, setYoutubeUrl] = useState("");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const handleYoutubeSubmit = () => {
     const url = youtubeUrl.trim();
