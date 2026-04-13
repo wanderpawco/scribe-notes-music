@@ -40,12 +40,12 @@ const ContactPage = () => {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-paper pt-32 pb-16">
+      <main className="min-h-screen pt-32 pb-16" style={{ background: '#05050F' }}>
         <div className="container max-w-2xl mx-auto px-6">
           {/* Section 1 — Header */}
           <div className="text-center mb-12">
-            <h1 className="font-heading text-4xl font-bold text-ink mb-4">Get in Touch</h1>
-            <p className="text-lg text-ink-soft mb-4">
+            <h1 className="font-heading text-4xl font-bold mb-4" style={{ color: '#F5F0E8' }}>Get in Touch</h1>
+            <p className="text-lg mb-4" style={{ color: 'rgba(245,240,232,0.6)' }}>
               Have a question, found a bug, or want to share feedback? We'd love to hear from you.
             </p>
             <a
@@ -58,9 +58,9 @@ const ContactPage = () => {
 
           {/* Section 2 — Form */}
           {submitted ? (
-            <div className="text-center py-12 bg-surface rounded-2xl border border-border">
-              <p className="text-lg text-ink font-medium mb-2">Thank you for your feedback!</p>
-              <p className="text-ink-soft">We'll get back to you within 48 hours.</p>
+            <div className="text-center py-12 rounded-2xl" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p className="text-lg font-medium mb-2" style={{ color: '#F5F0E8' }}>Thank you for your feedback!</p>
+              <p style={{ color: 'rgba(245,240,232,0.6)' }}>We'll get back to you within 48 hours.</p>
               <button
                 onClick={() => setSubmitted(false)}
                 className="mt-6 px-6 py-2.5 rounded-lg bg-gold text-white font-medium hover:bg-gold-dark transition-colors"
@@ -69,9 +69,9 @@ const ContactPage = () => {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6 bg-surface rounded-2xl border border-border p-8">
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl p-8" style={{ background: 'rgba(13,13,26,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-ink mb-1.5">
+                <label htmlFor="email" className="block text-sm font-medium mb-1.5" style={{ color: '#F5F0E8' }}>
                   Your Email
                 </label>
                 <input
@@ -80,13 +80,14 @@ const ContactPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-paper px-4 py-2.5 text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-gold/40 transition-colors"
+                  className="w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-colors"
+                  style={{ background: 'rgba(5,5,15,0.8)', border: '1px solid rgba(255,255,255,0.1)', color: '#F5F0E8' }}
                   placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-ink mb-1.5">
+                <label htmlFor="category" className="block text-sm font-medium mb-1.5" style={{ color: '#F5F0E8' }}>
                   What's this about?
                 </label>
                 <select
@@ -94,7 +95,8 @@ const ContactPage = () => {
                   required
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-paper px-4 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-gold/40 transition-colors"
+                  className="w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-colors"
+                  style={{ background: 'rgba(5,5,15,0.8)', border: '1px solid rgba(255,255,255,0.1)', color: '#F5F0E8' }}
                 >
                   <option value="" disabled>Select a category</option>
                   {categories.map((cat) => (
@@ -104,7 +106,7 @@ const ContactPage = () => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-ink mb-1.5">
+                <label htmlFor="message" className="block text-sm font-medium mb-1.5" style={{ color: '#F5F0E8' }}>
                   Your Message
                 </label>
                 <textarea
@@ -113,7 +115,8 @@ const ContactPage = () => {
                   rows={4}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-paper px-4 py-2.5 text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-gold/40 transition-colors resize-y"
+                  className="w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-colors resize-y"
+                  style={{ background: 'rgba(5,5,15,0.8)', border: '1px solid rgba(255,255,255,0.1)', color: '#F5F0E8' }}
                   placeholder="Tell us what's on your mind..."
                 />
               </div>
