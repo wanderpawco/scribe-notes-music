@@ -695,7 +695,7 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
             {!recording ? (
               <button
                 onClick={startRecording}
-                className="w-full flex items-center justify-center gap-4 px-6 py-5 rounded-2xl text-base font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-fade-up-delay-3"
+                className="w-full h-16 flex items-center justify-center gap-4 px-6 rounded-xl text-base font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-fade-up-delay-3 max-w-2xl mx-auto"
                 style={{ 
                   background: "#c8a96e",
                   color: "#080810",
@@ -745,10 +745,9 @@ className={`w-12 h-12 rounded-full flex items-center justify-center text-base fo
             {/* ── YOUTUBE / URL INPUT ── */}
             <div className="max-w-2xl w-full mx-auto">
               <div
-                className="flex items-center rounded-xl overflow-hidden transition-all focus-within:border-gold"
+                className="flex items-center h-16 rounded-xl overflow-hidden transition-all border-2 border-[rgba(184,148,42,0.5)] focus-within:border-[#D4AF37]"
                 style={{
                   background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
                 <div className="pl-4 pr-2 flex items-center justify-center">

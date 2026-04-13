@@ -22,7 +22,7 @@ const BetaBanner = () => {
     <div className="text-[#05050F] text-base py-3 px-6 flex items-center justify-center relative" style={{ background: '#D4AF37', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
       <span className="text-center">
         <span className="text-lg">🎵</span> ScribeNoter is in Beta — transcription quality is actively improving. We'd love your{" "}
-        <Link to="/contact" className="underline text-[#4ECDC4] hover:text-[#3BBDB4] transition-colors">
+        <Link to="/contact" className="underline decoration-[#4ECDC4] decoration-2 text-[#05050F] hover:text-[#05050F] transition-colors">
           feedback
         </Link>.
       </span>
